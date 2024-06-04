@@ -5,6 +5,9 @@
     display: flex;
     flex-wrap:nowrap;
 }
+#nav *::after{
+    background-color: transparent!important;
+}
 .menus_item_child li:not(#sidebar-menus li){
     float: left;
     border-radius: 6px!important;
@@ -20,6 +23,7 @@
   left:50%;
   translate:-50%;
 }
+
 .nav-fixed #nav{
     transform: translateY(58px)!important;
     -webkit-transform: translateY(58px)!important;
