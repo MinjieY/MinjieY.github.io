@@ -94,7 +94,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2026-07-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-05T06:32:01.118Z">
+<meta property="article:modified_time" content="2026-08-05T06:42:00.492Z">
 <meta property="article:author" content="Aria Ying">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="RPA">
@@ -507,8 +507,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2026-08-05 14:32:01</span>
-            <span class="mobile">2026-08-05 14:32:01</span>
+            <span class="desktop">2026-08-05 14:42</span>
+            <span class="mobile">2026-08-05 14:42</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -566,12 +566,12 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>630 Words</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.4k Words</span>
         </span>
     
     
         <span class="article-min2read article-meta-item">
-            <i class="fa-regular fa-clock"></i>&nbsp;<span>2 Mins</span>
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>9 Mins</span>
         </span>
     
     
@@ -595,13 +595,46 @@
 <p>GitHub: <a class="link"   target="_blank" rel="noopener" href="https://github.com/MinjieY/SupplyAutoUpload" >https://github.com/MinjieY/SupplyAutoUpload<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>供应链库存管理平台: <a class="link"   target="_blank" rel="noopener" href="https://supplyone-stg.ap1.covapp.io/#/login" >https://supplyone-stg.ap1.covapp.io/#/login<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 </blockquote>
-<h2 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h2><ul>
-<li><strong>三个业务模块</strong>：供应商零件库存、下级零件库存、原材料到货计划</li>
-<li><strong>全自动化上传</strong>：自动登录 → 验证码识别 → 页面导航 → 文件选择 → 结果判断</li>
-<li><strong>定时任务</strong>：每个模块独立支持分钟&#x2F;小时&#x2F;天&#x2F;周定时执行</li>
-<li><strong>文件去重</strong>：基于文件修改时间避免重复上传</li>
-<li><strong>图形化界面</strong>：Tkinter 桌面 GUI，多标签页 + 实时日志</li>
-<li><strong>开机自启</strong>：Windows 注册表配置</li>
+<h2 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h2><ul>
+<li><p><strong>三个业务模块支持</strong></p>
+<ul>
+<li>供应商零件库存 (<code>/ground/supplierStock</code>)</li>
+<li>供应商下级零件库存 (<code>/ground/2bStock</code>)</li>
+<li>原材料到货计划 (<code>/ground/2bStock</code>)</li>
+</ul>
+</li>
+<li><p><strong>全自动化流程</strong></p>
+<ul>
+<li>自动启动 Edge 浏览器并登录 SupplyOne 平台</li>
+<li>验证码展示与人工输入</li>
+<li>自动导航到目标页面并点击上传按钮</li>
+<li>通过 PyAutoGUI 操控系统文件对话框，实现文件路径粘贴上传</li>
+<li>上传结果判断与失败截图留存</li>
+</ul>
+</li>
+<li><p><strong>定时任务</strong></p>
+<ul>
+<li>每个模块支持独立设置定时上传（分钟&#x2F;小时&#x2F;天&#x2F;周）</li>
+<li>文件修改时间去重，避免重复上传</li>
+</ul>
+</li>
+<li><p><strong>图形化界面</strong></p>
+<ul>
+<li>Tkinter 桌面 GUI，支持多标签页</li>
+<li>实时日志面板，支持分模块查看</li>
+<li>进度条与状态指示</li>
+</ul>
+</li>
+<li><p><strong>开机自启</strong></p>
+<ul>
+<li>支持通过 Windows 注册表设置开机自动启动</li>
+</ul>
+</li>
+<li><p><strong>WebDriver 自动管理</strong></p>
+<ul>
+<li>自动检测 Edge 浏览器版本并下载匹配的 msedgedriver</li>
+</ul>
+</li>
 </ul>
 <h2 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h2><table>
 <thead>
@@ -627,33 +660,115 @@
 <td>PyAutoGUI + Pyperclip</td>
 </tr>
 <tr>
+<td>图片处理</td>
+<td>Pillow (PIL)</td>
+</tr>
+<tr>
 <td>打包分发</td>
 <td>PyInstaller</td>
 </tr>
 </tbody></table>
-<h2 id="设计亮点"><a href="#设计亮点" class="headerlink" title="设计亮点"></a>设计亮点</h2><h3 id="自动化上传流程"><a href="#自动化上传流程" class="headerlink" title="自动化上传流程"></a>自动化上传流程</h3><p>采用<strong>分步执行 + 检查点模式</strong>，每一步之间支持用户中断：</p>
-<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">扫描文件目录 → 检查文件是否已上传 → 导航到目标页面</span><br><span class="line">→ 点击上传按钮 → PyAutoGUI 操控文件对话框 → 粘贴路径</span><br><span class="line">→ 确认上传 → 判断成功/失败 → 失败自动截图</span><br></pre></td></tr></table></figure></div>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── multi_upload_gui.py      # 主程序</span><br><span class="line">├── test_error_capture.py    # WebDriver 导入诊断脚本</span><br><span class="line">├── drivers/                 # Edge WebDriver</span><br><span class="line">├── uploadTest/              # 测试用 Excel 上传模板</span><br><span class="line">├── upload_logs/             # 运行日志与失败截图</span><br><span class="line">├── build/                   # PyInstaller 构建中间产物</span><br><span class="line">└── dist/                    # 打包后的 EXE 文件</span><br></pre></td></tr></table></figure></div>
 
-<h3 id="为什么混合使用-Selenium-和-PyAutoGUI？"><a href="#为什么混合使用-Selenium-和-PyAutoGUI？" class="headerlink" title="为什么混合使用 Selenium 和 PyAutoGUI？"></a>为什么混合使用 Selenium 和 PyAutoGUI？</h3><p>Selenium 无法操控操作系统原生的文件选择对话框，因此用 PyAutoGUI 模拟键盘操作（<code>Ctrl+L</code> → 粘贴路径 → <code>Enter</code>）完成文件选择。</p>
-<h3 id="多线程架构"><a href="#多线程架构" class="headerlink" title="多线程架构"></a>多线程架构</h3><ul>
-<li>UI 主线程不阻塞，所有 IO 操作在后台线程执行</li>
-<li><code>threading.Event</code> 实现验证码输入的线程间同步等待</li>
-<li><code>threading.Timer</code> 实现各模块独立定时调度</li>
+<h2 id="设计逻辑"><a href="#设计逻辑" class="headerlink" title="设计逻辑"></a>设计逻辑</h2><h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><p>程序采用<strong>单类 MVC 混合模式</strong>，所有逻辑集中在 <code>MultiUploadApp</code> 类中，以 Tkinter 作为视图层，通过多线程实现并发控制和 UI 不阻塞。整体分为以下核心子系统：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                    MultiUploadApp                    │</span><br><span class="line">├──────────────┬──────────────┬───────────────────────┤</span><br><span class="line">│   UI 层      │   控制层      │      执行层            │</span><br><span class="line">│  (Tkinter)   │  (Scheduler) │  (Selenium + PyAutoGUI)│</span><br><span class="line">├──────────────┼──────────────┼───────────────────────┤</span><br><span class="line">│ 模块面板     │ 定时调度器    │  浏览器驱动管理         │</span><br><span class="line">│ 日志面板     │ 状态机控制    │  登录流程              │</span><br><span class="line">│ 验证码交互   │ 线程管理      │  导航与上传            │</span><br><span class="line">│ 配置持久化   │ 文件去重      │  结果记录与截图         │</span><br><span class="line">└──────────────┴──────────────┴───────────────────────┘</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-依赖自检与自动安装机制"><a href="#1-依赖自检与自动安装机制" class="headerlink" title="1. 依赖自检与自动安装机制"></a>1. 依赖自检与自动安装机制</h3><p>程序启动时首先调用 <code>check_dependencies()</code>，检测 <code>selenium</code>、<code>pyautogui</code>、<code>pyperclip</code>、<code>Pillow</code> 是否可用。若缺失，通过 <code>subprocess</code> 调用 pip 从清华镜像源自动安装，确保在无环境的机器上也能直接运行。</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自动安装逻辑</span></span><br><span class="line">subprocess.check_call([</span><br><span class="line">    PYTHON_313, <span class="string">&quot;-m&quot;</span>, <span class="string">&quot;pip&quot;</span>, <span class="string">&quot;install&quot;</span>,</span><br><span class="line">    <span class="string">&quot;selenium&quot;</span>, <span class="string">&quot;webdriver-manager&quot;</span>, <span class="string">&quot;pyautogui&quot;</span>, <span class="string">&quot;pyperclip&quot;</span>, <span class="string">&quot;Pillow&quot;</span>,</span><br><span class="line">    <span class="string">&quot;-i&quot;</span>, <span class="string">&quot;https://pypi.tuna.tsinghua.edu.cn/simple&quot;</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2-日志系统设计"><a href="#2-日志系统设计" class="headerlink" title="2. 日志系统设计"></a>2. 日志系统设计</h3><p>自定义 <code>LogHandler</code> 类继承 <code>logging.Handler</code>，通过<strong>消息队列 + Tkinter <code>after</code> 定时刷新的异步模式</strong>，将 Python 标准 logging 输出桥接到 GUI 的 Text 组件中：</p>
+<ul>
+<li><code>emit()</code> 将日志消息推入队列，通过 <code>root.after(100, process_queue)</code> 延迟刷新</li>
+<li><code>process_queue()</code> 批量消费队列中的消息并写入 Text 组件</li>
+<li>支持 <code>enable/disable</code> 控制，防止窗口关闭后仍然尝试写入已销毁的控件</li>
+<li>每个模块拥有独立的日志 Tab，全局日志 Tab 汇总所有输出</li>
 </ul>
-<h3 id="日志系统"><a href="#日志系统" class="headerlink" title="日志系统"></a>日志系统</h3><p>自定义 <code>LogHandler</code> 通过消息队列 + Tkinter <code>after</code> 定时刷新，将 Python logging 输出桥接到 GUI 文本组件，每个模块独立日志 Tab。</p>
-<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── multi_upload_gui.py      # 主程序</span><br><span class="line">├── drivers/                 # Edge WebDriver</span><br><span class="line">├── uploadTest/              # 测试 Excel 模板</span><br><span class="line">├── upload_logs/             # 日志与失败截图</span><br><span class="line">├── build/                   # PyInstaller 中间产物</span><br><span class="line">└── dist/                    # 打包 EXE</span><br></pre></td></tr></table></figure></div>
+<h3 id="3-多模块管理架构"><a href="#3-多模块管理架构" class="headerlink" title="3. 多模块管理架构"></a>3. 多模块管理架构</h3><p>三个业务模块通过 <code>MODULES</code> 列表统一配置，每个模块拥有独立的数据结构存储于 <code>self.module_widgets</code> 字典中：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">module_widgets[key] = &#123;</span><br><span class="line">    &#x27;name&#x27;: &quot;模块名称&quot;,</span><br><span class="line">    &#x27;url_var&#x27;: &quot;目标URL&quot;,</span><br><span class="line">    &#x27;path_var&#x27;: &quot;Excel文件目录&quot;,</span><br><span class="line">    &#x27;schedule_interval_var&#x27;: &quot;定时间隔&quot;,</span><br><span class="line">    &#x27;schedule_unit_var&#x27;: &quot;定时单位(min/小时/天/周)&quot;,</span><br><span class="line">    &#x27;status_label&#x27;: &quot;状态标签&quot;,</span><br><span class="line">    &#x27;progress_bar&#x27;: &quot;进度条&quot;,</span><br><span class="line">    &#x27;progress_label&#x27;: &quot;进度文字&quot;,</span><br><span class="line">    &#x27;is_running&#x27;: False/True,</span><br><span class="line">    &#x27;schedule_timer&#x27;: &quot;定时器句柄&quot;,</span><br><span class="line">    &#x27;last_upload_label&#x27;: &quot;上次上传时间标签&quot;,</span><br><span class="line">    &#x27;file_info_text&#x27;: &quot;文件信息展示区&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖（程序也会自动从清华镜像源安装）</span></span><br><span class="line">pip install selenium pyautogui pyperclip Pillow</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line">python multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>每个模块独立设置 URL、文件目录、定时参数</li>
+<li>模块面板支持折叠&#x2F;展开（<code>toggle_module</code>）</li>
+<li>顶部导航栏提供快速跳转到指定模块（<code>_scroll_to_module</code>）</li>
+</ul>
+<h3 id="4-配置持久化"><a href="#4-配置持久化" class="headerlink" title="4. 配置持久化"></a>4. 配置持久化</h3><p>所有模块配置（URL、路径、定时参数）和全局设置（登录URL、用户名、密码）通过 <code>app_config.json</code> 持久化：</p>
+<ul>
+<li><code>save_config()</code> &#x2F; <code>save_module_config()</code> 在用户修改任何设置时自动保存</li>
+<li><code>load_config()</code> 在程序启动时恢复上次配置</li>
+<li>配置结构清晰分层：<code>global</code> 保存全局设置，每个模块 key 保存模块专属设置</li>
+</ul>
+<h3 id="5-浏览器驱动管理"><a href="#5-浏览器驱动管理" class="headerlink" title="5. 浏览器驱动管理"></a>5. 浏览器驱动管理</h3><p>Edge WebDriver 管理包含三个关键步骤：</p>
+<p><strong>a) 版本检测：</strong> 通过查询 Windows 注册表获取 Edge 浏览器版本号（<code>HKLM\SOFTWARE\Microsoft\Edge\BLBeacon</code> → <code>version</code>），然后从 <code>https://msedgedriver.azureedge.net/</code> 匹配下载对应版本的驱动。</p>
+<p><strong>b) 驱动初始化：</strong> 使用 <code>selenium.webdriver.Edge</code> 创建浏览器实例，配置 <code>detach</code> 选项防止浏览器在程序结束时自动关闭，同时配置 <code>user-data-dir</code> 持久化浏览器状态。</p>
+<p><strong>c) 线程安全：</strong> 使用 <code>threading.Lock</code> 保护 <code>self.driver</code> 的读写操作（<code>get_driver_safe</code> &#x2F; <code>safe_driver_quit</code>），避免多线程并发访问浏览器对象导致崩溃。</p>
+<h3 id="6-登录流程设计"><a href="#6-登录流程设计" class="headerlink" title="6. 登录流程设计"></a>6. 登录流程设计</h3><p>登录采用<strong>非阻塞异步模式</strong>，通过 <code>threading.Thread</code> 在后台执行：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">启动线程 → 初始化浏览器 → 导航到登录页 → 截图验证码</span><br><span class="line">    → 将验证码图片显示到 GUI Canvas → 等待用户输入</span><br><span class="line">    → 用户点击&quot;确认验证码&quot; → 继续线程执行</span><br><span class="line">    → 填写用户名密码 + 验证码 → 点击登录</span><br><span class="line">    → 检测登录是否成功 → 更新 UI 状态</span><br></pre></td></tr></table></figure></div>
 
-<ol>
-<li>设置目标 URL 和 Excel 文件目录</li>
-<li>点击”执行”，自动引导登录流程</li>
-<li>在 GUI 中查看验证码并输入</li>
+<p>关键设计点：</p>
+<ul>
+<li>验证码图片通过 <code>PIL.ImageTk.PhotoImage</code> 渲染到 Tkinter Canvas 上显示</li>
+<li>使用 <code>threading.Event</code>（<code>captcha_event</code>）实现线程间同步等待</li>
+<li>登录成功后所有模块的”执行”按钮才可用，避免未登录就执行上传</li>
+</ul>
+<h3 id="7-上传流程设计"><a href="#7-上传流程设计" class="headerlink" title="7. 上传流程设计"></a>7. 上传流程设计</h3><p>上传流程是核心自动化逻辑，采用<strong>分步执行 + 检查点模式</strong>：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 扫描文件目录 → 取最新 Excel 文件 → 检查文件修改时间是否已上传过</span><br><span class="line">2. 确保浏览器存活（get_driver_safe）</span><br><span class="line">3. 导航到目标模块页面 URL</span><br><span class="line">4. 等待页面加载，定位并点击&quot;上传&quot;按钮</span><br><span class="line">5. 等待系统文件对话框弹出 → 使用 PyAutoGUI 快捷键 Ctrl+L 定位地址栏</span><br><span class="line">   → pyperclip 粘贴文件路径 → 按 Enter 确认</span><br><span class="line">6. 等待上传完成 → 判断成功/失败</span><br><span class="line">7. 记录上传结果到 upload_logs/upload_results.log</span><br><span class="line">8. 失败时截图保存到 upload_logs/screenshots/</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>为什么使用 PyAutoGUI 而非 Selenium 处理文件选择？</strong></p>
+<p>Selenium 无法直接操控操作系统原生的文件选择对话框（<code>&lt;input type=&quot;file&quot;&gt;</code> 除外），而 SupplyOne 平台的上传按钮触发的是系统级文件对话框。因此采用 PyAutoGUI 模拟键盘操作（Ctrl+L → 粘贴路径 → Enter）来完成文件选择。</p>
+<h3 id="8-文件去重机制"><a href="#8-文件去重机制" class="headerlink" title="8. 文件去重机制"></a>8. 文件去重机制</h3><p>通过 <code>log_upload_result()</code> 和 <code>is_file_already_uploaded()</code> 实现基于文件修改时间的去重：</p>
+<ul>
+<li>每次上传成功后，将文件名、修改时间和模块名记录到 <code>upload_logs/upload_results.log</code></li>
+<li>上传前读取日志文件，检查当前文件的修改时间是否与上次记录一致</li>
+<li>若一致则跳过上传，避免重复提交相同数据</li>
+</ul>
+<h3 id="9-定时调度器设计"><a href="#9-定时调度器设计" class="headerlink" title="9. 定时调度器设计"></a>9. 定时调度器设计</h3><p>每个模块拥有独立的定时器，通过 <code>threading.Timer</code> 实现：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用户设置间隔(interval) + 单位(min/小时/天/周)</span><br><span class="line">    → 转换为秒数 → 创建 Timer(seconds, callback)</span><br><span class="line">    → 时间到 → 执行上传流程 → 上传完成后递归调用 _schedule_next_run()</span><br><span class="line">    → 形成循环定时链</span><br></pre></td></tr></table></figure></div>
+
+<p>关键设计：</p>
+<ul>
+<li>使用 <code>scheduled_run</code> 标志区分手动触发和定时触发，定时触发时不弹窗打扰用户</li>
+<li>用户可随时点击”定时关”按钮取消定时</li>
+<li>程序退出时通过 <code>cleanup()</code> 取消所有活跃的定时器</li>
+</ul>
+<h3 id="10-用户中断机制"><a href="#10-用户中断机制" class="headerlink" title="10. 用户中断机制"></a>10. 用户中断机制</h3><p><code>stop_requested</code> 标志位 + <code>check_stop()</code> 检查点模式：</p>
+<ul>
+<li>用户点击”停止”按钮 → 设置 <code>stop_requested = True</code> + 调用 <code>safe_driver_quit()</code></li>
+<li>上传流程的每个关键步骤之间调用 <code>check_stop()</code></li>
+<li>若标志位为 True，抛出异常终止当前流程</li>
+<li>异常被外层 <code>try/except</code> 捕获，优雅清理状态</li>
+</ul>
+<h3 id="11-开机自启实现"><a href="#11-开机自启实现" class="headerlink" title="11. 开机自启实现"></a>11. 开机自启实现</h3><p>通过操作 Windows 注册表 <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code> 键值实现：</p>
+<ul>
+<li>启用：写入程序 EXE 路径</li>
+<li>禁用：删除对应键值</li>
+<li>通过 <code>winreg</code> 标准库操作，无需第三方依赖</li>
+</ul>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><h3 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h3><ul>
+<li>Windows 操作系统</li>
+<li>Microsoft Edge 浏览器</li>
+<li>Python 3.13+</li>
+</ul>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium pyautogui pyperclip Pillow</span><br></pre></td></tr></table></figure></div>
+
+<p>或运行程序时会自动从清华镜像源安装缺失依赖。</p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="打包为-EXE"><a href="#打包为-EXE" class="headerlink" title="打包为 EXE"></a>打包为 EXE</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller --onefile --windowed --name <span class="string">&quot;多模块文件上传工具&quot;</span> multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><ol>
+<li>启动程序后，在对应模块中设置目标 URL 和 Excel 文件所在目录</li>
+<li>点击”执行”按钮，若未登录则自动引导登录流程</li>
+<li>在 GUI 中查看验证码图片并输入验证码完成登录</li>
 <li>程序自动完成页面导航和文件上传</li>
-<li>可设置定时间隔开启定时上传</li>
+<li>可在日志面板中实时查看每个模块的上传进度和结果</li>
+<li>设置定时间隔和单位后点击”定时关”按钮可开启定时上传</li>
 </ol>
-<hr>
-<p>详细设计文档和源码请访问 <a class="link"   target="_blank" rel="noopener" href="https://github.com/MinjieY/SupplyAutoUpload" >GitHub 仓库<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>。</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>上传过程中请勿手动操作浏览器，以免干扰自动化流程</li>
+<li>如果上传失败，可在 <code>upload_logs/screenshots/</code> 中查看失败截图</li>
+<li>WebDriver 版本需与 Edge 浏览器版本匹配，程序会自动检测并下载</li>
+<li>文件修改时间去重基于 <code>upload_logs/upload_results.log</code>，如需重新上传同一文件请先修改文件内容</li>
+</ul>
 
 		</div>
 
@@ -668,7 +783,7 @@
         
             <li>
                 <strong>Updated at
-                    :</strong> 2026-08-05 14:32:01
+                    :</strong> 2026-08-05 14:42:00
             </li>
         
         <li>
@@ -836,7 +951,7 @@
 	<div class="post-toc">
 		<div class="toc-title">On this page</div>
 		<div class="page-title">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</div>
-		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-text">项目简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="nav-text">核心功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="nav-text">技术栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E4%BA%AE%E7%82%B9"><span class="nav-text">设计亮点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%8A%E4%BC%A0%E6%B5%81%E7%A8%8B"><span class="nav-text">自动化上传流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B7%B7%E5%90%88%E4%BD%BF%E7%94%A8-Selenium-%E5%92%8C-PyAutoGUI%EF%BC%9F"><span class="nav-text">为什么混合使用 Selenium 和 PyAutoGUI？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-text">多线程架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="nav-text">日志系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">使用方式</span></a></li></ol>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-text">项目简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%89%B9%E6%80%A7"><span class="nav-text">功能特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="nav-text">技术栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E9%80%BB%E8%BE%91"><span class="nav-text">设计逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-text">整体架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BE%9D%E8%B5%96%E8%87%AA%E6%A3%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%AE%89%E8%A3%85%E6%9C%BA%E5%88%B6"><span class="nav-text">1. 依赖自检与自动安装机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="nav-text">2. 日志系统设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%9A%E6%A8%A1%E5%9D%97%E7%AE%A1%E7%90%86%E6%9E%B6%E6%9E%84"><span class="nav-text">3. 多模块管理架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">4. 配置持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%B5%8F%E8%A7%88%E5%99%A8%E9%A9%B1%E5%8A%A8%E7%AE%A1%E7%90%86"><span class="nav-text">5. 浏览器驱动管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B%E8%AE%BE%E8%AE%A1"><span class="nav-text">6. 登录流程设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E4%B8%8A%E4%BC%A0%E6%B5%81%E7%A8%8B%E8%AE%BE%E8%AE%A1"><span class="nav-text">7. 上传流程设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%96%87%E4%BB%B6%E5%8E%BB%E9%87%8D%E6%9C%BA%E5%88%B6"><span class="nav-text">8. 文件去重机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%AE%9A%E6%97%B6%E8%B0%83%E5%BA%A6%E5%99%A8%E8%AE%BE%E8%AE%A1"><span class="nav-text">9. 定时调度器设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E7%94%A8%E6%88%B7%E4%B8%AD%E6%96%AD%E6%9C%BA%E5%88%B6"><span class="nav-text">10. 用户中断机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%AE%9E%E7%8E%B0"><span class="nav-text">11. 开机自启实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="nav-text">快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82"><span class="nav-text">环境要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E4%B8%BA-EXE"><span class="nav-text">打包为 EXE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-text">注意事项</span></a></li></ol>
 
 	</div>
 </div>
@@ -868,7 +983,7 @@
                     </span>
                     
                         <span>
-                            3.3k words in total
+                            5.1k words in total
                         </span>
                     
                 </p>
