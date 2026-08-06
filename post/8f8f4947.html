@@ -769,7 +769,23 @@
 			<div class="article-copyright-info-container">
     <ul>
         <li><strong>标题:</strong> 多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</li>
-        <li><strong>作者:</strong> MinjieY</li>
+        <li class="copyright-author-line">
+            <strong>作者:</strong>
+            <span class="copyright-author-name">MinjieY</span>
+            <button class="copyright-reward-button" type="button" aria-label="打赏作者" title="打赏作者">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </button>
+            <div class="copyright-reward-tooltip" role="tooltip" aria-hidden="true">
+                <div class="copyright-reward-card">
+                    <span class="reward-label">微信收款</span>
+                    <img src="/images/wechat.jpg" alt="微信收款二维码" />
+                </div>
+                <div class="copyright-reward-card">
+                    <span class="reward-label">支付宝收款</span>
+                    <img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+                </div>
+            </div>
+        </li>
         <li><strong>创建于
                 :</strong> 2026-07-28 00:00:00</li>
         
@@ -793,6 +809,173 @@
         </li>
     </ul>
 </div>
+
+<style>
+.copyright-author-line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.copyright-reward-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 999px;
+    transition: background 0.2s ease;
+}
+
+.copyright-reward-button:hover,
+.copyright-reward-button:focus-visible {
+    background: rgba(163, 31, 52, 0.12);
+}
+
+.copyright-reward-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1100;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.85rem;
+    padding: 1rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.copyright-author-line:hover .copyright-reward-tooltip,
+.copyright-author-line:focus-within .copyright-reward-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.copyright-reward-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    background: var(--background-color);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+}
+
+.reward-label {
+    font-size: 0.88rem;
+    color: var(--third-text-color);
+    font-weight: 600;
+}
+
+.copyright-reward-card img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.copyright-reward-card img:hover {
+    transform: scale(1.03);
+}
+
+.reward-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.56);
+    z-index: 1200;
+    padding: 1rem;
+}
+
+.reward-modal.show {
+    display: flex;
+}
+
+.reward-modal-content {
+    position: relative;
+    background: var(--background-color);
+    border-radius: 18px;
+    padding: 1rem;
+    max-width: min(560px, 100%);
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+}
+
+.reward-modal-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+}
+
+.reward-modal-close {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    border: none;
+    background: transparent;
+    color: var(--second-text-color);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+</style>
+
+<div class="reward-modal" id="copyright-reward-modal" role="dialog" aria-modal="true" aria-label="打赏二维码放大显示">
+    <div class="reward-modal-content">
+        <button class="reward-modal-close" id="copyright-reward-close" aria-label="关闭">×</button>
+        <img id="copyright-reward-image" src="" alt="打赏二维码放大图" />
+    </div>
+</div>
+
+<script>
+(function () {
+    const rewardBtn = document.querySelector('.copyright-reward-button');
+    const rewardModal = document.getElementById('copyright-reward-modal');
+    const rewardClose = document.getElementById('copyright-reward-close');
+    const rewardImg = document.getElementById('copyright-reward-image');
+    const qrcodes = document.querySelectorAll('.copyright-reward-card img');
+
+    if (!rewardBtn || !rewardModal || !rewardClose || !rewardImg || !qrcodes.length) return;
+
+    qrcodes.forEach(img => {
+        img.addEventListener('click', () => {
+            rewardImg.src = img.src;
+            rewardModal.classList.add('show');
+        });
+    });
+
+    rewardClose.addEventListener('click', () => {
+        rewardModal.classList.remove('show');
+        rewardImg.src = '';
+    });
+
+    rewardModal.addEventListener('click', (event) => {
+        if (event.target === rewardModal) {
+            rewardModal.classList.remove('show');
+            rewardImg.src = '';
+        }
+    });
+})();
+</script>
 
 		</div>
 		
@@ -1072,6 +1255,21 @@
 			<i class="fa-solid fa-share-nodes"></i>
 		</li>
 
+		<!-- reward -->
+		<li class="post-reward-btn-item" title="打赏作者" aria-label="打赏作者" tabindex="0">
+			<i class="fa-solid fa-hand-holding-dollar"></i>
+			<div class="post-reward-popup" role="dialog" aria-label="打赏二维码">
+				<div class="post-reward-popup-card">
+					<span class="popup-title">微信收款</span>
+					<img src="/images/wechat.jpg" alt="微信收款二维码" />
+				</div>
+				<div class="post-reward-popup-card">
+					<span class="popup-title">支付宝收款</span>
+					<img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+				</div>
+			</div>
+		</li>
+
 		<!-- go comment -->
 		
 		<li class="go-comment">
@@ -1215,6 +1413,67 @@
 	font-size: 1.2rem;
 	cursor: pointer;
 	color: var(--second-text-color);
+}
+
+.post-reward-btn-item {
+	position: relative;
+	cursor: pointer;
+}
+
+.post-reward-btn-item i {
+	font-size: 1.05rem;
+}
+
+.post-reward-popup {
+	position: absolute;
+	top: -15rem;
+	right: 50%;
+	transform: translateX(20%);
+	min-width: 260px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(110px, 1fr));
+	gap: 0.8rem;
+	padding: 1rem;
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 18px;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+	z-index: 1000;
+	opacity: 0;
+	pointer-events: none;
+	transform: translate(20%, 8px);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-reward-btn-item:hover .post-reward-popup,
+.post-reward-btn-item:focus-within .post-reward-popup {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translate(20%, 0);
+}
+
+.post-reward-popup-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	background: var(--background-color);
+	border-radius: 14px;
+	border: 1px solid var(--border-color);
+}
+
+.post-reward-popup-card .popup-title {
+	font-size: 0.85rem;
+	color: var(--third-text-color);
+	font-weight: 600;
+}
+
+.post-reward-popup-card img {
+	width: 110px;
+	height: 110px;
+	object-fit: cover;
+	border-radius: 14px;
 }
 </style>
 	</div>
