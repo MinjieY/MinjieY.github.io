@@ -94,7 +94,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2024-04-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-06T05:03:35.139Z">
+<meta property="article:modified_time" content="2026-08-06T07:11:42.663Z">
 <meta property="article:author" content="Aria Ying">
 <meta property="article:tag" content="数据挖掘">
 <meta property="article:tag" content="大数据">
@@ -429,15 +429,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">44</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">42</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">9</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">10</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -491,8 +491,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2026-08-06 13:03:35</span>
-            <span class="mobile">2026-08-06 13:03:35</span>
+            <span class="desktop">2026-08-06 15:11:42</span>
+            <span class="mobile">2026-08-06 15:11:42</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -855,12 +855,6 @@
 <li><code>inhibitorKills</code>存在离群点3、4、5、6、7，但水晶被攻破又恢复的情况在20-60分钟的游戏局中符合实际，<strong>不是异常值</strong></li>
 <li><code>baronKills</code>存在离群点3，根据纳什男爵20分钟出现、7分钟刷新的机制，击杀3个男爵在合理范围内（共19场），<strong>不是异常值</strong></li>
 </ul>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image10.png"
-                      alt="箱型图分析"
-                ></p>
 <h3 id="3-3-地区分布分析"><a href="#3-3-地区分布分析" class="headerlink" title="3.3 地区分布分析"></a>3.3 地区分布分析</h3><p>五个地区的玩家人数分布非常均匀：</p>
 <table>
 <thead>
@@ -896,12 +890,6 @@
 <td>19.55%</td>
 </tr>
 </tbody></table>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image8.png"
-                      alt="地区玩家分布"
-                ></p>
 <p>五个地区玩家数量均在1,800~1,900之间，分布非常均衡，各占约20%，说明数据采集覆盖了全球主要赛区，样本代表性良好。</p>
 <h3 id="3-4-相关性分析"><a href="#3-4-相关性分析" class="headerlink" title="3.4 相关性分析"></a>3.4 相关性分析</h3><p>通过pairlot图和热力图分析，五个游戏击杀属性的皮尔逊相关系数矩阵如下：</p>
 <table>
@@ -957,12 +945,6 @@
 </tr>
 </tbody></table>
 <p>最大相关系数为0.77（baronKills与dragonKills之间），均&lt;0.8，可认为没有较强共线性，五个属性各自独立描述了玩家不同的游戏行为。</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image12.png"
-                      alt="相关性热力图"
-                ></p>
 <hr>
 <h2 id="四、数据预处理"><a href="#四、数据预处理" class="headerlink" title="四、数据预处理"></a>四、数据预处理</h2><h3 id="4-1-数据去重与空值处理"><a href="#4-1-数据去重与空值处理" class="headerlink" title="4.1 数据去重与空值处理"></a>4.1 数据去重与空值处理</h3><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 去重</span></span><br><span class="line">dfread = dfread.dropDuplicates()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除空值大于2个的行</span></span><br><span class="line">dfread = dfread.dropna(how=<span class="string">&#x27;all&#x27;</span>, thresh=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对低标准差属性进行均值填充</span></span><br><span class="line">mean_frame = dfread.select(F.avg(dfread[<span class="string">&#x27;inhibitorKills&#x27;</span>]))</span><br><span class="line">inhibitorKills_mean = mean_frame.columns[<span class="number">0</span>]</span><br><span class="line">data_fillna = dfread.fillna(inhibitorKills_mean, <span class="string">&#x27;inhibitorKills&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
 
@@ -1134,13 +1116,6 @@
                 ></p>
 <p>将特征缩小为6个进行逻辑回归建模：</p>
 <div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.3</span>)</span><br><span class="line">log = LogisticRegression()</span><br><span class="line">log.fit(X_train, y_train)</span><br><span class="line">y_pred = log.predict(X_test)</span><br></pre></td></tr></table></figure></div>
-
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image23.png"
-                      alt="逻辑回归系数图"
-                ></p>
 <hr>
 <h2 id="六、结果分析"><a href="#六、结果分析" class="headerlink" title="六、结果分析"></a>六、结果分析</h2><h3 id="6-1-获胜关键因素"><a href="#6-1-获胜关键因素" class="headerlink" title="6.1 获胜关键因素"></a>6.1 获胜关键因素</h3><p>根据逻辑回归系数大小排序，影响游戏胜利的关键因素如下：</p>
 <table>
@@ -1307,7 +1282,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2026-08-06 13:03:35
+                    :</strong> 2026-08-06 15:11:42
             </li>
         
         <li>
@@ -1369,14 +1344,14 @@
     <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
      <i aria-hidden="true"></i><span>推荐阅读</span>
     </div>
-    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/9c4a5d1b.html" title="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" rel="bookmark">
-  <img src="/images/wallhaven-wqery6-light.webp" alt="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" class="!max-w-none">
-  <span class="title">基于 LRFMC 模型的航空公司客户 K-means 聚类分析</span>
-</a><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
   <img src="/images/wallhaven-wqery6-light.webp" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none">
   <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/9c4a5d1b.html" title="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" class="!max-w-none">
+  <span class="title">基于 LRFMC 模型的航空公司客户 K-means 聚类分析</span>
 </a><a class="recommended-article-item" href="/post/4960c6d9.html" title="Data initialization" rel="bookmark">
-  <img src="/images/wallhaven-wqery6-light.webp" alt="Data initialization" class="!max-w-none">
+  <img src="/images/webUIrela/datathemeb.jpg" alt="Data initialization" class="!max-w-none">
   <span class="title">Data initialization</span>
 </a></div>
    </div>
@@ -1384,12 +1359,12 @@
    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
      <i aria-hidden="true"></i><span>推荐阅读</span>
    </div>
-   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/9c4a5d1b.html" title="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" rel="bookmark">
-  <img src="/images/wallhaven-wqery6-light.webp" alt="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" class="!max-w-none">
-  <span class="title">基于 LRFMC 模型的航空公司客户 K-means 聚类分析</span>
-</a><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
   <img src="/images/wallhaven-wqery6-light.webp" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none">
   <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/9c4a5d1b.html" title="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="基于 LRFMC 模型的航空公司客户 K-means 聚类分析" class="!max-w-none">
+  <span class="title">基于 LRFMC 模型的航空公司客户 K-means 聚类分析</span>
 </a></div>
    </div>
   </div>
@@ -1519,11 +1494,11 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共撰写了 12 篇文章
+                        共撰写了 10 篇文章
                     </span>
                     
                         <span>
-                            共 19.4k 字
+                            共 18.4k 字
                         </span>
                     
                 </p>
