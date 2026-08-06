@@ -2445,6 +2445,21 @@ html.is-animating .scroll-progress-bar {
   height: 2px;
   background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
 }
+.side-tools-container .lang-switcher-wrapper {
+  margin-bottom: 8px;
+}
+.side-tools-container .lang-switcher-wrapper .lang-switcher {
+  text-decoration: none;
+}
+.side-tools-container .lang-switcher-wrapper .lang-switcher .lang-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--default-text-color);
+}
+.side-tools-container .lang-switcher-wrapper .lang-switcher:hover .lang-label {
+  color: var(--background-color);
+}
 .side-tools-container .right-bottom-tools {
   width: 42px;
   height: 42px;
