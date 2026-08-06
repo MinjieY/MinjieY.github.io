@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en,zh-CN,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="MinjieY">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://minjiey.github.io/post/f175caa6.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于LRFMC模型的航空公司客户K-means聚类分析">
+<meta property="og:url" content="https://minjiey.github.io/post/f175caa6.html">
+<meta property="og:site_name" content="Aria Ing&#39;s Blog">
+<meta property="og:description" content="Hexo Theme Redefine.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-08-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-06T04:37:36.587Z">
+<meta property="article:author" content="Aria Ying">
+<meta property="article:tag" content="数据挖掘">
+<meta property="article:tag" content="PySpark">
+<meta property="article:tag" content="聚类分析">
+<meta property="article:tag" content="K-means">
+<meta property="article:tag" content="LRFMC">
+<meta property="article:tag" content="航空公司">
+<meta property="article:tag" content="客户细分">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/111.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/111.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/111.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            基于LRFMC模型的航空公司客户K-means聚类分析 | Aria Ing&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":["en","zh-CN","default"],"path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"https://blog.csdn.net/weixin_50932611?type=blog","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Aria Ing&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                                        >
+                                    <i class="fa-regular fa-chart-bar fa-fw"></i>
+                                    状态
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about/">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://minjie.com">
+                                                    BLOG
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                        >
+                            <span>
+                                状态
+                            </span>
+                            
+                                <i class="fa-regular fa-chart-bar fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about/">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>Categories</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">67</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">22</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="/images/LRFMC/page1.png" alt="基于LRFMC模型的航空公司客户K-means聚类分析" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">基于LRFMC模型的航空公司客户K-means聚类分析</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/xiuzhi_figure.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8C%E5%9F%BA%E4%BA%8ELRFMC%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%88%AA%E7%A9%BA%E5%85%AC%E5%8F%B8%E5%AE%A2%E6%88%B7K-means%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2Ff175caa6.html" title="给作者发邮件">
+						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
+					</a>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-08-06</span>
+        <span class="mobile">2026-08-06</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-08-06 12:37:36</span>
+            <span class="mobile">2026-08-06 12:37:36</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Academic-Research/">Academic-Research</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/">数据挖掘</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/PySpark/">PySpark</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/">聚类分析</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/K-means/">K-means</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/LRFMC/">LRFMC</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%88%AA%E7%A9%BA%E5%85%AC%E5%8F%B8/">航空公司</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%AE%A2%E6%88%B7%E7%BB%86%E5%88%86/">客户细分</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>9.6k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>34 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>区分度高的客户分类结果是企业整合营销资源、调整营销策略的重要依据。本文根据LRFMC模型提取了航空公司客户的部分数据，利用K-means聚类方法对航空公司的客户进行分类，得到五个不同的客户群体，对客户特征进行划分总结，给出了对应营销建议，以期对该航空公司向不同价值的客户类别提供个性化服务，制定针对性的营销策略。</p>
+<p><strong>关键词：</strong> 旅客分类；数据挖掘；LRFMC模型；K-means聚类；策略分析</p>
+<hr>
+<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>随着科技的不断发展和大数据时代的来临，数据挖掘正日渐成为研究消费者行为和特征的核心技术手段之一，而聚类分析理论为数据挖掘和机器学习提供重要理论依据。在各个领域的企业决策上，聚类分析通常都被用于客户细分和刻画用户画像，以便企业精确识别客户需求，进行个性化的推送和服务。可见聚类细分是市场细分、客户细分以及消费者行为研究的有效手段。</p>
+<p>传统旅客划分方式主要有两种：其一是根据航班的种类进行旅客区分，将客户分为商务舱旅客和普通经济旅客；其二是根据航班的累计飞行里程进行客户划分，达到一定里程标准的客户被归类为贵宾客户，其他的为普通客户。这两种划分方式过于单调，不能够很好地反映不同客户的消费特征。航空公司的促销活动和客户对航空公司的选择性、航班次数频率等因素没有考虑在内，无法满足大数据信息化的需求。近年来也有学者根据旅客特点进行分类，主要通过旅客的固有信息如性别、年龄、职业、收入等进行聚类，但在大数据时代和信息化发展的背景下，客户的特征趋向复杂化，这种方法对客户画像的描述显得不足。</p>
+<p>因此，本文使用客户画像特征覆盖更全面的LRFMC模型提取航空公司的部分数据，利用K-means聚类方法，对航空公司的客户进行分类，划分不同类别的客户群体，对客户特征进行总结，以期对不同价值的客户类别提供个性化服务，制定针对性的营销策略提供参考。</p>
+<hr>
+<h2 id="2-文献综述"><a href="#2-文献综述" class="headerlink" title="2 文献综述"></a>2 文献综述</h2><h3 id="2-1-客户价值细分"><a href="#2-1-客户价值细分" class="headerlink" title="2.1 客户价值细分"></a>2.1 客户价值细分</h3><p>胡海（2022）提出用K-means算法进行RFM模型改进，将RFM属性的量化值和K-means算法加入RS理论（LEM2算法）中，最终可以有效改善相应缺陷进一步聚焦目标客户。杨佳欣（2022）通过层次分析法（AHP）计算每个属性的权重并以传统的RFM模型为蓝本构造基于RFM模型改进的LFMN模型对用户价值细分。闫春等（2020）引入客户理赔金额指标建立RFMC模型，动态设置SOM神经网络模型的训练速度与权重向量将模型收敛速度提高了21.6%，并实现客户细分。李为康等（2020）建立基于RFM模型改进的RVMF模型并应用层次分析法优化对老客户划分。</p>
+<p>可以看出，现有的学者对客户细分的研究大多使用RFM模型，或以RFM模型为基础并根据实际行业现状选择相对应的价值指标，并引入层次分析法等权重计算方法，均具有行业针对性。</p>
+<h3 id="2-2-客户聚类算法"><a href="#2-2-客户聚类算法" class="headerlink" title="2.2 客户聚类算法"></a>2.2 客户聚类算法</h3><p>闫春等（2020）引入客户理赔金额指标动态设置SOM神经网络模型的训练速度与权重向量将模型收敛速度提高了21.6%。王长琼（2018）基于谱聚类算法结合经验规则k≤√n,计算Laplace矩阵最大特征值差确定客户聚类数。韩世莲（2016）提出一种可以反映多种客户需求属性的模糊系统聚类方法进行客户分类，运用智能加权对动态属性进行集成，生成相应的配送策略。朱沅海等（2009）在均值聚类算法中结合PSO算法对总的类内离散度和进行优化使其达到最小值从而获取最佳客户聚类。叶苗群（2005）提出一种改进的K-中心点聚类算法对Web用户的行为进行分析，用模糊相似度并模仿遗传算法中计算适应度思想，改进传统聚类算法局部最优化的特点。</p>
+<p>由于客户特征指标属性选择而不同，国内学者对客户聚类算法的选择不尽相同，都在传统的谱聚类、系统分类、均值聚类、K-中心点聚类等分类算法上进行指标的优化改良，具有强针对性。</p>
+<hr>
+<h2 id="3-研究内容"><a href="#3-研究内容" class="headerlink" title="3 研究内容"></a>3 研究内容</h2><p>本文拟采用LRFMC模型描述客户特征，该模型覆盖航空客户特点相对全面，是一种可行的用户特征提取思路。使用K-means聚类模型进行客户类别分析，将数据中的观测值视为具有位置和相互间距离的对象。对客户的指标计算不进行赋权和处理操作，而将不同量纲的数据指标直接进行标准化处理后直接聚类，以得到一种简便处理的可行分类结果。</p>
+<p>在大数据的背景下，用户行为和特点的分析通过检测用户群体行为来获取数据进行整体性分析。这里用户行为的信息可以是用户在交易过程中发生所有行为收集到的信息，其次也包括用户个体固有特征信息如性别年龄等。对航空公司来说，客户特征包括客户基本信息、客户消费信息、客户积分信息，如何将这些特征进行汇总归类是航空公司对客户群进行细分的重要基础。本文主要研究内容如下：</p>
+<ol>
+<li>数据预处理</li>
+<li>客户特征指标提取</li>
+<li>客户聚类过程</li>
+<li>类别特征总结</li>
+</ol>
+<p>根据航空公司数据对客户进行分类，属于无监督学习，采用聚类挖掘模型，基于个体与簇之间距离的方法对客户进行类别迭代划分。在聚类模型求解之前需要向目标画像选择相应的指标，指标的选择需结合实际情况的业务进行确定，能够反映客户的关键特征。根据数据处理结果选择关键特征，进行聚类模型求解。</p>
+<p>根据最终聚类结果，对不同的客户类别进行特征分析，比较不同类别客户的特点和价值。针对不同价值的客户制定相应的营销策略，为其提供个性化服务。</p>
+<hr>
+<h2 id="4-研究思路"><a href="#4-研究思路" class="headerlink" title="4 研究思路"></a>4 研究思路</h2><p>用户的行为分析可以更加详细地了解用户的行为习惯，从而找出网站以及推广渠道等产品营销环境存在的问题，可以使产品营销更加精准、有效，从而提升企业的收益。聚类分析可以将具有相似特征的样本划分到同一簇族，对同一簇组的样本进行进一步分析，得到样本的特征分布情况。</p>
+<p>本文拟采用聚类对客户进行类别细分，将相似性程度较大地客户划分为同一类别，并根据聚类结果进行可视化分析，挖掘不同类别顾客的购买行为，以便更精确识别客户需求，采用对应的策略进行营销，为企业提供实现利益最大化的理论依据。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page5.png"
+                      alt="研究思路"
+                ></p>
+<p>在用户特征提取的部分采用LRFMC模型。传统对消费者行为特征的分析常采用RFM模型。在RFM模型中，消费金额表示在一段时间内，客户购买该企业产品金额的总和，对现有的消费者体系具有普遍适用性，但在现有的大数据时代背景下，航空公司票价受运输距离、舱位等级等影响因素，航空公司与乘客相关时间、乘坐次数等参数指标数据具有多样性，即并不是金额越高的客户并不一定比金额低的客户价值高，具有行业的特殊性。且航空公司不定期会发放优惠券对老用户优惠票价，因此传统的RFM模型对现有的航空公司的数据处理是不够的。</p>
+<h3 id="RFM模型与LRFMC模型对比"><a href="#RFM模型与LRFMC模型对比" class="headerlink" title="RFM模型与LRFMC模型对比"></a>RFM模型与LRFMC模型对比</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>L</th>
+<th>R</th>
+<th>F</th>
+<th>M</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>传统RFM模型</strong></td>
+<td>-</td>
+<td>客户最近一次购买日距今时间长度</td>
+<td>客户一段时间内购买该企业的产品次数</td>
+<td>客户一段时间内购买该企业产品金额的总和</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>航空公司LRFMC模型</strong></td>
+<td>会员入会时间距今月数</td>
+<td>客户最近一次乘坐本公司飞机的时间距今的月数</td>
+<td>客户一段时间内乘坐本公司飞机的次数</td>
+<td>客户一段时间内在本公司累计的飞行里程</td>
+<td>客户在一段时间内乘坐仓位所对应的折扣系数的平均值</td>
+</tr>
+</tbody></table>
+<p>基于此，本文用客户在一段时间内的累计飞行里程M和客户在一定时间内乘坐舱位的折扣系数C代表消费金额。再在模型中增加客户关系长度L，即LRFMC模型。</p>
+<p>用户分类部分采用K-means聚类模型，将数据中的观测值视为具有位置和相互间距离的对象。它将对象划分为K个互斥簇，使每个簇中的对象尽可能彼此靠近，并尽可能远离其他簇中的对象。本文直接调用PySpark的<code>pyspark.ml.clustering</code>库的K-means函数，每个簇的特性由其质心或中心点决定，距离计算采用欧式距离度量。由于数据量庞大，对客户的指标计算不进行赋权处理，而将不同量纲的数据指标直接进行标准化处理后直接聚类，以达到较高的聚类计算效率。</p>
+<hr>
+<h2 id="5-数据预处理"><a href="#5-数据预处理" class="headerlink" title="5 数据预处理"></a>5 数据预处理</h2><p>根据源数据表内容可知，源数据可能存在重复数据、缺失数据、异常数据、数据类型不匹配等干扰数据对数据分析产生干扰，因此需要对数据表进行预处理。</p>
+<p>本节将根据源数据表，逐步进行数据的探索性分析、预处理和变换操作。探索性分析是分析源数据各个列类型、典型统计量及其分布情况，了解数据表整体情况，为后续数据选择提供参考；数据预处理包括数据清洗和属性规约，对空值、异常数据等数据进行填充和删除操作；数据变换包括属性构造和标准化，选择有价值的数据并消除量纲的影响，减小异常值的影响，为客户表的聚类分析提供可靠数据源。</p>
+<h3 id="5-1-数据探索分析"><a href="#5-1-数据探索分析" class="headerlink" title="5.1 数据探索分析"></a>5.1 数据探索分析</h3><h4 id="5-1-1-描述性统计分析"><a href="#5-1-1-描述性统计分析" class="headerlink" title="5.1.1 描述性统计分析"></a>5.1.1 描述性统计分析</h4><p><strong>源数据表Schema：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page7.png"
+                      alt="源数据表Schema"
+                ></p>
+<p><strong>基本统计量：</strong></p>
+<p>源数据表的基本统计量描述结果：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page7.png"
+                      alt="源数据表描述性统计"
+                ></p>
+<p><strong>空值统计：</strong></p>
+<p>利用missingno库进行缺失值可视化：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page8.png"
+                      alt="缺失值可视化"
+                ></p>
+<p>结合源数据文件统计分析可知，GENDER、AGE、WORK_CITY、WORK_PROVINCE、WORK_COUNTRY、SUM_YR_1、SUM_YR_2列均存在空值，其中WORK_PROVINCE、WORK_COUNTRY缺失值比例在图像中表现较为明显。</p>
+<p><strong>空值数：</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GENDER with null values: 3</span><br><span class="line">AGE with null values: 420</span><br><span class="line">WORK_CITY with null values: 2268</span><br><span class="line">WORK_PROVINCE with null values: 3244</span><br><span class="line">WORK_COUNTRY with null values: 25</span><br><span class="line">SUM_YR_1 with null values: 551</span><br><span class="line">SUM_YR_2 with null values: 138</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>空值比例：</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GENDER      4.76e-05</span><br><span class="line">WORK_CITY   0.0360</span><br><span class="line">WORK_PROVINCE 0.0515</span><br><span class="line">WORK_COUNTRY  0.0004</span><br><span class="line">AGE         0.0067</span><br><span class="line">SUM_YR_1    0.0087</span><br><span class="line">SUM_YR_2    0.0022</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-1-2-信息分布分析"><a href="#5-1-2-信息分布分析" class="headerlink" title="5.1.2 信息分布分析"></a>5.1.2 信息分布分析</h4><p>根据源数据表的描述性统计数据可知，原始数据中存在票价为空值、票价为0、折扣率最小值为0、飞行公里数大于0的记录。结合实际航空公司的现实情况、客户买票手续和相关机票优惠业务可知，票价为空值的原因可能是乘客不存在登机记录，其他数据可能是乘客乘坐0折机票或积分兑换造成。</p>
+<p><strong>客户基本信息分布分析：</strong></p>
+<p><strong>A. 入会人数随年份变化：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page10.png"
+                      alt="入会人数柱形图"
+                ></p>
+<p>结合条形图可知，航空公司入会人数在2004至2012年间大致是随着年份增加，并在2012年达到峰值，到2013年入会人数下降。</p>
+<p><strong>B. 个人基本信息（性别比例、年龄分布）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>会员性别比例饼图</th>
+<th>会员年龄分布箱型图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="性别比例"
+                ></td>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="年龄分布"
+                ></td>
+</tr>
+</tbody></table>
+<p>结合会员性别比例饼图和会员年龄分布箱型图可知该航空公司会员绝大部分为男性（76.4%），且会员年龄大部分在35~50岁，但存在一个大于100的异常数据。</p>
+<p><strong>C. 会员等级分布：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="客户会员卡级别分布"
+                ></p>
+<p>结合条形图可知该航空公司的绝大多数会员为4级会员，接近60000人，5级、6级会员人数较少，不足5000人。</p>
+<hr>
+<p><strong>消费信息分析：</strong></p>
+<p><strong>A. 会员票价收入分布：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page12.png"
+                      alt="会员票价收入分布"
+                ></p>
+<p>根据会员票价收入可以发现，会员票价收入分布是离散的点，会员客户群体消费区间较为分散，客户群体类型多。</p>
+<p><strong>B. 会员飞行信息：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="会员飞行信息"
+                ></p>
+<p>会员飞行信息能够代表航空公司客户的质量，飞行里程次数越多、越长，客户对航空公司的价值就越高。观测窗口内的飞行次数与观测窗口内的总飞行公里数，通过图像可以很清晰的发现：客户的飞行次数与总飞行里程数明显分为两个群体，大部分客户集中在箱型图中的箱体中，少数客户位于箱体上方，这部分客户很可能就是高价值客户。</p>
+<p><strong>C. 平均乘机时间间隔统计：</strong></p>
+<table>
+<thead>
+<tr>
+<th>平均乘机时间间隔</th>
+<th>距最后一次乘机时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="时间间隔"
+                ></td>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="最后乘机时间"
+                ></td>
+</tr>
+</tbody></table>
+<p>一般来说，最后一次乘机时间至观测窗口时长越短，该客户对这个航空公司的用户粘性就越大，时间间隔越短同时也说明该客户可能经常乘坐本航空公司的飞机，是高价值客户。另外，乘机时间和间隔还可以窥探公司发展问题，如果时间间隔短的客户越来越少，说明该企业的服务或经营可能偏离时代发展，需要及时根据实际情况调整营销策略。</p>
+<hr>
+<p><strong>客户积分信息：</strong></p>
+<p><strong>A. 不同积分兑换次数人数：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page14.png"
+                      alt="积分兑换次数直方图"
+                ></p>
+<p>根据最高的条形柱，绝大多数兑换次数位于0~16次之间，这表明大部分客户很少进行积分兑换。</p>
+<p><strong>B. 总累计积分分布：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page15.png"
+                      alt="累计积分分布箱型图"
+                ></p>
+<p>大部分客户累计积分位于400000以内，只有个别少数客户飞行里程接近1000000公里。</p>
+<h3 id="5-2-数据预处理"><a href="#5-2-数据预处理" class="headerlink" title="5.2 数据预处理"></a>5.2 数据预处理</h3><h4 id="5-2-1-数据清洗"><a href="#5-2-1-数据清洗" class="headerlink" title="5.2.1 数据清洗"></a>5.2.1 数据清洗</h4><p>通过数据的探索分析发现数据中存在票价为空值、票价为0、折扣率最小值为0、飞行公里数大于0的记录。由于这块的数据所占比重较小（GENDER缺失率4.76%，其他属性缺失率均小于0.052%），故直接删除。</p>
+<p><strong>异常值处理：</strong></p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除年龄中的异常值</span></span><br><span class="line">data_remove_agemg = dfread.where(<span class="string">&#x27;AGE&lt;100&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 去除票价为空的记录</span></span><br><span class="line">colsnull = [<span class="string">&#x27;SUM_YR_1&#x27;</span>,<span class="string">&#x27;SUM_YR_2&#x27;</span>]</span><br><span class="line">data_not_null = data_remove_agemg.dropna(how=<span class="string">&#x27;any&#x27;</span>,subset=colsnull)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 仅保留票价不为0，或折扣率和总飞行公里数同时为0的记录</span></span><br><span class="line"><span class="comment"># 通过SQL语句执行</span></span><br><span class="line">sql_remove = <span class="string">&quot;select * from data_not_null WHERE (avg_discount!=0 AND avg_discount&gt;0)&quot;</span></span><br><span class="line">data_remove_diff = spark.sql(sql_remove)</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>缺失值处理：</strong></p>
+<p>根据源数据描述，发现以下数据存在缺失值：</p>
+<ul>
+<li>4个类别型数据：WORK_CITY, WORK_PROVINCE, WORK_COUNTRY, GENDER</li>
+<li>1个连续型数据：AGE</li>
+</ul>
+<p>由会员年龄分布箱型图可知，航空公司客户年龄较为集中，因此这里可以采用均值填充：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">age_mean_frame = data_remove_diff.select(F.avg(data_remove_diff[<span class="string">&#x27;AGE&#x27;</span>]))</span><br><span class="line">age_mean = age_mean_frame.columns[<span class="number">0</span>]</span><br><span class="line">data_fillna = data_remove_diff.fillna(age_mean,<span class="string">&#x27;AGE&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-2-2-属性规约"><a href="#5-2-2-属性规约" class="headerlink" title="5.2.2 属性规约"></a>5.2.2 属性规约</h4><p>结合实际的航空公司业务，原RFM模型中M特征用一定时间内累计的飞行里程M与客户在一定时间内乘坐舱位对应的平均折扣率C来代替。同时考虑到会员的入会时间在一定程度上能够影响客户的价值，因此在模型中增加客户关系长度L，作为区分客户的一种特征。本模型将以下5个特征作为识别客户价值的特征，即为LRFMC模型。</p>
+<p>根据LRFMC理论，航空公司的客户价值模型为LRFMC，选择与其相关的六个属性，删除不相关、弱相关或冗余的属性。原始数据中与LRFMC指标相关的6个属性为：</p>
+<p>FFP_DATE、LOAD_TIME、FLIGHT_COUNT、avg_discount、SEG_KM_SUM、LAST_TO_END</p>
+<p><strong>LRFMC指标：</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L</td>
+<td>入会时间长度</td>
+</tr>
+<tr>
+<td>R</td>
+<td>最近一次航班距今时间</td>
+</tr>
+<tr>
+<td>F</td>
+<td>航班次数</td>
+</tr>
+<tr>
+<td>M</td>
+<td>航班里程</td>
+</tr>
+<tr>
+<td>C</td>
+<td>航班折扣率</td>
+</tr>
+</tbody></table>
+<p><strong>指标计算：</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">L = LOAD_TIME - FFP_DATE</span><br><span class="line">R = LAST_TO_END</span><br><span class="line">F = FLIGHT_COUNT</span><br><span class="line">M = SEG_KM_SUM</span><br><span class="line">C = avg_discount</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page16.png"
+                      alt="LRFMC指标计算结果"
+                ></p>
+<h3 id="5-3-数据变换"><a href="#5-3-数据变换" class="headerlink" title="5.3 数据变换"></a>5.3 数据变换</h3><h4 id="5-3-1-属性构造"><a href="#5-3-1-属性构造" class="headerlink" title="5.3.1 属性构造"></a>5.3.1 属性构造</h4><p>根据上节提取出的六个LRFMC指标，构造客户属性如下：</p>
+<ul>
+<li><strong>L &#x3D; LOAD_TIME - FFP_DATE</strong>：会员入会时间距观测窗口结束的月数（观测窗口的结束时间 - 入会时间），单位：月</li>
+<li><strong>R &#x3D; LAST_TO_END</strong>：客户最近一次乘坐公司飞机距观测窗口结束的月数（最后一次乘机时间至观察窗口末端时长），单位：月</li>
+<li><strong>F &#x3D; FLIGHT_COUNT</strong>：客户在观测窗口内乘坐公司飞机的次数（观测窗口的飞行次数），单位：次</li>
+<li><strong>M &#x3D; SEG_KM_SUM</strong>：客户在观测时间内在公司累计的飞行里程（观测窗口总飞行公里数），单位：公里</li>
+<li><strong>C &#x3D; AVG_DISCOUNT</strong>：客户在观测时间内乘坐舱位所对应的折扣系数的平均值（平均折扣率），单位：无</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page17.png"
+                      alt="LRFMC特征箱线图"
+                ></p>
+<p>根据箱线图可知F和M特征存在较多异常值，说明这两个特征在客户群中分布较为分散，可以用于区分客户。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page18.png"
+                      alt="LRFMC特征密度图"
+                ></p>
+<p>根据特征密度图可知五个属性均有较为集中的分布，且都具有明显峰值，因此五个属性可以对客户进行有价值的分类。</p>
+<h4 id="5-3-2-相关性分析"><a href="#5-3-2-相关性分析" class="headerlink" title="5.3.2 相关性分析"></a>5.3.2 相关性分析</h4><p>协方差值的大小并不能很好地度量两个随机变量的关联程度，值的大小受到两个变量量纲的影响，不适合用于比较。为了更好的度量两个随机变量的相关程度，引入了Pearson相关系数，其在协方差的基础上除以了两个随机变量的标准差，消除了量纲的影响。</p>
+<p>皮尔逊相关系数公式：</p>
+<p>$$ r_{x,y} &#x3D; \frac{\sum{(X-\bar{X})(Y-\bar{Y})}}{\sqrt{\sum{(X-\bar{X})^2} \cdot \sum{(Y-\bar{Y})^2}}} $$</p>
+<p>本文使用<code>scipy</code>库调用<code>corr</code>方法，使用皮尔逊相关系数计算相关系数，分别分析选择的LRFMC五个属性的相关性。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page19.png"
+                      alt="LRFMC特征相关性pairplot图"
+                ></p>
+<p>由分析得到的pairplot图可知F、M两个特征具有相关线性关系。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page20.png"
+                      alt="LRFMC特征热力图"
+                ></p>
+<p>由热力图进一步探索特征之间相关性可知，F、M特征相关性达到0.83（&gt;0.8），具有非常强的线性关系。</p>
+<h4 id="5-3-3-数据标准化"><a href="#5-3-3-数据标准化" class="headerlink" title="5.3.3 数据标准化"></a>5.3.3 数据标准化</h4><p>聚类模型是基于距离的算法。本次分析数据集中各属性量纲不同，如数据极值差别过大，若不处理会影响挖掘分析的效果，本例采用的数据变换的方法是标准差标准化。</p>
+<p>采用<code>StandardScaler</code>（列缩放、平移）方法标准化数据，保证每个维度数据方差为1、均值为0。使得预测结果不会被某些维度过大的特征值而主导。处理的对象是每一列特征：将每一维的特征列向量标准化为样本标准差为1或平均值为0。</p>
+<p>本次使用聚类前求样本标准差的计算公式为：</p>
+<p>$$ s &#x3D; \sqrt{\frac{1}{n-1}\sum_{i&#x3D;1}^{n}(x_i - \bar{x})^2} $$</p>
+<p>$$ x^* &#x3D; \frac{x_i - \mu}{\sigma} $$</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scaler = StandardScaler()</span><br><span class="line">scaler.fit(plt_pd)</span><br><span class="line">data = scaler.transform(plt_pd)</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page21.png"
+                      alt="客户数据标准化"
+                ></p>
+<hr>
+<h2 id="6-建模过程"><a href="#6-建模过程" class="headerlink" title="6 建模过程"></a>6 建模过程</h2><h3 id="6-1-模型准备"><a href="#6-1-模型准备" class="headerlink" title="6.1 模型准备"></a>6.1 模型准备</h3><h4 id="6-1-1-符号说明"><a href="#6-1-1-符号说明" class="headerlink" title="6.1.1 符号说明"></a>6.1.1 符号说明</h4><p><strong>A. 无标签数据集：</strong></p>
+<p>$$ X &#x3D; \begin{bmatrix} x^{(1)} \ x^{(2)} \ \dots \ x^{(m)} \end{bmatrix} $$</p>
+<p><strong>B. 最小化损失函数：</strong></p>
+<p>$$ E &#x3D; \sum_{i&#x3D;1}^{k}\sum_{x\in C_i} |x - \mu_i|^2 $$</p>
+<p><strong>C. 簇中心点：</strong></p>
+<p>$$ \mu_i &#x3D; \frac{1}{|C_i|}\sum_{x \in C_i} x $$</p>
+<h3 id="6-2-建立模型"><a href="#6-2-建立模型" class="headerlink" title="6.2 建立模型"></a>6.2 建立模型</h3><p>K-means是一种得到最广泛使用的基于划分的无监督分类算法，把n个对象分为k个簇，以使簇内具有较高的相似度。相似度的计算根据一个簇中对象的平均值来进行。</p>
+<p>K-means算法采用迭代更新的思想：首先随机地选择k个对象，每个对象代表一个簇的初始均值或中心。对剩下的每个对象，根据其与各个簇中心的欧式距离，将它分配到最相似的簇。然后，K-means算法迭代地改善簇内变差。对于每个簇，它使用上次迭代分配到该簇的对象，计算新的均值。然后使用更新后的均值作为新的簇中心，重新分配所有对象。迭代继续，直到分配稳定，即本轮形成的簇与前一轮形成的簇相同。</p>
+<p><strong>具体步骤：</strong></p>
+<ol>
+<li>在样本中随机选取k个样本点充当各个簇的中心点{μ₁, μ₂, …, μₖ}</li>
+<li>计算所有样本点与各个簇之间的距离dist(xⁱ, μⱼ)，然后把样本点划入最近的簇中：</li>
+</ol>
+<p>$$ dist(x^{(i)}, \mu_j) &#x3D; \sqrt{\sum_{t&#x3D;1}^{n}(x^{(i)}<em>t - \mu</em>{jt})^2} $$</p>
+<ol start="3">
+<li>根据簇中已有样本点重新计算簇中心μ_new</li>
+</ol>
+<p>$$ \mu_i &#x3D; \frac{1}{|C_i|}\sum_{x \in C_i} x $$</p>
+<ol start="4">
+<li>重复步骤2、3</li>
+</ol>
+<p><strong>模型处理过程：</strong></p>
+<ul>
+<li><strong>输入：</strong> 聚类个数k；包含n个对象的数据集X &#x3D; {x₁, x₂, …, xₙ}</li>
+<li><strong>输出：</strong> k个簇{S₁, S₂, …, Sₖ}</li>
+</ul>
+<h3 id="6-3-模型求解"><a href="#6-3-模型求解" class="headerlink" title="6.3 模型求解"></a>6.3 模型求解</h3><h4 id="6-3-1-实验环境"><a href="#6-3-1-实验环境" class="headerlink" title="6.3.1 实验环境"></a>6.3.1 实验环境</h4><ul>
+<li><strong>IDE：</strong> PyCharm + Miniconda + PySpark + spark-3.3.1 + python3.9</li>
+<li><strong>可视化：</strong> seaborn, pyplot, missingno</li>
+<li><strong>数据处理：</strong> pyspark.sql, pyspark.ml, sklearn, pandas, numpy</li>
+</ul>
+<h4 id="6-3-2-客户聚类"><a href="#6-3-2-客户聚类" class="headerlink" title="6.3.2 客户聚类"></a>6.3.2 客户聚类</h4><p><strong>聚类数确定：</strong></p>
+<p>本文使用手肘法确定聚类数，由SSE（误差平方和）确定指标：</p>
+<p>$$ SSE &#x3D; \sum_{i&#x3D;1}^{k}\sum_{p\in C_i} |p - m_i|^2 $$</p>
+<p>其中Cᵢ为第i个簇，mᵢ为第i个质心，p为属于Cᵢ的数据点。</p>
+<p>使用K-means聚类对客户进行分类，分析k&#x3D;{2, 3, …, 9}时的误差平方和，选择最优聚类个数：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">    model = KMeans(n_clusters=k, random_state=<span class="number">123</span>, n_init=<span class="number">20</span>)</span><br><span class="line">    model.fit(airline_scale)</span><br><span class="line">    sse.append(model.inertia)</span><br></pre></td></tr></table></figure></div>
+
+<p>当聚类个数未达到最优个数k时，随着聚类个数的增加，SSE下降较快。达到最优个数以后，SSE下降缓慢。可视化图形斜率变化最大处即为最优k值。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page23.png"
+                      alt="不同聚类数对应SSE"
+                ></p>
+<p>由折线图可知k&#x3D;5时下降缓慢，可以取k为5。</p>
+<p><strong>KMeans聚类训练：</strong></p>
+<p>采用KMeans聚类算法对客户数据进行客户分群，由SSE确定聚类数k&#x3D;5。这里聚类求解直接调用PySpark库中的<code>pyspark.ml.clustering</code>的KMeans方法：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kMeans = KMeans(k=<span class="number">5</span>, seed=<span class="number">1</span>)</span><br><span class="line">model = kMeans.fit(data_ana)</span><br><span class="line">predic = model.transform(data_ana)</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>特征向量分类表：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page24.png"
+                      alt="特征向量分类表"
+                ></p>
+<p><strong>聚类中心：</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[array([ 1.32175004, -0.57821878, -0.55743528, -0.96067712, -0.3459337 ]),</span><br><span class="line"> array([-0.58440156,  0.03181631, -0.00528305,  0.23449001,  1.12034427]),</span><br><span class="line"> array([-0.91620134,  2.36309184,  2.39013924,  0.43661927,  0.48336828]),</span><br><span class="line"> array([-0.01395498, -0.2803988 , -0.31316855,  1.25899173, -0.45533973]),</span><br><span class="line"> array([-0.57686454, -0.14026687, -0.10215045, -0.47547637, -0.72302332])]</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page25.png"
+                      alt="聚类中心"
+                ></p>
+<p><strong>客户聚类结果：</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page25.png"
+                      alt="客户聚类结果"
+                ></p>
+<h4 id="6-3-3-模型分类预测"><a href="#6-3-3-模型分类预测" class="headerlink" title="6.3.3 模型分类预测"></a>6.3.3 模型分类预测</h4><p>这里使用数据清洗后的第一行数据进行客户类别分类，由结果可知该测试数据被模型分为第2类客户，与原聚类类别划分一致。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page26.png"
+                      alt="类别分类测试"
+                ></p>
+<h3 id="6-4-模型改进分析"><a href="#6-4-模型改进分析" class="headerlink" title="6.4 模型改进分析"></a>6.4 模型改进分析</h3><h4 id="6-4-1-模型优点"><a href="#6-4-1-模型优点" class="headerlink" title="6.4.1 模型优点"></a>6.4.1 模型优点</h4><p><strong>客户特征LRFMC模型方面：</strong> 原RFM模型中M特征用一定时间内累计的飞行里程M与客户在一定时间内乘坐舱位对应的平均折扣率C来代替。同时考虑到了会员的入会时间在一定程度上能够影响客户的价值，增加客户关系长度L作为区分客户的一种特征，相对传统RFM模型覆盖客户特征更全，更适用于航空公司这一特定企业的客户特征分析。</p>
+<p><strong>聚类算法模型方面：</strong> K-means算法简单易懂且聚类效果较好，通过手肘法合理的确定K值，增加模型的准确性。对于本文分析的航空公司客户数据，源数据62988条，清洗后的数据3586条，K-means聚类在数据量庞大的数据集相比传统系统聚类具有收敛速度快，聚类效率高的优点。</p>
+<h4 id="6-4-2-模型缺点"><a href="#6-4-2-模型缺点" class="headerlink" title="6.4.2 模型缺点"></a>6.4.2 模型缺点</h4><p>由于K-Means聚类算法是结果受初始值影响的局部最优的迭代算法，且受初始聚类中心点选择影响，若初始聚类中心为离群属性点，则会影响整体客户聚类分类效果。算法是不断迭代划分数据中心点的，噪声和离群点会干扰中心划分的距离计算。</p>
+<p>客户特征属性选择上暂未考虑航空客户因天气、行程等不确定因素导致的退票率，退票率也是航空公司研究客户质量的重要指标，因此模型还有待进一步改进。</p>
+<h4 id="6-4-3-模型改进"><a href="#6-4-3-模型改进" class="headerlink" title="6.4.3 模型改进"></a>6.4.3 模型改进</h4><p><strong>1. 聚类中心选择优化：</strong></p>
+<p>目前已有K-Means聚类算法改进的相关研究，如K-Means++算法在选取第n+1个聚类中心时，距离当前n个聚类中心越远的点会有更高的概率被选为第n+1个聚类中心，对K-Means随机初始化质心进行优化。二分K-Means算法首先将所有数据看做一个聚类，然后进行聚类划分，保证每一步得到的总体误差最小。</p>
+<p><strong>2. 距离计算优化：</strong></p>
+<p>如elkan K-Means算法利用两边之和大于等于第三边以及两边之差小于第三边的三角形性质，来减少距离的计算。对于一个样本点和两个质心，第一种思路是预先计算两个质心间的距离，若样本点到其中一个质心距离的两倍小于到另一个质心的距离，则该样本点直接属于该质心所属的簇；第二种思路是利用三角形的性质，得到样本到距离最短的质心。对K-Means算法的距离计算进行优化，加快迭代速度。</p>
+<hr>
+<h2 id="7-结果分析"><a href="#7-结果分析" class="headerlink" title="7 结果分析"></a>7 结果分析</h2><p>每种客户五个特征的描述统计量如下图：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page27.png"
+                      alt="聚类结果描述统计"
+                ></p>
+<p>客户群0聚类944个样本，客户群1聚类890个样本，客户群2聚类345个样本，客户群3聚类701个样本，客户群4聚类706个样本，聚类数量分布较为均匀，可以看出聚类结果良好。</p>
+<p>市场上常根据业务定义五个等级的客户类别：重要保持客户、重要发展客户、重要挽留客户、一般客户、低价值客户。下面将从不同维度分析聚类结果数据，并根据该标准对聚类的到的客户进行划分排名。</p>
+<h3 id="7-1-用户特征维度"><a href="#7-1-用户特征维度" class="headerlink" title="7.1 用户特征维度"></a>7.1 用户特征维度</h3><p>本节对不同特征中与其他类别客户表现出明显差异的客户群进行分析。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page28.png"
+                      alt="客户特征分布图（特征维度）"
+                ></p>
+<p>由图像可知：</p>
+<ul>
+<li><strong>R特征层面：</strong> 客户群0的R特征偏大，说明这一类客户上一次消费时间已经很久远，这些客户可能是已经或将要流失的客户。</li>
+<li><strong>F和M特征层面：</strong> 具有强相关性，客户群2存在极高的异常点，分布极其偏态，客户群2可能是具有着消费频繁，消费金额大，即乘坐飞机次数多、乘坐飞机的里程远的高价值客户群。</li>
+<li><strong>C特征层面：</strong> 客户群3具有较高的折扣系数，说明这类客户经常做折扣飞机，可以归类于经济性旅客或高消费高返利旅客。</li>
+<li><strong>L特征层面：</strong> 客户群1的L特征偏大且较为集中，即入会时间早的老客户。</li>
+</ul>
+<h3 id="7-2-客户群维度"><a href="#7-2-客户群维度" class="headerlink" title="7.2 客户群维度"></a>7.2 客户群维度</h3><p>本节从聚类得到的不同客户类别维度分别对它们的特征进行分析。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page29.png"
+                      alt="客户特征分布图（客户群维度）"
+                ></p>
+<p>由折线图可知：</p>
+<ul>
+<li><p><strong>客户群0</strong> 在R处的值最大，且在L、M、F、C处的值都相对较小，可知客户群0距上次乘机时间比较久远，近期没有乘坐该航空公司的航班，可能是企业的重要挽留客户。</p>
+</li>
+<li><p><strong>客户群1</strong> 在L处特征最大，但在R处特征较小，其他特征适中，说明客户群1的入会时间较长，飞行频率高，是该航空公司的重要发展客户。</p>
+</li>
+<li><p><strong>客户群2</strong> 在F、M上的值最大，相对于其它类用户C、L特征也较大，且在特征R上的值最小，说明客户群2频繁乘机且近期都有乘机记录，对航空公司信任度和忠诚度都比较高，是有高价值的客户群。</p>
+</li>
+<li><p><strong>客户群3</strong> 在C处的值最大，在F、M处的特征值较小，说明客户群3是偏好乘坐经济舱位或高级舱位的客户群。</p>
+</li>
+<li><p><strong>客户群4</strong> 在所有特征上的值都很小，且在L处的值最小，说明客户群4是新入会员较多。</p>
+</li>
+</ul>
+<p>根据上述分析可以对不同客户的价值进行归类，定义5个等级的用户群体，根据其重要程度进行排列。</p>
+<h4 id="客户价值分类排名"><a href="#客户价值分类排名" class="headerlink" title="客户价值分类排名"></a>客户价值分类排名</h4><p><strong>1. 重要保持客户（客户群2）</strong></p>
+<ul>
+<li>这类客户最近一次乘机距今的时间长度（R）较低，飞行次数（F）或飞行里程（M）较高</li>
+<li>是航空公司的高价值客户，是最理想的客户，即盈利价值最大的客户</li>
+<li>航空公司应优先针对这类客户进行资源投放分配，进行差异化管理和一对一营销，提高这类客户的忠诚度和满意度</li>
+</ul>
+<p><strong>2. 重要发展客户（客户群1）</strong></p>
+<ul>
+<li>此类客户的入会时间（L）特征最大，但在最近乘机距今的时间长度（R）处特征较小，其他特征适中</li>
+<li>飞行频率高，是该航空公司的重要发展客户</li>
+<li>航空公司要努力促使这类客户增加在本公司的乘机消费，增加积分和优惠券的发放。通过客户价值的提升，加强这类客户的满意度和粘性，逐渐成为公司的忠诚客户</li>
+</ul>
+<p><strong>3. 重要挽留客户（客户群0）</strong></p>
+<ul>
+<li>此类客户在最近乘机距今的时间长度（R）处的值最大，且在F、M、L、C处的值都相对较小</li>
+<li>距上次乘机时间比较久远，近期没有乘坐该航空公司的航班</li>
+<li>客户价值变化的不确定性很高。航空公司应根据这些客户最近消费时间和消费次数的变幻推测客户消费的异动情况，并列出客户名单，对其重点联系，采用一定的营销手段，延长客户的生命周期</li>
+</ul>
+<p><strong>4. 一般客户（客户群4）</strong></p>
+<ul>
+<li>这类客户的入会时间（L）相对最小，但是其他整体特征值较为平均</li>
+<li>相对其他客户群R、F、M、C都不突出，是正常乘坐航班的普通旅客群体且新用户较多</li>
+</ul>
+<p><strong>5. 低价值客户（客户群3）</strong></p>
+<ul>
+<li>这类客户的飞行次数（F）或飞行里程（M）较低，入会时间（L）、最近一次航班距今时间（R）较长，平均折扣率（C）最高</li>
+<li>可能是偏好乘坐经济舱位或低频率出行选择高级舱位的客户群体</li>
+<li>是该航空公司的低价值用户，对航空公司利益不大</li>
+</ul>
+<p><strong>客户价值分类汇总表：</strong></p>
+<table>
+<thead>
+<tr>
+<th>客户群</th>
+<th>客户价值排名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cluster2</td>
+<td>1</td>
+<td>重要保持客户</td>
+</tr>
+<tr>
+<td>Cluster1</td>
+<td>2</td>
+<td>重要发展客户</td>
+</tr>
+<tr>
+<td>Cluster0</td>
+<td>3</td>
+<td>重要挽留客户</td>
+</tr>
+<tr>
+<td>Cluster4</td>
+<td>4</td>
+<td>一般客户</td>
+</tr>
+<tr>
+<td>Cluster3</td>
+<td>5</td>
+<td>低价值客户</td>
+</tr>
+</tbody></table>
+<h3 id="7-3-营销建议"><a href="#7-3-营销建议" class="headerlink" title="7.3 营销建议"></a>7.3 营销建议</h3><h4 id="7-3-1-会员等级管理"><a href="#7-3-1-会员等级管理" class="headerlink" title="7.3.1 会员等级管理"></a>7.3.1 会员等级管理</h4><p>根据本文客户聚类结果，航空公司的会员分为多个不同类型，可以将它们分别设置为不同等级会员。根据一定的标准计算得分可以将会员分为普通会员和核心会员。成为核心会员要求在一定时间内积累一定的飞行里程，达到得分要求后就能够在有效期内成为核心会员，并享受相应的高级别服务。有效期快结束时，根据相关评价方法确定客户是否有资格继续作为核心会员，然后对该客户进行相应的升级或降级。</p>
+<p>另外还可以在此基础上进行促销，航空公司可以在对会员升级评价的时间点之前，对那些接近但尚未到要求的比较高消费客户进行适当提醒升值采取一些加速升级或促销活动，刺激他们消费达到相应指标。这样既可以获得收益，同时也可以提高客户的满意度，增加企业核心会员规模。</p>
+<h4 id="7-3-2-积分兑换驱动"><a href="#7-3-2-积分兑换驱动" class="headerlink" title="7.3.2 积分兑换驱动"></a>7.3.2 积分兑换驱动</h4><p>企业营销过程中常用首次兑换或者免费礼品吸引客户。在航空公司营销策略的制定中，可以令客户端里程或者航段积累到一定程度时才可以实现第一次兑换。据数据分析可知，该航空公司的客户兑换积分的积极性不高。可以通过积分购票折扣吸引客户，刺激客户对该航空公司的用户忠诚度，并提高服务满意程度。</p>
+<p>另一方面可能存在部分客户不了解积分兑换模式的信息差问题，航空公司可以采取的措施是从数据库中提取出接近但是尚未达到首次兑换标准的会员，对他们进行短信、电话提醒或者促销。</p>
+<h4 id="7-3-3-捆绑联名销售"><a href="#7-3-3-捆绑联名销售" class="headerlink" title="7.3.3 捆绑联名销售"></a>7.3.3 捆绑联名销售</h4><p>通过与银行发行联名卡、话费充值送积分、与其他电子商务平台合作发行票务套餐等措施来提高客户的粘性，使客户在其他企业的消费过程中获得本公司的积分，增强与公司的联系，扩大公司业务覆盖范围，增加航空公司在其他领域知名度，提高客户的忠诚度。增加用户粘性，维护客户关系，最大化生命周期内公司与客户的互动价值。</p>
+<hr>
+<h2 id="8-附录"><a href="#8-附录" class="headerlink" title="8 附录"></a>8 附录</h2><h3 id="8-1-参考文献"><a href="#8-1-参考文献" class="headerlink" title="8.1 参考文献"></a>8.1 参考文献</h3><p>[1] 胡海. 基于RFM模型改进的企业营销平台客户价值分析[J]. 营销界, 2022(15): 11-13.</p>
+<p>[2] 王润清. 基于聚类分析的航空旅客在线购票行为研究[D]. 中国民航大学, 2020.</p>
+<p>[3] 杨佳欣. 基于改进RFM模型的新浪微博用户价值分析[D]. 贵州财经大学, 2022.</p>
+<p>[4] 闫春, 刘璐. 基于改进SOM神经网络模型与RFM模型的非寿险客户细分研究[J]. 数据分析与知识发现, 2020, 4(04): 83-90.</p>
+<p>[5] 王长琼, 邱杰, 曹乜蜻, 王艳丽. 基于谱聚类算法的城市快递客户聚类研究[J]. 武汉理工大学学报：信息与管理工程版, 2018, 40(5): 620-624.</p>
+<p>[6] 李为康, 杨小兵. 一种改进的RFM模型在网店客户细分中的应用[J]. 中国计量大学学报, 2020, 31(01): 85-91+134.</p>
+<p>[7] 韩世莲. 基于客户动态需求属性的物流配送线路聚类优化[J]. 系统管理学报, 2016, 25(6): 1146-1153.</p>
+<p>[8] 朱沅海, 林泉, 万杰. 一种结合PSOA的模糊K-均值客户聚类算法[J]. 计算机工程与科学, 2009, 31(12): 74-76.</p>
+<p>[9] 叶苗群. 基于混合K-中心点的Web客户聚类[J]. 嘉兴学院学报, 2005, 17(3): 54-56.</p>
+<h3 id="8-2-参考网页资料"><a href="#8-2-参考网页资料" class="headerlink" title="8.2 参考网页资料"></a>8.2 参考网页资料</h3><p>[1] CSDN - pySpark数据分析案例：航空公司客户聚类分析</p>
+<p>[2] Python航空公司客户价值分析</p>
+<p>[3] 从0开始学Python（十）—— K-Means：使用sklearn模块对商场顾客聚类</p>
+<p>[4] 基于PySpark的航空公司客户价值聚类分析</p>
+<p>[5] RFM - k-means聚类的原理以及缺点及对应的改进</p>
+<h3 id="8-3-文件说明"><a href="#8-3-文件说明" class="headerlink" title="8.3 文件说明"></a>8.3 文件说明</h3><h4 id="CSV文件"><a href="#CSV文件" class="headerlink" title="CSV文件"></a>CSV文件</h4><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type_result.csv</td>
+<td>客户聚类结果及对应特征文件</td>
+</tr>
+<tr>
+<td>data_LRFMC_standard.csv</td>
+<td>客户特征标准化DataFrame</td>
+</tr>
+<tr>
+<td>data_LRFMC.csv</td>
+<td>分类结果数据DataFrame</td>
+</tr>
+<tr>
+<td>type_des.csv</td>
+<td>源数据描述</td>
+</tr>
+<tr>
+<td>des_air_data.csv</td>
+<td>源数据描述</td>
+</tr>
+</tbody></table>
+<h4 id="Python源文件"><a href="#Python源文件" class="headerlink" title="Python源文件"></a>Python源文件</h4><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pre_analyse.py</td>
+<td>源数据文件探索性分析、源数据分析可视化</td>
+</tr>
+<tr>
+<td>K_means.py</td>
+<td>聚类求解，聚类结果可视化</td>
+</tr>
+<tr>
+<td>Pre_resolve.py</td>
+<td>数据清洗，数据预处理，聚类数探索</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p><strong>项目作者：</strong> 应敏婕（202021130214）<br><strong>专业：</strong> 大数据管理2001 - 信息与安全工程学院<br><strong>技术栈：</strong> PyCharm + Miniconda + PySpark + Python 3.9<br><strong>主要库：</strong> pandas, numpy, sklearn, pyspark.ml.clustering, seaborn, matplotlib, missingno</p>
+</blockquote>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 基于LRFMC模型的航空公司客户K-means聚类分析</li>
+        <li><strong>作者:</strong> MinjieY</li>
+        <li><strong>创建于
+                :</strong> 2026-08-06 00:00:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2026-08-06 12:37:36
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/MinjieY/post/f175caa6.html
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/">#数据挖掘</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/PySpark/">#PySpark</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/">#聚类分析</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/K-means/">#K-means</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/LRFMC/">#LRFMC</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E8%88%AA%E7%A9%BA%E5%85%AC%E5%8F%B8/">#航空公司</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%AE%A2%E6%88%B7%E7%BB%86%E5%88%86/">#客户细分</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a><a class="recommended-article-item" href="/post/9802408c.html" title="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" class="!max-w-none">
+  <span class="title">农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a></div>
+   </div>
+  </div>
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/post/4960c6d9.html">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Data Initialization &amp; Discretization Methods</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/post/8115aa0e.html">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Airline Customer K-means Clustering Analysis Based on LRFMC Model</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.10/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            (function() {
+                const startPath = location.pathname;
+                const startTime = Date.now();
+                const retryDelay = 200;
+                const retryLimit = 5000;
+
+                const runTwikoo = () => {
+                    if (location.pathname !== startPath) {
+                        return;
+                    }
+
+                    const container = document.getElementById('twikoo-comment');
+                    if (!container || typeof twikoo === 'undefined') {
+                        if (Date.now() - startTime < retryLimit) {
+                            setTimeout(runTwikoo, retryDelay);
+                        }
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    twikoo.init({
+                        el: '#twikoo-comment',
+                        envId: 'https://hexoblogcomment.vercel.app',
+                        path: location.pathname,
+                    });
+                };
+
+                runTwikoo();
+            })();
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">基于LRFMC模型的航空公司客户K-means聚类分析</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80"><span class="nav-text">1 引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0"><span class="nav-text">2 文献综述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%AE%A2%E6%88%B7%E4%BB%B7%E5%80%BC%E7%BB%86%E5%88%86"><span class="nav-text">2.1 客户价值细分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%AE%A2%E6%88%B7%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95"><span class="nav-text">2.2 客户聚类算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9"><span class="nav-text">3 研究内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%A0%94%E7%A9%B6%E6%80%9D%E8%B7%AF"><span class="nav-text">4 研究思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RFM%E6%A8%A1%E5%9E%8B%E4%B8%8ELRFMC%E6%A8%A1%E5%9E%8B%E5%AF%B9%E6%AF%94"><span class="nav-text">RFM模型与LRFMC模型对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-text">5 数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E5%88%86%E6%9E%90"><span class="nav-text">5.1 数据探索分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-text">5.2 数据预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2"><span class="nav-text">5.3 数据变换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%BB%BA%E6%A8%A1%E8%BF%87%E7%A8%8B"><span class="nav-text">6 建模过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87"><span class="nav-text">6.1 模型准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E5%BB%BA%E7%AB%8B%E6%A8%A1%E5%9E%8B"><span class="nav-text">6.2 建立模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E6%A8%A1%E5%9E%8B%E6%B1%82%E8%A7%A3"><span class="nav-text">6.3 模型求解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%E6%A8%A1%E5%9E%8B%E6%94%B9%E8%BF%9B%E5%88%86%E6%9E%90"><span class="nav-text">6.4 模型改进分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-text">7 结果分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E7%94%A8%E6%88%B7%E7%89%B9%E5%BE%81%E7%BB%B4%E5%BA%A6"><span class="nav-text">7.1 用户特征维度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E5%AE%A2%E6%88%B7%E7%BE%A4%E7%BB%B4%E5%BA%A6"><span class="nav-text">7.2 客户群维度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E8%90%A5%E9%94%80%E5%BB%BA%E8%AE%AE"><span class="nav-text">7.3 营销建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E9%99%84%E5%BD%95"><span class="nav-text">8 附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">8.1 参考文献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E5%8F%82%E8%80%83%E7%BD%91%E9%A1%B5%E8%B5%84%E6%96%99"><span class="nav-text">8.2 参考网页资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E"><span class="nav-text">8.3 文件说明</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">MinjieY</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 22 篇文章
+                    </span>
+                    
+                        <span>
+                            共 41.4k 字
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                "></a></div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<!-- Language Switcher (always visible above the gear) -->
+	
+		
+		<div class="lang-switcher-wrapper">
+			<a class="right-bottom-tools lang-switcher flex justify-center items-center" href="/zh-CN/post/f175caa6.html" title="Switch to zh-CN">
+				<span class="lang-label">中</span>
+			</a>
+		</div>
+	
+
+	<ul class="hidden-tools-list">
+		
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="图片查看器">
+	<button class="image-viewer-close" type="button" aria-label="关闭">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="上一页">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="关闭">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="下一页">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>

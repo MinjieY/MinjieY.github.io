@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en,zh-CN,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="MinjieY">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://minjiey.github.io/post/8115aa0e.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Airline Customer K-means Clustering Analysis Based on LRFMC Model">
+<meta property="og:url" content="https://minjiey.github.io/post/8115aa0e.html">
+<meta property="og:site_name" content="Aria Ing&#39;s Blog">
+<meta property="og:description" content="Hexo Theme Redefine.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-08-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-06T04:37:36.599Z">
+<meta property="article:author" content="Aria Ying">
+<meta property="article:tag" content="PySpark">
+<meta property="article:tag" content="K-means">
+<meta property="article:tag" content="LRFMC">
+<meta property="article:tag" content="Data Mining">
+<meta property="article:tag" content="Clustering">
+<meta property="article:tag" content="Airlines">
+<meta property="article:tag" content="Customer Segmentation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/111.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/111.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/111.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Airline Customer K-means Clustering Analysis Based on LRFMC Model | Aria Ing&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":["en","zh-CN","default"],"path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"https://blog.csdn.net/weixin_50932611?type=blog","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Aria Ing&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                                        >
+                                    <i class="fa-regular fa-chart-bar fa-fw"></i>
+                                    STATUS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    ABOUT
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about/">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://minjie.com">
+                                                    BLOG
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                        >
+                            <span>
+                                STATUS
+                            </span>
+                            
+                                <i class="fa-regular fa-chart-bar fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                ABOUT
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about/">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>Categories</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">67</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">22</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="/images/LRFMC/page1.png" alt="Airline Customer K-means Clustering Analysis Based on LRFMC Model" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">Airline Customer K-means Clustering Analysis Based on LRFMC Model</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/xiuzhi_figure.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8CAirline%20Customer%20K-means%20Clustering%20Analysis%20Based%20on%20LRFMC%20Model%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2F8115aa0e.html" title="给作者发邮件">
+						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
+					</a>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-08-06</span>
+        <span class="mobile">2026-08-06</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-08-06 12:37:36</span>
+            <span class="mobile">2026-08-06 12:37:36</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Academic-Research/">Academic-Research</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/PySpark/">PySpark</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/K-means/">K-means</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/LRFMC/">LRFMC</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Data-Mining/">Data Mining</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Clustering/">Clustering</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Airlines/">Airlines</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Customer-Segmentation/">Customer Segmentation</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>6k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>37 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>Well-differentiated customer classification results serve as a critical basis for enterprises to integrate marketing resources and adjust marketing strategies. This paper extracts partial airline customer data based on the LRFMC model and uses the K-means clustering method to classify airline customers, resulting in five distinct customer groups. Customer characteristics are summarized and corresponding marketing recommendations are provided, with the aim of delivering personalized services and targeted marketing strategies to customer segments of varying value.</p>
+<p><strong>Keywords:</strong> Passenger classification; Data mining; LRFMC model; K-means clustering; Strategy analysis</p>
+<hr>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h2><p>With the continuous advancement of technology and the advent of the big data era, data mining is increasingly becoming one of the core technical approaches for studying consumer behavior and characteristics. Clustering analysis theory provides an important theoretical foundation for data mining and machine learning. In enterprise decision-making across various domains, clustering analysis is commonly used for customer segmentation and user profiling, enabling businesses to accurately identify customer needs and deliver personalized recommendations and services. It is evident that cluster-based segmentation is an effective approach for market segmentation, customer segmentation, and consumer behavior research.</p>
+<p>Traditional passenger classification methods primarily fall into two categories: one distinguishes passengers by flight type, dividing customers into business class and economy class travelers; the other segments customers based on accumulated flight mileage, where those meeting certain mileage thresholds are classified as VIP customers and the rest as ordinary customers. Both approaches are overly simplistic and fail to adequately reflect the diverse consumption characteristics of different customers. Factors such as airline promotional activities, customer airline preferences, and flight frequency are not taken into account, making these methods insufficient for meeting the demands of big data informatization. In recent years, some scholars have classified passengers based on their characteristics, primarily clustering by inherent customer information such as gender, age, occupation, and income. However, against the backdrop of the big data era and informatization development, customer characteristics tend to become more complex, rendering such methods inadequate for comprehensive customer profiling.</p>
+<p>Therefore, this paper adopts the LRFMC model — which provides more comprehensive coverage of customer profiling characteristics — to extract partial airline data, and employs the K-means clustering method to classify airline customers into different groups, summarize their characteristics, and provide a reference for delivering personalized services and formulating targeted marketing strategies for customer segments of varying value.</p>
+<hr>
+<h2 id="2-Literature-Review"><a href="#2-Literature-Review" class="headerlink" title="2 Literature Review"></a>2 Literature Review</h2><h3 id="2-1-Customer-Value-Segmentation"><a href="#2-1-Customer-Value-Segmentation" class="headerlink" title="2.1 Customer Value Segmentation"></a>2.1 Customer Value Segmentation</h3><p>Hu Hai (2022) proposed using the K-means algorithm to improve the RFM model by incorporating quantified RFM attribute values and the K-means algorithm into RS theory (LEM2 algorithm), effectively addressing corresponding deficiencies to better focus on target customers. Yang Jiaxin (2022) used the Analytic Hierarchy Process (AHP) to calculate the weight of each attribute and constructed an improved LFMN model based on the traditional RFM model for user value segmentation. Yan Chun et al. (2020) introduced the customer claim amount indicator to establish an RFMC model and dynamically adjusted the training speed and weight vectors of the SOM neural network model, improving the model convergence speed by 21.6% and achieving customer segmentation. Li Weikang et al. (2020) established an improved RVMF model based on the RFM model and applied AHP to optimize the classification of existing customers.</p>
+<p>It is evident that existing research on customer segmentation predominantly uses the RFM model, or selects corresponding value indicators based on the RFM model according to actual industry conditions, incorporating weight calculation methods such as AHP — all of which possess industry-specific targeting.</p>
+<h3 id="2-2-Customer-Clustering-Algorithms"><a href="#2-2-Customer-Clustering-Algorithms" class="headerlink" title="2.2 Customer Clustering Algorithms"></a>2.2 Customer Clustering Algorithms</h3><p>Yan Chun et al. (2020) introduced the customer claim amount indicator and dynamically adjusted the training speed and weight vectors of the SOM neural network model, improving convergence speed by 21.6%. Wang Changqiong (2018) used a spectral clustering algorithm combined with the empirical rule k ≤ √n to calculate the maximum eigenvalue difference of the Laplace matrix to determine the number of customer clusters. Han Shilian (2016) proposed a fuzzy systematic clustering method that reflects multiple customer demand attributes for customer classification, applying intelligent weighting to integrate dynamic attributes and generate corresponding distribution strategies. Zhu Yuanhai et al. (2009) combined the PSO algorithm with the mean clustering algorithm to optimize the total within-class dispersion to its minimum, thereby obtaining optimal customer clusters. Ye Miaoqun (2005) proposed an improved K-medoids clustering algorithm to analyze Web user behavior, using fuzzy similarity and mimicking fitness calculation ideas from genetic algorithms to improve upon the local optimization characteristics of traditional clustering algorithms.</p>
+<p>Due to the varying selection of customer characteristic indicator attributes, domestic scholars employ different clustering algorithms, all optimizing and improving upon traditional algorithms such as spectral clustering, hierarchical clustering, mean clustering, and K-medoids clustering — each with strong domain-specific targeting.</p>
+<hr>
+<h2 id="3-Research-Content"><a href="#3-Research-Content" class="headerlink" title="3 Research Content"></a>3 Research Content</h2><p>This paper proposes using the LRFMC model to describe customer characteristics. The model provides relatively comprehensive coverage of airline customer features and represents a viable approach for user feature extraction. The K-means clustering model is used for customer category analysis, treating observations in the data as objects with positions and inter-object distances. Rather than applying weighting and processing operations to customer indicators, data indicators of different dimensions are directly standardized and then clustered, yielding a practical classification result through simplified processing.</p>
+<p>In the context of big data, the analysis of user behavior and characteristics is conducted by detecting user group behavior to obtain data for holistic analysis. Here, user behavior information may include all information collected from user actions during transactions, as well as inherent individual characteristic information such as gender and age. For airlines, customer characteristics include basic customer information, customer consumption information, and customer loyalty points information. How to aggregate and categorize these characteristics forms an important foundation for airline customer segmentation. The main research content of this paper is as follows:</p>
+<ol>
+<li>Data Preprocessing</li>
+<li>Customer Feature Indicator Extraction</li>
+<li>Customer Clustering Process</li>
+<li>Category Characteristic Summarization</li>
+</ol>
+<p>Classifying customers based on airline data falls under unsupervised learning. A clustering mining model is adopted, using a distance-based approach between individuals and clusters to iteratively classify customers. Before solving the clustering model, it is necessary to select corresponding indicators for the target profile — the selection of indicators must be determined in conjunction with actual business conditions and must reflect the key characteristics of customers. Key features are selected based on data processing results, followed by clustering model solving.</p>
+<p>Based on the final clustering results, different customer categories are analyzed for their characteristics, comparing the features and value of different customer segments. Corresponding marketing strategies are formulated for customers of varying value, providing them with personalized services.</p>
+<hr>
+<h2 id="4-Research-Approach"><a href="#4-Research-Approach" class="headerlink" title="4 Research Approach"></a>4 Research Approach</h2><p>User behavior analysis enables a more detailed understanding of user behavioral habits, thereby identifying problems in the marketing environment such as website and promotional channel issues. This allows product marketing to become more precise, effective, and ultimately enhance enterprise revenue. Clustering analysis can group samples with similar characteristics into the same cluster, and further analyze samples within the same cluster to obtain their characteristic distribution.</p>
+<p>This paper proposes using clustering to segment customers into categories, grouping customers with a high degree of similarity into the same category, and conducting visual analysis based on clustering results to mine the purchasing behaviors of different customer categories. This enables more accurate identification of customer needs and the adoption of corresponding marketing strategies, providing enterprises with a theoretical basis for maximizing benefits.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page5.png"
+                      alt="Research Approach"
+                ></p>
+<p>The LRFMC model is adopted for user feature extraction. Traditionally, consumer behavior characteristic analysis has often employed the RFM model. In the RFM model, monetary value represents the total amount of products purchased by a customer from the enterprise over a period of time, which has general applicability to existing consumer systems. However, against the backdrop of the current big data era, airline ticket prices are influenced by factors such as transport distance and cabin class, and airline-customer related parameters such as time and flight frequency exhibit diversity — meaning that customers with higher monetary value are not necessarily more valuable than those with lower monetary value, reflecting industry specificity. Moreover, airlines periodically issue discount coupons offering reduced fares to existing customers, making the traditional RFM model insufficient for processing current airline data.</p>
+<h3 id="RFM-vs-LRFMC-Model-Comparison"><a href="#RFM-vs-LRFMC-Model-Comparison" class="headerlink" title="RFM vs LRFMC Model Comparison"></a>RFM vs LRFMC Model Comparison</h3><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>L</th>
+<th>R</th>
+<th>F</th>
+<th>M</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Traditional RFM</strong></td>
+<td>-</td>
+<td>Time since last purchase</td>
+<td>Number of purchases in a period</td>
+<td>Total purchase amount in a period</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Airline LRFMC</strong></td>
+<td>Months since membership enrollment</td>
+<td>Months since last flight with the airline</td>
+<td>Number of flights in observation window</td>
+<td>Total flight kilometers in observation window</td>
+<td>Average discount coefficient of cabin class</td>
+</tr>
+</tbody></table>
+<p>Based on this, this paper uses the cumulative flight mileage (M) over a period and the average discount coefficient (C) of cabin classes taken over a period to represent monetary value. The customer relationship length (L) is then added to the model, forming the LRFMC model.</p>
+<p>The K-means clustering model is used for customer classification, treating observations in the data as objects with positions and inter-object distances. It partitions objects into K mutually exclusive clusters, making objects within each cluster as close to each other as possible while remaining as far as possible from objects in other clusters. This paper directly calls the K-means function from the <code>pyspark.ml.clustering</code> library, where each cluster’s characteristics are determined by its centroid or center point, and distance is calculated using Euclidean distance metric. Given the large volume of data, no weighting is applied to customer indicator calculations; instead, data indicators of different dimensions are directly standardized and then clustered to achieve higher clustering computational efficiency.</p>
+<hr>
+<h2 id="5-Data-Preprocessing"><a href="#5-Data-Preprocessing" class="headerlink" title="5 Data Preprocessing"></a>5 Data Preprocessing</h2><p>Based on the source data table content, it is evident that the source data may contain interference data such as duplicates, missing values, anomalies, and data type mismatches that could affect data analysis. Therefore, the data table requires preprocessing.</p>
+<p>This section will progressively conduct exploratory analysis, preprocessing, and transformation operations on the source data table. Exploratory analysis examines the types, typical statistics, and distributions of each column in the source data to understand the overall condition of the data table and provide reference for subsequent data selection. Data preprocessing includes data cleaning and attribute reduction, involving filling and deletion operations for null values, anomalous data, etc. Data transformation includes attribute construction and standardization, selecting valuable data and eliminating dimensional influences while reducing the impact of outliers, thereby providing a reliable data source for clustering analysis of the customer table.</p>
+<h3 id="5-1-Exploratory-Data-Analysis"><a href="#5-1-Exploratory-Data-Analysis" class="headerlink" title="5.1 Exploratory Data Analysis"></a>5.1 Exploratory Data Analysis</h3><h4 id="5-1-1-Descriptive-Statistical-Analysis"><a href="#5-1-1-Descriptive-Statistical-Analysis" class="headerlink" title="5.1.1 Descriptive Statistical Analysis"></a>5.1.1 Descriptive Statistical Analysis</h4><p><strong>Source Data Schema:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page7.png"
+                      alt="Source Data Schema"
+                ></p>
+<p><strong>Basic Statistics:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page7.png"
+                      alt="Source Data Descriptive Statistics"
+                ></p>
+<p><strong>Null Value Statistics:</strong></p>
+<p>Using the <code>missingno</code> library for missing value visualization:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page8.png"
+                      alt="Missing Value Visualization"
+                ></p>
+<p>Combined with statistical analysis of the source data file, columns GENDER, AGE, WORK_CITY, WORK_PROVINCE, WORK_COUNTRY, SUM_YR_1, and SUM_YR_2 all contain null values, with WORK_PROVINCE and WORK_COUNTRY showing particularly evident missing value ratios in the visualization.</p>
+<p><strong>Null Value Counts:</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GENDER with null values: 3</span><br><span class="line">AGE with null values: 420</span><br><span class="line">WORK_CITY with null values: 2268</span><br><span class="line">WORK_PROVINCE with null values: 3244</span><br><span class="line">WORK_COUNTRY with null values: 25</span><br><span class="line">SUM_YR_1 with null values: 551</span><br><span class="line">SUM_YR_2 with null values: 138</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>Null Value Ratios:</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GENDER         4.76e-05</span><br><span class="line">WORK_CITY      0.0360</span><br><span class="line">WORK_PROVINCE  0.0515</span><br><span class="line">WORK_COUNTRY   0.0004</span><br><span class="line">AGE            0.0067</span><br><span class="line">SUM_YR_1       0.0087</span><br><span class="line">SUM_YR_2       0.0022</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-1-2-Information-Distribution-Analysis"><a href="#5-1-2-Information-Distribution-Analysis" class="headerlink" title="5.1.2 Information Distribution Analysis"></a>5.1.2 Information Distribution Analysis</h4><p>Based on the descriptive statistics of the source data table, the raw data contains records with null ticket prices, ticket price of 0, minimum discount rate of 0, and flight kilometers greater than 0. Considering actual airline business realities, customer ticketing procedures, and related ticket discount operations, null ticket prices may result from passengers having no boarding records, while other data may result from passengers taking 0-discount tickets or redeeming points.</p>
+<p><strong>Customer Basic Information Distribution Analysis:</strong></p>
+<p><strong>A. Membership Enrollment by Year:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page10.png"
+                      alt="Membership Enrollment Bar Chart"
+                ></p>
+<p>The bar chart shows that airline membership enrollment generally increased year by year from 2004 to 2012, reaching a peak in 2012, and then declined in 2013.</p>
+<p><strong>B. Personal Basic Information (Gender Ratio, Age Distribution):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Gender Ratio Pie Chart</th>
+<th>Age Distribution Box Plot</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="Gender Ratio"
+                ></td>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="Age Distribution"
+                ></td>
+</tr>
+</tbody></table>
+<p>The gender ratio pie chart and age distribution box plot reveal that the vast majority of airline members are male (76.4%), with most members aged 35-50. However, there is one anomalous data point exceeding age 100.</p>
+<p><strong>C. Membership Tier Distribution:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page11.png"
+                      alt="Customer Membership Tier Distribution"
+                ></p>
+<p>The bar chart shows that the vast majority of the airline’s members are tier-4 members, approaching 60,000 people, while tier-5 and tier-6 members are relatively few, numbering under 5,000.</p>
+<hr>
+<p><strong>Consumption Information Analysis:</strong></p>
+<p><strong>A. Member Ticket Revenue Distribution:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page12.png"
+                      alt="Member Ticket Revenue Distribution"
+                ></p>
+<p>Based on member ticket revenue, it can be observed that the revenue distribution consists of discrete points. Member customer group consumption ranges are relatively dispersed, indicating diverse customer group types.</p>
+<p><strong>B. Member Flight Information:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="Member Flight Information"
+                ></p>
+<p>Member flight information represents the quality of airline customers — the more frequent and longer the flight mileage, the higher the customer’s value to the airline. From the images, it is clearly visible that flight frequency within the observation window and total flight kilometers distinctly form two groups: most customers are concentrated within the box of the box plot, while a minority of customers lie above the box. This minority is likely to be high-value customers.</p>
+<p><strong>C. Average Flight Interval Statistics:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Average Flight Interval</th>
+<th>Time Since Last Flight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="Flight Interval"
+                ></td>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page13.png"
+                      alt="Last Flight"
+                ></td>
+</tr>
+</tbody></table>
+<p>Generally speaking, the shorter the time from the last flight to the end of the observation window, the greater the customer’s loyalty to the airline. Shorter intervals also indicate that the customer may frequently fly with this airline, making them a high-value customer. Additionally, flight timing and intervals can provide insights into the company’s development issues — if the number of customers with short intervals is decreasing, it suggests that the enterprise’s services or operations may be diverging from contemporary trends, requiring timely adjustment of marketing strategies.</p>
+<hr>
+<p><strong>Customer Points Information:</strong></p>
+<p><strong>A. Points Redemption Frequency:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page14.png"
+                      alt="Points Redemption Histogram"
+                ></p>
+<p>According to the tallest bar, the vast majority of redemption frequencies fall between 0-16 times, indicating that most customers rarely redeem their points.</p>
+<p><strong>B. Total Accumulated Points Distribution:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page15.png"
+                      alt="Accumulated Points Box Plot"
+                ></p>
+<p>Most customers have accumulated points under 400,000, with only a few individual customers approaching 1,000,000 kilometers in flight mileage.</p>
+<h3 id="5-2-Data-Preprocessing"><a href="#5-2-Data-Preprocessing" class="headerlink" title="5.2 Data Preprocessing"></a>5.2 Data Preprocessing</h3><h4 id="5-2-1-Data-Cleaning"><a href="#5-2-1-Data-Cleaning" class="headerlink" title="5.2.1 Data Cleaning"></a>5.2.1 Data Cleaning</h4><p>Exploratory data analysis revealed records with null ticket prices, ticket price of 0, minimum discount rate of 0, and flight kilometers greater than 0. Since the proportion of such data is relatively small (GENDER missing rate 4.76%, all other attribute missing rates below 0.052%), these records are directly deleted.</p>
+<p><strong>Outlier Handling:</strong></p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Remove age outliers</span></span><br><span class="line">data_remove_agemg = dfread.where(<span class="string">&#x27;AGE&lt;100&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Remove records with null ticket prices</span></span><br><span class="line">colsnull = [<span class="string">&#x27;SUM_YR_1&#x27;</span>,<span class="string">&#x27;SUM_YR_2&#x27;</span>]</span><br><span class="line">data_not_null = data_remove_agemg.dropna(how=<span class="string">&#x27;any&#x27;</span>,subset=colsnull)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Keep only records where ticket price is not 0,</span></span><br><span class="line"><span class="comment"># or discount rate and total flight km are both 0</span></span><br><span class="line"><span class="comment"># This condition is executed via SQL</span></span><br><span class="line">sql_remove = <span class="string">&quot;select * from data_not_null WHERE (avg_discount!=0 AND avg_discount&gt;0)&quot;</span></span><br><span class="line">data_remove_diff = spark.sql(sql_remove)</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>Missing Value Handling:</strong></p>
+<p>Based on source data description, the following data contain missing values:</p>
+<ul>
+<li>4 categorical variables: WORK_CITY, WORK_PROVINCE, WORK_COUNTRY, GENDER</li>
+<li>1 continuous variable: AGE</li>
+</ul>
+<p>From the member age distribution box plot, it is evident that airline customer ages are relatively concentrated, so mean imputation can be applied here:</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">age_mean_frame = data_remove_diff.select(F.avg(data_remove_diff[<span class="string">&#x27;AGE&#x27;</span>]))</span><br><span class="line">age_mean = age_mean_frame.columns[<span class="number">0</span>]</span><br><span class="line">data_fillna = data_remove_diff.fillna(age_mean,<span class="string">&#x27;AGE&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-2-2-Attribute-Reduction"><a href="#5-2-2-Attribute-Reduction" class="headerlink" title="5.2.2 Attribute Reduction"></a>5.2.2 Attribute Reduction</h4><p>In conjunction with actual airline business operations, the M feature in the original RFM model is replaced by cumulative flight mileage (M) over a period and the average discount coefficient (C) of cabin classes taken over a period. Additionally, considering that membership enrollment time can influence customer value to some extent, customer relationship length (L) is added to the model as a distinguishing customer characteristic. This model uses the following 5 features as characteristics for identifying customer value, forming the LRFMC model.</p>
+<p>According to LRFMC theory, the airline’s customer value model is LRFMC. Six attributes related to it are selected, while irrelevant, weakly correlated, or redundant attributes are removed. The 6 attributes in the original data related to LRFMC indicators are:</p>
+<p>FFP_DATE, LOAD_TIME, FLIGHT_COUNT, avg_discount, SEG_KM_SUM, LAST_TO_END</p>
+<p><strong>LRFMC Indicators:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L</td>
+<td>Membership enrollment duration</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Time since last flight</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Number of flights</td>
+</tr>
+<tr>
+<td>M</td>
+<td>Flight mileage</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Flight discount rate</td>
+</tr>
+</tbody></table>
+<p><strong>Indicator Calculation:</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">L = LOAD_TIME - FFP_DATE</span><br><span class="line">R = LAST_TO_END</span><br><span class="line">F = FLIGHT_COUNT</span><br><span class="line">M = SEG_KM_SUM</span><br><span class="line">C = avg_discount</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page16.png"
+                      alt="LRFMC Indicator Calculation Results"
+                ></p>
+<h3 id="5-3-Data-Transformation"><a href="#5-3-Data-Transformation" class="headerlink" title="5.3 Data Transformation"></a>5.3 Data Transformation</h3><h4 id="5-3-1-Attribute-Construction"><a href="#5-3-1-Attribute-Construction" class="headerlink" title="5.3.1 Attribute Construction"></a>5.3.1 Attribute Construction</h4><p>Based on the six LRFMC indicators extracted in the previous section, customer attributes are constructed as follows:</p>
+<ul>
+<li><strong>L &#x3D; LOAD_TIME - FFP_DATE</strong>: Months from membership enrollment to the end of observation window, unit: months</li>
+<li><strong>R &#x3D; LAST_TO_END</strong>: Months from the customer’s last flight with the airline to the end of observation window, unit: months</li>
+<li><strong>F &#x3D; FLIGHT_COUNT</strong>: Number of flights taken by the customer within the observation window, unit: flights</li>
+<li><strong>M &#x3D; SEG_KM_SUM</strong>: Cumulative flight mileage within the observation window, unit: kilometers</li>
+<li><strong>C &#x3D; AVG_DISCOUNT</strong>: Average value of discount coefficients for cabin classes taken during the observation period, unit: dimensionless</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page17.png"
+                      alt="LRFMC Feature Box Plots"
+                ></p>
+<p>The box plots show that the F and M features contain numerous outliers, indicating that these two features are relatively dispersed among the customer base and can be used to differentiate customers.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page18.png"
+                      alt="LRFMC Feature Density Plots"
+                ></p>
+<p>The density plots reveal that all five attributes exhibit relatively concentrated distributions with distinct peaks. Therefore, the five attributes can provide valuable classification of customers.</p>
+<h4 id="5-3-2-Correlation-Analysis"><a href="#5-3-2-Correlation-Analysis" class="headerlink" title="5.3.2 Correlation Analysis"></a>5.3.2 Correlation Analysis</h4><p>The magnitude of covariance alone does not adequately measure the degree of association between two random variables, as its value is influenced by the dimensions of both variables and is thus unsuitable for comparison. To better measure the degree of correlation between two random variables, the Pearson correlation coefficient is introduced, which divides the covariance by the standard deviations of both random variables, eliminating dimensional influence.</p>
+<p>Pearson Correlation Coefficient Formula:</p>
+<p>$$ r_{x,y} &#x3D; \frac{\sum{(X-\bar{X})(Y-\bar{Y})}}{\sqrt{\sum{(X-\bar{X})^2} \cdot \sum{(Y-\bar{Y})^2}}} $$</p>
+<p>This paper uses the <code>scipy</code> library’s <code>corr</code> method to calculate Pearson correlation coefficients, analyzing the correlations among the five selected LRFMC attributes.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page19.png"
+                      alt="LRFMC Feature Correlation Pairplot"
+                ></p>
+<p>The pairplot analysis reveals a linear correlation relationship between the F and M features.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page20.png"
+                      alt="LRFMC Feature Heatmap"
+                ></p>
+<p>Further exploration of feature correlations via the heatmap shows that the F and M features have a correlation coefficient of 0.83 (&gt;0.8), indicating a very strong linear relationship.</p>
+<h4 id="5-3-3-Data-Standardization"><a href="#5-3-3-Data-Standardization" class="headerlink" title="5.3.3 Data Standardization"></a>5.3.3 Data Standardization</h4><p>The clustering model is a distance-based algorithm. In this analysis, the dataset attributes have different dimensions. If the extreme value differences are too large, it will affect the effectiveness of the mining analysis if left untreated. The data transformation method adopted in this case is standard deviation standardization.</p>
+<p>The <code>StandardScaler</code> (column scaling and translation) method is used to standardize the data, ensuring that each dimension’s data has a variance of 1 and mean of 0. This prevents prediction results from being dominated by features with excessively large dimensional values. The processing target is each column of features: standardizing each dimensional feature column vector to a sample standard deviation of 1 or mean of 0.</p>
+<p>Sample standard deviation calculation formula before clustering:</p>
+<p>$$ s &#x3D; \sqrt{\frac{1}{n-1}\sum_{i&#x3D;1}^{n}(x_i - \bar{x})^2} $$</p>
+<p>$$ x^* &#x3D; \frac{x_i - \mu}{\sigma} $$</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scaler = StandardScaler()</span><br><span class="line">scaler.fit(plt_pd)</span><br><span class="line">data = scaler.transform(plt_pd)</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page21.png"
+                      alt="Customer Data Standardization"
+                ></p>
+<hr>
+<h2 id="6-Modeling-Process"><a href="#6-Modeling-Process" class="headerlink" title="6 Modeling Process"></a>6 Modeling Process</h2><h3 id="6-1-Model-Preparation"><a href="#6-1-Model-Preparation" class="headerlink" title="6.1 Model Preparation"></a>6.1 Model Preparation</h3><h4 id="6-1-1-Notation"><a href="#6-1-1-Notation" class="headerlink" title="6.1.1 Notation"></a>6.1.1 Notation</h4><p><strong>A. Unlabeled Dataset:</strong></p>
+<p>$$ X &#x3D; \begin{bmatrix} x^{(1)} \ x^{(2)} \ \dots \ x^{(m)} \end{bmatrix} $$</p>
+<p><strong>B. Minimized Loss Function:</strong></p>
+<p>$$ E &#x3D; \sum_{i&#x3D;1}^{k}\sum_{x\in C_i} |x - \mu_i|^2 $$</p>
+<p><strong>C. Cluster Center Point:</strong></p>
+<p>$$ \mu_i &#x3D; \frac{1}{|C_i|}\sum_{x \in C_i} x $$</p>
+<h3 id="6-2-Model-Establishment"><a href="#6-2-Model-Establishment" class="headerlink" title="6.2 Model Establishment"></a>6.2 Model Establishment</h3><p>K-means is one of the most widely used partition-based unsupervised classification algorithms. It partitions n objects into k clusters, aiming for high similarity within clusters. Similarity is calculated based on the mean of objects within a cluster.</p>
+<p>The K-means algorithm adopts an iterative update approach: first, k objects are randomly selected, each representing the initial mean or center of a cluster. For each remaining object, based on its Euclidean distance to each cluster center, it is assigned to the most similar cluster. Then, the K-means algorithm iteratively improves the within-cluster variation. For each cluster, it uses the objects assigned to that cluster in the previous iteration to calculate a new mean. The updated mean is then used as the new cluster center, and all objects are reassigned. Iteration continues until the assignment stabilizes — i.e., the clusters formed in the current round are identical to those formed in the previous round.</p>
+<p><strong>Specific Steps:</strong></p>
+<ol>
+<li>Randomly select k sample points to serve as the center points of each cluster {μ₁, μ₂, …, μₖ}</li>
+<li>Calculate the distances between all sample points and each cluster center dist(xⁱ, μⱼ), then assign sample points to the nearest cluster:</li>
+</ol>
+<p>$$ dist(x^{(i)}, \mu_j) &#x3D; \sqrt{\sum_{t&#x3D;1}^{n}(x^{(i)}<em>t - \mu</em>{jt})^2} $$</p>
+<ol start="3">
+<li>Recalculate cluster centers μ_new based on existing sample points in each cluster:</li>
+</ol>
+<p>$$ \mu_i &#x3D; \frac{1}{|C_i|}\sum_{x \in C_i} x $$</p>
+<ol start="4">
+<li>Repeat steps 2 and 3</li>
+</ol>
+<p><strong>Model Processing Flow:</strong></p>
+<ul>
+<li><strong>Input:</strong> Number of clusters k; dataset X containing n objects X &#x3D; {x₁, x₂, …, xₙ}</li>
+<li><strong>Output:</strong> k clusters {S₁, S₂, …, Sₖ}</li>
+</ul>
+<h3 id="6-3-Model-Solution"><a href="#6-3-Model-Solution" class="headerlink" title="6.3 Model Solution"></a>6.3 Model Solution</h3><h4 id="6-3-1-Experimental-Environment"><a href="#6-3-1-Experimental-Environment" class="headerlink" title="6.3.1 Experimental Environment"></a>6.3.1 Experimental Environment</h4><ul>
+<li><strong>IDE:</strong> PyCharm + Miniconda + PySpark + spark-3.3.1 + Python 3.9</li>
+<li><strong>Visualization:</strong> seaborn, pyplot, missingno</li>
+<li><strong>Data Processing:</strong> pyspark.sql, pyspark.ml, sklearn, pandas, numpy</li>
+</ul>
+<h4 id="6-3-2-Customer-Clustering"><a href="#6-3-2-Customer-Clustering" class="headerlink" title="6.3.2 Customer Clustering"></a>6.3.2 Customer Clustering</h4><p><strong>Determining the Number of Clusters:</strong></p>
+<p>This paper uses the elbow method to determine the number of clusters, using SSE (Sum of Squared Errors) as the indicator:</p>
+<p>$$ SSE &#x3D; \sum_{i&#x3D;1}^{k}\sum_{p\in C_i} |p - m_i|^2 $$</p>
+<p>Where Cᵢ is the i-th cluster, mᵢ is the i-th centroid, and p is a data point belonging to Cᵢ.</p>
+<p>K-means clustering is applied to classify customers, analyzing SSE for k &#x3D; {2, 3, …, 9} to select the optimal number of clusters:</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">    model = KMeans(n_clusters=k, random_state=<span class="number">123</span>, n_init=<span class="number">20</span>)</span><br><span class="line">    model.fit(airline_scale)</span><br><span class="line">    sse.append(model.inertia)</span><br></pre></td></tr></table></figure></div>
+
+<p>When the number of clusters has not yet reached the optimal k, SSE decreases rapidly as the number of clusters increases. After reaching the optimal number, SSE decreases slowly. The point of maximum slope change in the visualization graph represents the optimal k value.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page23.png"
+                      alt="SSE for Different Cluster Numbers"
+                ></p>
+<p>The line chart shows that the decrease slows at k&#x3D;5, so k is set to 5.</p>
+<p><strong>KMeans Clustering Training:</strong></p>
+<p>The KMeans clustering algorithm is applied to customer data for customer grouping, with the number of clusters determined as k&#x3D;5 via SSE. The clustering solution directly calls the KMeans method from the <code>pyspark.ml.clustering</code> library:</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kMeans = KMeans(k=<span class="number">5</span>, seed=<span class="number">1</span>)</span><br><span class="line">model = kMeans.fit(data_ana)</span><br><span class="line">predic = model.transform(data_ana)</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>Feature Vector Classification Table:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page24.png"
+                      alt="Feature Vector Classification Table"
+                ></p>
+<p><strong>Cluster Centers:</strong></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[array([ 1.32175004, -0.57821878, -0.55743528, -0.96067712, -0.3459337 ]),</span><br><span class="line"> array([-0.58440156,  0.03181631, -0.00528305,  0.23449001,  1.12034427]),</span><br><span class="line"> array([-0.91620134,  2.36309184,  2.39013924,  0.43661927,  0.48336828]),</span><br><span class="line"> array([-0.01395498, -0.2803988 , -0.31316855,  1.25899173, -0.45533973]),</span><br><span class="line"> array([-0.57686454, -0.14026687, -0.10215045, -0.47547637, -0.72302332])]</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page25.png"
+                      alt="Cluster Centers"
+                ></p>
+<p><strong>Customer Clustering Results:</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page25.png"
+                      alt="Customer Clustering Results"
+                ></p>
+<h4 id="6-3-3-Model-Classification-Prediction"><a href="#6-3-3-Model-Classification-Prediction" class="headerlink" title="6.3.3 Model Classification Prediction"></a>6.3.3 Model Classification Prediction</h4><p>The first row of data after cleaning is used for customer category classification. The results show that the test data is classified by the model as a type-2 customer, consistent with the original cluster category assignment.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page26.png"
+                      alt="Category Classification Test"
+                ></p>
+<h3 id="6-4-Model-Improvement-Analysis"><a href="#6-4-Model-Improvement-Analysis" class="headerlink" title="6.4 Model Improvement Analysis"></a>6.4 Model Improvement Analysis</h3><h4 id="6-4-1-Model-Advantages"><a href="#6-4-1-Model-Advantages" class="headerlink" title="6.4.1 Model Advantages"></a>6.4.1 Model Advantages</h4><p><strong>LRFMC Customer Feature Model:</strong> The M feature in the original RFM model is replaced by cumulative flight mileage (M) over a period and the average discount coefficient (C) of cabin classes taken over a period. Additionally, membership enrollment time is considered to influence customer value to some extent, with customer relationship length (L) added as a distinguishing feature. Compared to the traditional RFM model, this provides more comprehensive customer feature coverage and is more suitable for customer characteristic analysis specific to the airline industry.</p>
+<p><strong>Clustering Algorithm Model:</strong> The K-means algorithm is simple, intuitive, and produces good clustering results. The elbow method is used to reasonably determine the K value, enhancing model accuracy. For the airline customer data analyzed in this paper — 62,988 source records and 3,586 records after cleaning — K-means clustering on large datasets offers advantages of fast convergence and high clustering efficiency compared to traditional hierarchical clustering.</p>
+<h4 id="6-4-2-Model-Limitations"><a href="#6-4-2-Model-Limitations" class="headerlink" title="6.4.2 Model Limitations"></a>6.4.2 Model Limitations</h4><p>Since K-Means clustering is an iterative algorithm whose results are affected by initial values and represents a local optimum, it is influenced by the selection of initial cluster center points. If initial cluster centers happen to be outlier attribute points, the overall customer clustering classification results will be affected. The algorithm continuously iterates to partition data center points, and noise and outliers can interfere with the distance calculations for center partitioning.</p>
+<p>In terms of customer feature attribute selection, the model does not yet consider the cancellation rate caused by uncertain factors such as weather and itinerary for airline customers. The cancellation rate is also an important indicator for airlines studying customer quality, so the model still requires further improvement.</p>
+<h4 id="6-4-3-Model-Improvements"><a href="#6-4-3-Model-Improvements" class="headerlink" title="6.4.3 Model Improvements"></a>6.4.3 Model Improvements</h4><p><strong>1. Cluster Center Selection Optimization:</strong></p>
+<p>Existing research on K-Means clustering algorithm improvements includes approaches such as the K-Means++ algorithm. When selecting the (n+1)-th cluster center, points farther from the current n cluster centers have a higher probability of being selected as the (n+1)-th cluster center, optimizing K-Means random centroid initialization. The bisecting K-Means algorithm first treats all data as one cluster, then performs cluster partitioning, ensuring that the overall error at each step is minimized.</p>
+<p><strong>2. Distance Calculation Optimization:</strong></p>
+<p>The elkan K-Means algorithm leverages the triangle inequality properties (the sum of two sides is greater than or equal to the third side, and the difference between two sides is less than the third side) to reduce distance calculations. For a sample point and two centroids, the first approach pre-calculates the distance between the two centroids — if twice the distance from the sample point to one centroid is less than the distance to the other centroid, the sample point directly belongs to the cluster of the first centroid. The second approach uses triangle properties to obtain the centroid with the shortest distance to the sample. Optimizing the distance calculation of the K-Means algorithm accelerates the iteration speed.</p>
+<hr>
+<h2 id="7-Results-Analysis"><a href="#7-Results-Analysis" class="headerlink" title="7 Results Analysis"></a>7 Results Analysis</h2><p>The descriptive statistics for the five characteristics of each customer type are shown below:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page27.png"
+                      alt="Clustering Results Descriptive Statistics"
+                ></p>
+<p>Cluster 0 contains 944 samples, Cluster 1 contains 890 samples, Cluster 2 contains 345 samples, Cluster 3 contains 701 samples, and Cluster 4 contains 706 samples. The cluster size distribution is relatively even, indicating good clustering results.</p>
+<p>In the market, five tiers of customer categories are commonly defined based on business criteria: Key Retention Customers, Key Development Customers, Key Retention-at-Risk Customers, General Customers, and Low-Value Customers. The following analysis examines the clustering results data from different dimensions and ranks the clustered customers according to these criteria.</p>
+<h3 id="7-1-Customer-Feature-Dimension"><a href="#7-1-Customer-Feature-Dimension" class="headerlink" title="7.1 Customer Feature Dimension"></a>7.1 Customer Feature Dimension</h3><p>This section analyzes customer groups that exhibit significant differences in specific features compared to other customer categories.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page28.png"
+                      alt="Customer Feature Distribution (Feature Dimension)"
+                ></p>
+<p>From the images:</p>
+<ul>
+<li><strong>R Feature:</strong> Cluster 0 has a relatively large R feature, indicating that these customers last consumed a long time ago and may be customers who have already churned or are about to churn.</li>
+<li><strong>F and M Features:</strong> These exhibit strong correlation. Cluster 2 has extremely high outlier points with highly skewed distribution. Cluster 2 likely represents high-value customers with frequent consumption and large consumption amounts — i.e., customers who fly frequently and accumulate substantial flight mileage.</li>
+<li><strong>C Feature:</strong> Cluster 3 has a relatively high discount coefficient, suggesting that these customers frequently take discounted flights and can be categorized as economy travelers or high-consumption, high-rebate travelers.</li>
+<li><strong>L Feature:</strong> Cluster 1 has a relatively large and concentrated L feature, representing long-standing members who enrolled early.</li>
+</ul>
+<h3 id="7-2-Customer-Group-Dimension"><a href="#7-2-Customer-Group-Dimension" class="headerlink" title="7.2 Customer Group Dimension"></a>7.2 Customer Group Dimension</h3><p>This section analyzes the characteristics of different customer categories from the cluster dimension.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/LRFMC/page29.png"
+                      alt="Customer Feature Distribution (Cluster Dimension)"
+                ></p>
+<p>From the line chart:</p>
+<ul>
+<li><p><strong>Cluster 0</strong> has the maximum value at R and relatively small values at L, M, F, and C. This indicates that Cluster 0’s last flight was relatively long ago, and they have not recently flown with this airline. They may be key retention-at-risk customers for the enterprise.</p>
+</li>
+<li><p><strong>Cluster 1</strong> has the maximum feature at L but relatively small at R, with moderate values in other features. This indicates that Cluster 1 has long membership duration and high flight frequency, making them key development customers for the airline.</p>
+</li>
+<li><p><strong>Cluster 2</strong> has the maximum values at F and M, with relatively larger C and L features compared to other categories, and the minimum value at R. This indicates that Cluster 2 flies frequently with recent flight records, demonstrating high trust and loyalty to the airline — they are high-value customer groups.</p>
+</li>
+<li><p><strong>Cluster 3</strong> has the maximum value at C and relatively small feature values at F and M. This indicates that Cluster 3 prefers economy cabin or premium cabin travel.</p>
+</li>
+<li><p><strong>Cluster 4</strong> has very small values across all features, with the minimum value at L. This indicates that Cluster 4 consists primarily of new members.</p>
+</li>
+</ul>
+<p>Based on the above analysis, customer value can be categorized into 5 tiers of user groups, ranked by importance:</p>
+<h4 id="Customer-Value-Classification-Ranking"><a href="#Customer-Value-Classification-Ranking" class="headerlink" title="Customer Value Classification Ranking"></a>Customer Value Classification Ranking</h4><p><strong>1. Key Retention Customers (Cluster 2)</strong></p>
+<ul>
+<li>These customers have low time since last flight (R) and high flight frequency (F) or flight mileage (M)</li>
+<li>They are the airline’s high-value customers — the most ideal customers with the greatest profit value</li>
+<li>The airline should prioritize resource allocation for these customers, implement differentiated management and one-to-one marketing, and enhance their loyalty and satisfaction</li>
+</ul>
+<p><strong>2. Key Development Customers (Cluster 1)</strong></p>
+<ul>
+<li>These customers have the maximum membership duration (L) but relatively small time since last flight (R), with moderate other features</li>
+<li>They fly frequently and are important development customers for the airline</li>
+<li>The airline should strive to encourage these customers to increase their flight consumption with the company, increase points and coupon distribution, enhance their satisfaction and loyalty through increased customer value, and gradually convert them into loyal customers</li>
+</ul>
+<p><strong>3. Key Retention-at-Risk Customers (Cluster 0)</strong></p>
+<ul>
+<li>These customers have the maximum time since last flight (R) and relatively small values in F, M, L, and C</li>
+<li>Their last flight was relatively long ago, and they have not recently flown with this airline</li>
+<li>Customer value change uncertainty is very high. The airline should monitor these customers’ recent consumption time and frequency changes to detect abnormal consumption patterns, compile customer lists, establish key contact, and employ certain marketing tactics to extend customer lifecycle</li>
+</ul>
+<p><strong>4. General Customers (Cluster 4)</strong></p>
+<ul>
+<li>These customers have relatively minimal membership duration (L) but relatively average overall feature values</li>
+<li>Compared to other clusters, their R, F, M, and C are not prominent — they are normal passengers with a high proportion of new users</li>
+</ul>
+<p><strong>5. Low-Value Customers (Cluster 3)</strong></p>
+<ul>
+<li>These customers have low flight frequency (F) or flight mileage (M), long membership duration (L) and time since last flight (R), and the highest average discount rate (C)</li>
+<li>They may prefer economy cabin travel or are customers who travel infrequently but choose premium cabins</li>
+<li>They are low-value users for the airline with limited benefit to the company</li>
+</ul>
+<p><strong>Customer Value Classification Summary:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Value Rank</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cluster2</td>
+<td>1</td>
+<td>Key Retention Customers</td>
+</tr>
+<tr>
+<td>Cluster1</td>
+<td>2</td>
+<td>Key Development Customers</td>
+</tr>
+<tr>
+<td>Cluster0</td>
+<td>3</td>
+<td>Key Retention-at-Risk Customers</td>
+</tr>
+<tr>
+<td>Cluster4</td>
+<td>4</td>
+<td>General Customers</td>
+</tr>
+<tr>
+<td>Cluster3</td>
+<td>5</td>
+<td>Low-Value Customers</td>
+</tr>
+</tbody></table>
+<h3 id="7-3-Marketing-Recommendations"><a href="#7-3-Marketing-Recommendations" class="headerlink" title="7.3 Marketing Recommendations"></a>7.3 Marketing Recommendations</h3><h4 id="7-3-1-Membership-Tier-Management"><a href="#7-3-1-Membership-Tier-Management" class="headerlink" title="7.3.1 Membership Tier Management"></a>7.3.1 Membership Tier Management</h4><p>Based on the customer clustering results, airline members can be divided into multiple different types and assigned different membership tiers. By calculating scores according to certain criteria, members can be classified into ordinary members and core members. Becoming a core member requires accumulating a certain amount of flight mileage within a specified period. Upon meeting the score requirements, members become core members within the validity period and enjoy corresponding premium services. As the validity period approaches its end, relevant evaluation methods determine whether the customer qualifies to continue as a core member, followed by appropriate tier upgrades or downgrades.</p>
+<p>Additionally, promotions can be implemented on this basis. Before the membership tier evaluation period, the airline can appropriately remind high-consumption customers who are close to but have not yet met the requirements, and implement accelerated upgrade or promotional activities to stimulate their consumption to reach the corresponding indicators. This not only generates revenue but also improves customer satisfaction and expands the enterprise’s core member base.</p>
+<h4 id="7-3-2-Points-Redemption-Incentives"><a href="#7-3-2-Points-Redemption-Incentives" class="headerlink" title="7.3.2 Points Redemption Incentives"></a>7.3.2 Points Redemption Incentives</h4><p>In corporate marketing processes, first-time redemption or free gifts are commonly used to attract customers. In formulating airline marketing strategies, first-time redemption can be enabled only when customer-end mileage or flight segments accumulate to a certain level. Data analysis reveals that the airline’s customer enthusiasm for points redemption is not high. Points-based ticket discounts can be used to attract customers, stimulating their loyalty to the airline and improving service satisfaction.</p>
+<p>On the other hand, there may be an information gap issue where some customers are unaware of the points redemption model. Measures the airline can take include extracting members from the database who are close to but have not yet met the first-time redemption standards and providing them with SMS or phone call reminders or promotions.</p>
+<h4 id="7-3-3-Co-branded-and-Bundled-Sales"><a href="#7-3-3-Co-branded-and-Bundled-Sales" class="headerlink" title="7.3.3 Co-branded and Bundled Sales"></a>7.3.3 Co-branded and Bundled Sales</h4><p>Measures such as issuing co-branded cards with banks, offering points for phone bill top-ups, and collaborating with other e-commerce platforms to issue ticket packages can improve customer loyalty. This enables customers to earn the company’s points through consumption with other enterprises, strengthening their connection with the company, expanding the company’s business coverage, increasing the airline’s visibility in other domains, and enhancing customer loyalty. Increasing user stickiness, maintaining customer relationships, and maximizing the interactive value between the company and customers throughout the lifecycle.</p>
+<hr>
+<h2 id="8-Appendix"><a href="#8-Appendix" class="headerlink" title="8 Appendix"></a>8 Appendix</h2><h3 id="8-1-References"><a href="#8-1-References" class="headerlink" title="8.1 References"></a>8.1 References</h3><p>[1] Hu Hai. Enterprise Marketing Platform Customer Value Analysis Based on Improved RFM Model [J]. Marketing World, 2022(15): 11-13.</p>
+<p>[2] Wang Runqing. Research on Airline Passenger Online Ticket Purchasing Behavior Based on Clustering Analysis [D]. Civil Aviation University of China, 2020.</p>
+<p>[3] Yang Jiaxin. Sina Weibo User Value Analysis Based on Improved RFM Model [D]. Guizhou University of Finance and Economics, 2022.</p>
+<p>[4] Yan Chun, Liu Lu. Non-life Insurance Customer Segmentation Research Based on Improved SOM Neural Network Model and RFM Model [J]. Data Analysis and Knowledge Discovery, 2020, 4(04): 83-90.</p>
+<p>[5] Wang Changqiong, Qiu Jie, Cao Mieqing, Wang Yanli. Urban Express Customer Clustering Research Based on Spectral Clustering Algorithm [J]. Journal of Wuhan University of Technology: Information &amp; Management Engineering Edition, 2018, 40(5): 620-624.</p>
+<p>[6] Li Weikang, Yang Xiaobing. Application of an Improved RFM Model in Online Store Customer Segmentation [J]. Journal of China Jiliang University, 2020, 31(01): 85-91+134.</p>
+<p>[7] Han Shilian. Logistics Distribution Route Clustering Optimization Based on Customer Dynamic Demand Attributes [J]. Journal of Systems &amp; Management, 2016, 25(6): 1146-1153.</p>
+<p>[8] Zhu Yuanhai, Lin Quan, Wan Jie. A Fuzzy K-Means Customer Clustering Algorithm Combined with PSOA [J]. Computer Engineering &amp; Science, 2009, 31(12): 74-76.</p>
+<p>[9] Ye Miaoqun. Web Customer Clustering Based on Hybrid K-Medoids [J]. Journal of Jiaxing University, 2005, 17(3): 54-56.</p>
+<h3 id="8-2-Reference-Web-Resources"><a href="#8-2-Reference-Web-Resources" class="headerlink" title="8.2 Reference Web Resources"></a>8.2 Reference Web Resources</h3><p>[1] CSDN - pySpark Data Analysis Case: Airline Customer Clustering Analysis</p>
+<p>[2] Python Airline Customer Value Analysis</p>
+<p>[3] Learn Python from Scratch (Part 10) — K-Means: Using sklearn Module for Mall Customer Clustering</p>
+<p>[4] Airline Customer Value Clustering Analysis Based on PySpark</p>
+<p>[5] RFM - K-means Clustering Principles, Limitations, and Corresponding Improvements</p>
+<h3 id="8-3-File-Descriptions"><a href="#8-3-File-Descriptions" class="headerlink" title="8.3 File Descriptions"></a>8.3 File Descriptions</h3><h4 id="CSV-Files"><a href="#CSV-Files" class="headerlink" title="CSV Files"></a>CSV Files</h4><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type_result.csv</td>
+<td>Customer clustering results and corresponding feature file</td>
+</tr>
+<tr>
+<td>data_LRFMC_standard.csv</td>
+<td>Customer feature standardized DataFrame</td>
+</tr>
+<tr>
+<td>data_LRFMC.csv</td>
+<td>Classification result data DataFrame</td>
+</tr>
+<tr>
+<td>type_des.csv</td>
+<td>Source data description</td>
+</tr>
+<tr>
+<td>des_air_data.csv</td>
+<td>Source data description</td>
+</tr>
+</tbody></table>
+<h4 id="Python-Source-Files"><a href="#Python-Source-Files" class="headerlink" title="Python Source Files"></a>Python Source Files</h4><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pre_analyse.py</td>
+<td>Source data exploratory analysis and visualization</td>
+</tr>
+<tr>
+<td>K_means.py</td>
+<td>Clustering solution and clustering result visualization</td>
+</tr>
+<tr>
+<td>Pre_resolve.py</td>
+<td>Data cleaning, data preprocessing, and clustering number exploration</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p><strong>Author:</strong> Ying Minjie (202021130214)<br><strong>Major:</strong> Big Data Management 2001 - School of Information and Safety Engineering<br><strong>Tech Stack:</strong> PyCharm + Miniconda + PySpark + Python 3.9<br><strong>Key Libraries:</strong> pandas, numpy, sklearn, pyspark.ml.clustering, seaborn, matplotlib, missingno</p>
+</blockquote>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> Airline Customer K-means Clustering Analysis Based on LRFMC Model</li>
+        <li><strong>Author:</strong> MinjieY</li>
+        <li><strong>Created at
+                :</strong> 2026-08-06 00:00:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-08-06 12:37:36
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://github.com/MinjieY/post/8115aa0e.html
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/PySpark/">#PySpark</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/K-means/">#K-means</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/LRFMC/">#LRFMC</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Data-Mining/">#Data Mining</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Clustering/">#Clustering</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Airlines/">#Airlines</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Customer-Segmentation/">#Customer Segmentation</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/94035069.html" title="Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data" class="!max-w-none">
+  <span class="title">Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data</span>
+</a><a class="recommended-article-item" href="/post/deab04e1.html" title="前言·新的开始" rel="bookmark">
+  <img src="/images/hello-1.jpg" alt="前言·新的开始" class="!max-w-none">
+  <span class="title">前言·新的开始</span>
+</a><a class="recommended-article-item" href="/post/339bc965.html" title="Big Data Analysis of LOL Player Types and Victory Conditions" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="Big Data Analysis of LOL Player Types and Victory Conditions" class="!max-w-none">
+  <span class="title">Big Data Analysis of LOL Player Types and Victory Conditions</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/94035069.html" title="Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data" class="!max-w-none">
+  <span class="title">Loan Default Risk Assessment Based on ANN Neural Networks — A Case Study of Lending Club Data</span>
+</a><a class="recommended-article-item" href="/post/deab04e1.html" title="前言·新的开始" rel="bookmark">
+  <img src="/images/hello-1.jpg" alt="前言·新的开始" class="!max-w-none">
+  <span class="title">前言·新的开始</span>
+</a></div>
+   </div>
+  </div>
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/post/f175caa6.html">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">基于LRFMC模型的航空公司客户K-means聚类分析</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/post/8f8f4947.html">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.10/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            (function() {
+                const startPath = location.pathname;
+                const startTime = Date.now();
+                const retryDelay = 200;
+                const retryLimit = 5000;
+
+                const runTwikoo = () => {
+                    if (location.pathname !== startPath) {
+                        return;
+                    }
+
+                    const container = document.getElementById('twikoo-comment');
+                    if (!container || typeof twikoo === 'undefined') {
+                        if (Date.now() - startTime < retryLimit) {
+                            setTimeout(runTwikoo, retryDelay);
+                        }
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    twikoo.init({
+                        el: '#twikoo-comment',
+                        envId: 'https://hexoblogcomment.vercel.app',
+                        path: location.pathname,
+                    });
+                };
+
+                runTwikoo();
+            })();
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Airline Customer K-means Clustering Analysis Based on LRFMC Model</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Introduction"><span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Literature-Review"><span class="nav-text">2 Literature Review</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Customer-Value-Segmentation"><span class="nav-text">2.1 Customer Value Segmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Customer-Clustering-Algorithms"><span class="nav-text">2.2 Customer Clustering Algorithms</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Research-Content"><span class="nav-text">3 Research Content</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Research-Approach"><span class="nav-text">4 Research Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RFM-vs-LRFMC-Model-Comparison"><span class="nav-text">RFM vs LRFMC Model Comparison</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Data-Preprocessing"><span class="nav-text">5 Data Preprocessing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Exploratory-Data-Analysis"><span class="nav-text">5.1 Exploratory Data Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-Data-Preprocessing"><span class="nav-text">5.2 Data Preprocessing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-Data-Transformation"><span class="nav-text">5.3 Data Transformation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Modeling-Process"><span class="nav-text">6 Modeling Process</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-Model-Preparation"><span class="nav-text">6.1 Model Preparation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-Model-Establishment"><span class="nav-text">6.2 Model Establishment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-Model-Solution"><span class="nav-text">6.3 Model Solution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-Model-Improvement-Analysis"><span class="nav-text">6.4 Model Improvement Analysis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Results-Analysis"><span class="nav-text">7 Results Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-Customer-Feature-Dimension"><span class="nav-text">7.1 Customer Feature Dimension</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-Customer-Group-Dimension"><span class="nav-text">7.2 Customer Group Dimension</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-Marketing-Recommendations"><span class="nav-text">7.3 Marketing Recommendations</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-Appendix"><span class="nav-text">8 Appendix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-References"><span class="nav-text">8.1 References</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-Reference-Web-Resources"><span class="nav-text">8.2 Reference Web Resources</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-File-Descriptions"><span class="nav-text">8.3 File Descriptions</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">MinjieY</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        22 posts in total
+                    </span>
+                    
+                        <span>
+                            41.4k words in total
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                "></a></div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<!-- Language Switcher (always visible above the gear) -->
+	
+		
+		<div class="lang-switcher-wrapper">
+			<a class="right-bottom-tools lang-switcher flex justify-center items-center" href="/zh-CN/post/8115aa0e.html" title="Switch to zh-CN">
+				<span class="lang-label">中</span>
+			</a>
+		</div>
+	
+
+	<ul class="hidden-tools-list">
+		
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>

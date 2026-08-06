@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en,zh-CN,default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="MinjieY">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://minjiey.github.io/post/2fdb6b50.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例">
+<meta property="og:url" content="https://minjiey.github.io/post/2fdb6b50.html">
+<meta property="og:site_name" content="Aria Ing&#39;s Blog">
+<meta property="og:description" content="Hexo Theme Redefine.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2024-04-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-06T04:37:36.582Z">
+<meta property="article:author" content="Aria Ying">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="数据挖掘">
+<meta property="article:tag" content="ANN">
+<meta property="article:tag" content="神经网络">
+<meta property="article:tag" content="贷款风险评估">
+<meta property="article:tag" content="Lending Club">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/111.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/111.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/111.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例 | Aria Ing&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":["en","zh-CN","default"],"path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"https://blog.csdn.net/weixin_50932611?type=blog","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Aria Ing&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                                        >
+                                    <i class="fa-regular fa-chart-bar fa-fw"></i>
+                                    状态
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about/">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://minjie.com">
+                                                    BLOG
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50932611?type=blog"
+                        >
+                            <span>
+                                状态
+                            </span>
+                            
+                                <i class="fa-regular fa-chart-bar fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about/">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>Categories</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">67</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">22</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/xiuzhi_figure.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8C%E5%9F%BA%E4%BA%8EANN%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E8%B4%B7%E6%AC%BE%E5%86%B3%E7%AD%96%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E2%80%94%E2%80%94%E4%BB%A5Lending%20Club%E6%95%B0%E6%8D%AE%E4%B8%BA%E4%BE%8B%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2F2fdb6b50.html" title="给作者发邮件">
+						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
+					</a>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-04-28</span>
+        <span class="mobile">2024-04-28</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-08-06 12:37:36</span>
+            <span class="mobile">2026-08-06 12:37:36</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">数据科学</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/">数据挖掘</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ANN/">ANN</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">神经网络</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%B4%B7%E6%AC%BE%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0/">贷款风险评估</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Lending-Club/">Lending Club</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>4.1k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>14 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文针对P2P网贷市场中的信贷风险预测问题进行了深入研究。通过对Lending Club平台2007年至2020年总计2,925,493行数据、142个字段的贷款信息进行数据挖掘，综合借款人的基础历史信息与借款信息，提出基于贷款申请信息的属性划分方法，并结合客户细分形成信贷数据对象。</p>
+<p>在数据预处理阶段，通过空值和重复行删除、离群异常值去除、单位和符号去除以及数据归一化处理来确保数据集质量。通过特征工程（特征衍生、特征抽象和特征缩放）进一步优化数据。使用Keras调谐器进行超参数调优，最终建立ANN网络模型对向量化特征进行分类，准确率达到**84.52%**，显著优于逻辑回归模型（56.81%）和XGBoost模型（64.94%）。</p>
+<p><strong>关键词</strong>：数据挖掘；贷款；风险评估；ANN人工神经网络</p>
+<hr>
+<h2 id="一、研究背景与现状"><a href="#一、研究背景与现状" class="headerlink" title="一、研究背景与现状"></a>一、研究背景与现状</h2><h3 id="1-1-研究背景"><a href="#1-1-研究背景" class="headerlink" title="1.1 研究背景"></a>1.1 研究背景</h3><p>在传统的贷款决策过程中，金融机构主要依赖借款人的征信、职业、收入等基础信息来评估其还款能力和意愿，然而这些信息往往无法全面反映借款人的真实风险状况。数据挖掘技术可以从多个维度获取借款人的信息，对借款人的历史交易、行为轨迹等数据进行深入分析，在风险出现前做出预警。</p>
+<p>Lending Club成立于2007年，曾是美国最早、业务量最大、最为著名的P2P网贷机构。其官方发布的292万美国人的网络贷款数据集跨时13年，包含年龄、收入、职位、地理位置、贷款目的、信用评级等海量信息，是理想的机器学习建模数据集。</p>
+<h3 id="1-2-研究现状"><a href="#1-2-研究现状" class="headerlink" title="1.2 研究现状"></a>1.2 研究现状</h3><p>目前的P2P网贷研究集中在运营模式、交易行为、借贷风险和社会网络四个方面。学者们对网络贷款风险研究多基于单向和消费者个人信息影响因素探究，均以欺诈和风险研究为导向，但现实中多方面因素的影响难以全面考虑。</p>
+<p>在网贷信用风险评测模型建立层面，定性与定量相结合以及契合风险评估的多类型复杂系统建模方法被广泛应用到违约风险评估领域，多种机器学习方法被用于风险预测是目前的发展趋势。</p>
+<p><strong>本文的研究目标</strong>：</p>
+<ul>
+<li>综合借款人的基础历史信息与借款信息，针对信贷数据繁杂且信息混杂的问题，进行数据理解与属性划分</li>
+<li>结合文本类数据与时间序列数据进行风险建模，讨论贷款的风险类别</li>
+<li>根据预测结果将信贷客户分为三类：全额结清、拖欠、超时</li>
+<li>挖掘客户细分类间的重要风险特征，为信贷客户细分提供视角和方法参考</li>
+</ul>
+<p>论文整体结构如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image1.png"
+                      alt="论文结构图"
+                ></p>
+<hr>
+<h2 id="二、相关理论与方法"><a href="#二、相关理论与方法" class="headerlink" title="二、相关理论与方法"></a>二、相关理论与方法</h2><h3 id="2-1-数据挖掘在贷款决策中的应用"><a href="#2-1-数据挖掘在贷款决策中的应用" class="headerlink" title="2.1 数据挖掘在贷款决策中的应用"></a>2.1 数据挖掘在贷款决策中的应用</h3><p>在进行贷款决策评估时，数据挖掘技术可以帮助金融机构更准确地识别潜在的优质客户和不良客户。基于大样本的海量数据分析，使用大数据挖掘技术可以根据科学的算法发现隐藏在数据中的规律和模式，更准确地预测借款人的还款能力和意愿。这有助于金融机构制定更合理的贷款策略，提高贷款审批的准确性和效率。</p>
+<p>在客户风险评估时，数据挖掘技术可以应用于信用风险评估和诈骗检测等方面。通过对客户的信用历史、财务状况和交易记录等数据的深入分析，数据挖掘技术可以帮助金融机构更准确地评估客户的信用风险，降低坏账率。</p>
+<h3 id="2-2-ANN人工神经网络"><a href="#2-2-ANN人工神经网络" class="headerlink" title="2.2 ANN人工神经网络"></a>2.2 ANN人工神经网络</h3><p>本文采用人工神经网络（ANN）算法，通过模拟大脑生物神经网络的突触节点，实现对数据之间复杂关系的建模。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image2.png"
+                      alt="ANN神经网络示意图"
+                ></p>
+<p><strong>神经元结构</strong></p>
+<p>神经元也称”激活单元”，一般具有多个输入值及其权重、一个恒为1的截距项（偏置单元）和一个输出值 y：</p>
+<p>$$y &#x3D; g\left(\sum_{i&#x3D;1}^{n} w_i x_i + b\right)$$</p>
+<p>其中 $x_i$ 为该层神经元的输入，$w_i$ 为权重，$b$ 为偏置。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image3.png"
+                      alt="激活单元结构图"
+                ></p>
+<p>ANN的基本结构包括输入层、隐藏层和输出层。输入层接收原始数据，隐藏层对数据进行加工处理，输出层则产生最终的预测或分类结果。</p>
+<h3 id="2-3-Softmax激活函数"><a href="#2-3-Softmax激活函数" class="headerlink" title="2.3 Softmax激活函数"></a>2.3 Softmax激活函数</h3><p>Softmax激活函数通常用于多分类问题的输出层，可以将一个数值向量归一化为一个概率分布向量，各个概率之和为1。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image4.png"
+                      alt="Softmax作为输出层"
+                ></p>
+<p>对于第i个节点输出，Softmax函数为：</p>
+<p>$$\text{Softmax}(z_i) &#x3D; \frac{e^{z_i}}{\sum_{c&#x3D;1}^{C} e^{z_c}}$$</p>
+<p>其中 $z_i$ 为第i个节点的输出值，C为输出节点的个数（即分类类别个数）。Softmax函数将[2.0, 1.0, 0.1]的向量转化为[0.7, 0.2, 0.1]，各项之和为1。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image5.png"
+                      alt="Softmax函数处理过程示意图"
+                ></p>
+<h3 id="2-4-交叉熵损失函数"><a href="#2-4-交叉熵损失函数" class="headerlink" title="2.4 交叉熵损失函数"></a>2.4 交叉熵损失函数</h3><p>交叉熵损失函数主要用于评估分类问题中模型的预测概率分布与真实概率分布之间的差异程度：</p>
+<p>$$L &#x3D; -\sum_{c&#x3D;1}^{M} y_{ic} \log(p_{ic})$$</p>
+<p>其中M为类别的数量，$y_{ic}$ 为符号函数（样本i真实类别等于c取1，否则取0），$p_{ic}$ 为观测样本i属于类别c的预测概率。</p>
+<h3 id="2-5-随机森林"><a href="#2-5-随机森林" class="headerlink" title="2.5 随机森林"></a>2.5 随机森林</h3><p>随机森林是一种拓展的并行式集成学习方法，在训练基学习器时采用有放回采样的方式添加样本扰动，同时引入属性扰动：在选择划分属性时，先从候选属性集中随机挑选出一个包含K个属性的子集，再从中选择最优划分属性。</p>
+<hr>
+<h2 id="三、数据收集与预处理"><a href="#三、数据收集与预处理" class="headerlink" title="三、数据收集与预处理"></a>三、数据收集与预处理</h2><h3 id="3-1-数据来源"><a href="#3-1-数据来源" class="headerlink" title="3.1 数据来源"></a>3.1 数据来源</h3><p>数据集来源于Lending Club官方网站，包含了从2007年到2020年实际发放的贷款信息，总计2,925,493行数据，142个字段。这些字段包括：</p>
+<ul>
+<li><strong>借款人基本信息</strong>：年龄、性别、工作、工资收入等</li>
+<li><strong>借款详情</strong>：借款金额、借款期限、借款利率、借款用途等</li>
+<li><strong>借款的还款状态</strong></li>
+</ul>
+<h3 id="3-2-数据预处理"><a href="#3-2-数据预处理" class="headerlink" title="3.2 数据预处理"></a>3.2 数据预处理</h3><p><strong>自变量处理</strong>：常识性剔除贷款申请和发放无关特征，并剔除部分贷款发放后特征，最终得到18个样本观测值。对部分连续变量进行空值和离群值的去除处理。</p>
+<p><strong>因变量处理</strong>：将目标变量 <code>loan_status</code> 重新映射归类：</p>
+<ul>
+<li><strong>Paid</strong>（全额结清）：占比 86.8%</li>
+<li><strong>Default</strong>（欠款）：占比 12.3%</li>
+<li><strong>Late</strong>（超时&#x2F;延期）：占比 0.9%</li>
+</ul>
+<h3 id="3-3-描述性统计"><a href="#3-3-描述性统计" class="headerlink" title="3.3 描述性统计"></a>3.3 描述性统计</h3><p>从描述性统计来看：</p>
+<ul>
+<li>贷款金额标准差9,458.46，表明贷款金额有较大个体差异</li>
+<li>贷款期限中位数为36个月，标准差11.04个月</li>
+<li>利率中位数12.49%，标准差4.86%，分布较为集中</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image6.png"
+                      alt="数值型变量分布直方图"
+                ></p>
+<p>从直方图可以看出，大部份客户月付金额在0-500之间，贷款金额峰值在10,000左右，且与贷款利率有相似的分布，债务收入比非常低（均在50%以内）。值得注意的是贷款期限出现了极值明显的情况，大部分客户均为36月与60月的贷款期限。</p>
+<h3 id="3-4-多重共线性检验（VIF）"><a href="#3-4-多重共线性检验（VIF）" class="headerlink" title="3.4 多重共线性检验（VIF）"></a>3.4 多重共线性检验（VIF）</h3><p>VIF值可以表征自变量之间的共线性程度：</p>
+<p>$$\text{VIF}_i &#x3D; \frac{1}{1 - R_i^2}$$</p>
+<p>如果VIF值较高（通常&gt;10），表明该自变量与其他自变量高度相关，存在多重共线性问题。根据计算，部分变量存在严重的多重共线性，后续将通过主成分降维处理。</p>
+<h3 id="3-5-交叉验证与不均衡数据处理"><a href="#3-5-交叉验证与不均衡数据处理" class="headerlink" title="3.5 交叉验证与不均衡数据处理"></a>3.5 交叉验证与不均衡数据处理</h3><p>数据集的类别非常不均衡，需要进行交叉验证减少模型评估的方差。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image7.png"
+                      alt="数据类别分布饼图"
+                ></p>
+<p>针对数据不均衡问题，分别使用了欠采样和过采样进行比较：</p>
+<table>
+<thead>
+<tr>
+<th>采样方法</th>
+<th>Paid准确率</th>
+<th>Default准确率</th>
+<th>Late准确率</th>
+<th>综合准确率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>欠采样</td>
+<td>高</td>
+<td>中</td>
+<td>低</td>
+<td>13%</td>
+</tr>
+<tr>
+<td>过采样</td>
+<td>低</td>
+<td>0.88</td>
+<td>低</td>
+<td><strong>88%</strong></td>
+</tr>
+</tbody></table>
+<p>实验结果表明，<strong>随机过采样综合表现优于欠采样</strong>，过采样在Default类别上表现最好（精确率0.9、召回率0.97、F1分数0.93均&gt;0.9），因此选择随机过采样后的数据进行进一步分析。</p>
+<hr>
+<h2 id="四、变量选取与特征工程"><a href="#四、变量选取与特征工程" class="headerlink" title="四、变量选取与特征工程"></a>四、变量选取与特征工程</h2><h3 id="4-1-变量选取"><a href="#4-1-变量选取" class="headerlink" title="4.1 变量选取"></a>4.1 变量选取</h3><p>从借款人的各项数据中选择出对贷款决策和风险评估有影响的特征，分为两个方面：</p>
+<p><strong>贷款信息因素</strong>：月还款额、债务水平、贷款金额、贷款利率、贷款等级等</p>
+<p><strong>客户信息因素</strong>：</p>
+<ul>
+<li>硬性指标：年收入、债务收入比、住房情况</li>
+<li>个人因素：工作年限、贷款用途</li>
+<li>信用指标：逾期次数、开放信用账户数量、公开贬损记录、循环信用余额、收入验证、循环信用利用率</li>
+</ul>
+<h3 id="4-2-特征衍生——PCA数据降维"><a href="#4-2-特征衍生——PCA数据降维" class="headerlink" title="4.2 特征衍生——PCA数据降维"></a>4.2 特征衍生——PCA数据降维</h3><p>针对共线性非常显著的贷款信息类别数据，采用主成分分析（PCA）进行降维处理。</p>
+<p>第k个主成分的贡献率：</p>
+<p>$$\phi_k &#x3D; \frac{\lambda_k}{\sum_{i&#x3D;1}^{p} \lambda_i}$$</p>
+<p>因子载荷量：</p>
+<p>$$l_{ik} &#x3D; \sqrt{\lambda_k} \cdot e_{ik}$$</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image8.png"
+                      alt="PCA碎石图"
+                ></p>
+<p>从碎石图可知，选择<strong>3个主成分</strong>可以解释超95%的方差，降维后的三个主成分分别解释了60.56%、22.10%、16.50%的方差，共计**99.16%**的方差被捕获。</p>
+<h3 id="4-3-特征抽象"><a href="#4-3-特征抽象" class="headerlink" title="4.3 特征抽象"></a>4.3 特征抽象</h3><p><strong>独热编码</strong>：对房屋所有权、身份认证、贷款目的等文本列进行独热编码处理，转化为二进制变量。</p>
+<p><strong>数值映射</strong>：Lending Club将贷款等级分为A-G共7个等级，每个等级含1-5五个子级。将官方评定的等级按规则进行赋分处理，将抽象的等级数据量化为连续的数值变量。</p>
+<h3 id="4-4-特征缩放——归一化"><a href="#4-4-特征缩放——归一化" class="headerlink" title="4.4 特征缩放——归一化"></a>4.4 特征缩放——归一化</h3><p>将数据集进行量级归一化处理，消除不同特征之间巨大数值差异对模型训练的影响：</p>
+<p>$$x_{norm} &#x3D; \frac{x - x_{min}}{x_{max} - x_{min}}$$</p>
+<hr>
+<h2 id="五、模型建立与评估"><a href="#五、模型建立与评估" class="headerlink" title="五、模型建立与评估"></a>五、模型建立与评估</h2><h3 id="5-1-预测模型构建"><a href="#5-1-预测模型构建" class="headerlink" title="5.1 预测模型构建"></a>5.1 预测模型构建</h3><p>使用<strong>Keras调谐器</strong>进行超参数调优，关键参数设置如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>搜索范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>隐藏层数量</td>
+<td>4 ~ 20</td>
+</tr>
+<tr>
+<td>每层神经元数</td>
+<td>32 ~ 512（步长32）</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td>0.01, 0.001, 0.0001</td>
+</tr>
+<tr>
+<td>激活函数</td>
+<td>ReLU</td>
+</tr>
+<tr>
+<td>输出层激活</td>
+<td>Softmax</td>
+</tr>
+<tr>
+<td>损失函数</td>
+<td>多类交叉熵</td>
+</tr>
+</tbody></table>
+<p>根据调优结果，最佳模型配置为：<strong>全连接层数量为3层</strong>，分别有<strong>288、320、64个神经元</strong>。</p>
+<h3 id="5-2-模型性能评估"><a href="#5-2-模型性能评估" class="headerlink" title="5.2 模型性能评估"></a>5.2 模型性能评估</h3><p>模型的整体准确率达到 **84.52%**，详细指标如下：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>准确率（Accuracy）</td>
+<td>84.52%</td>
+</tr>
+<tr>
+<td>精确率（Precision）</td>
+<td>81.04%</td>
+</tr>
+<tr>
+<td>召回率（Recall）</td>
+<td>84.52%</td>
+</tr>
+<tr>
+<td>F1值</td>
+<td>82.40%</td>
+</tr>
+</tbody></table>
+<p>模型的准确率和召回率较高，精确率略有欠缺，可能是因为模型对某些类别边界不够敏感。</p>
+<h3 id="5-3-模型对比分析"><a href="#5-3-模型对比分析" class="headerlink" title="5.3 模型对比分析"></a>5.3 模型对比分析</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>准确率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ANN</strong></td>
+<td><strong>84.52%</strong></td>
+</tr>
+<tr>
+<td>XGBoost</td>
+<td>64.94%</td>
+</tr>
+<tr>
+<td>逻辑回归（LR）</td>
+<td>56.81%</td>
+</tr>
+</tbody></table>
+<p>ANN模型的整体性能最优越，在该数据集上显著优于XGBoost和逻辑回归模型。</p>
+<h3 id="5-4-模型优势"><a href="#5-4-模型优势" class="headerlink" title="5.4 模型优势"></a>5.4 模型优势</h3><ol>
+<li><strong>调优灵活性</strong>：通过Keras调谐器有效搜索最佳模型参数</li>
+<li><strong>概率输出预测</strong>：输出层采用Softmax激活函数，将输出转换为概率分布</li>
+<li><strong>损失函数处理</strong>：使用多类交叉熵损失函数，有效衡量预测误差</li>
+<li><strong>多性能指标评估</strong>：综合使用准确率、精确率、召回率、F1值全面评估模型</li>
+</ol>
+<hr>
+<h2 id="六、特征结果分析与业务建议"><a href="#六、特征结果分析与业务建议" class="headerlink" title="六、特征结果分析与业务建议"></a>六、特征结果分析与业务建议</h2><h3 id="6-1-关键特征识别"><a href="#6-1-关键特征识别" class="headerlink" title="6.1 关键特征识别"></a>6.1 关键特征识别</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image9.png"
+                      alt="数据集特征图"
+                ></p>
+<p>从特征分析来看，区分不同类别贷款客户的主要特征为：</p>
+<ul>
+<li><strong>term</strong>（贷款期限）</li>
+<li><strong>open_acc</strong>（开放信用账户数量）</li>
+<li><strong>int_rate</strong>（贷款利率）</li>
+<li><strong>sub_grade</strong>（贷款子等级）</li>
+<li><strong>revol_bal</strong>（循环信用余额）</li>
+<li><strong>installment</strong>（月付贷款）</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/ann/image10.png"
+                      alt="不同贷款类别标准化平均特征值图"
+                ></p>
+<h3 id="6-2-客户画像与建议"><a href="#6-2-客户画像与建议" class="headerlink" title="6.2 客户画像与建议"></a>6.2 客户画像与建议</h3><h4 id="Paid类型（已全部归还贷款）"><a href="#Paid类型（已全部归还贷款）" class="headerlink" title="Paid类型（已全部归还贷款）"></a>Paid类型（已全部归还贷款）</h4><p><strong>特征</strong>：贷款利率、贷款子等级、月付贷款均值显著低于其他类别。这类客户通常有良好的信用记录和还款能力。</p>
+<p><strong>建议</strong>：</p>
+<ul>
+<li>减少贷款门槛，降低贷款手续信息的繁琐程度</li>
+<li>增加此类贷款的投放规模，实现”薄利多销”</li>
+<li>提供更多优惠政策（如减免手续费、降低利率等）</li>
+</ul>
+<h4 id="Late类型（延期归还贷款）"><a href="#Late类型（延期归还贷款）" class="headerlink" title="Late类型（延期归还贷款）"></a>Late类型（延期归还贷款）</h4><p><strong>特征</strong>：平台评级较低，月付贷款和利率较高，还款压力大。</p>
+<p><strong>建议</strong>：</p>
+<ul>
+<li>进行定期或实时分析与监测</li>
+<li>安排专人进行还款规划提醒</li>
+<li>根据客户实际情况调整还款期限与月付贷款</li>
+<li>加强贷后管理</li>
+</ul>
+<h4 id="Default类型（欠款）"><a href="#Default类型（欠款）" class="headerlink" title="Default类型（欠款）"></a>Default类型（欠款）</h4><p><strong>特征</strong>：特征相对均衡，利率保持最高水平，存在一定风险。</p>
+<p><strong>建议</strong>：</p>
+<ul>
+<li>加强风险评估与特征权重分配</li>
+<li>增加个人身份或其他平台身份绑定</li>
+<li>联合其他企业对不守信用违约账户进行冻结或限制</li>
+<li>制定有效的催收策略</li>
+<li>将可能的坏账损失纳入考虑范围</li>
+</ul>
+<hr>
+<h2 id="七、研究结论与展望"><a href="#七、研究结论与展望" class="headerlink" title="七、研究结论与展望"></a>七、研究结论与展望</h2><h3 id="7-1-研究结论"><a href="#7-1-研究结论" class="headerlink" title="7.1 研究结论"></a>7.1 研究结论</h3><p>本文基于Lending Club 2007-2020年的292万条贷款数据，通过完整的数据挖掘流程，建立了ANN神经网络风险评估模型：</p>
+<ol>
+<li><strong>数据预处理</strong>：删除空值和重复行、去除离群异常值、正则化去除单位和符号、数据归一化处理</li>
+<li><strong>特征工程</strong>：PCA降维（6个高共线性特征→3个主成分，解释99.16%方差）、独热编码、数值映射、归一化</li>
+<li><strong>不平衡处理</strong>：过采样准确率88%远优于欠采样13%</li>
+<li><strong>模型效果</strong>：ANN准确率84.52%，显著优于XGBoost（64.94%）和逻辑回归（56.81%）</li>
+</ol>
+<h3 id="7-2-研究局限性"><a href="#7-2-研究局限性" class="headerlink" title="7.2 研究局限性"></a>7.2 研究局限性</h3><ol>
+<li><strong>数据指标局限</strong>：样本人群为美国公民，模型预测结果可能与东亚地区有差异</li>
+<li><strong>社会环境变化</strong>：2007-2020年间存在通货膨胀、利率调整、政策环境变化等因素，以及新冠疫情带来的行为变化</li>
+<li><strong>不平衡样本处理</strong>：仅选取了随机过采样和基于距离的过采样对比，还有更多方法可尝试</li>
+</ol>
+<h3 id="7-3-未来方向"><a href="#7-3-未来方向" class="headerlink" title="7.3 未来方向"></a>7.3 未来方向</h3><ul>
+<li>探索Stacking、Bagging、Boosting等集成学习方法</li>
+<li>自动化的特征选择和特征构造</li>
+<li>结合图像、声音、IP地址等多模态数据进行建模</li>
+<li>引入第三方消费平台数据（购物品牌及金额等）</li>
+<li>研究可解释性模型和特征主导的客户分类、风险量化评级</li>
+</ul>
+<hr>
+<h2 id="主要参考文献"><a href="#主要参考文献" class="headerlink" title="主要参考文献"></a>主要参考文献</h2><ol>
+<li>陈健巧. 普惠金融背景下P2P投资者的借贷行为影响因素研究[D]. 上海交通大学, 2022.</li>
+<li>蔡青松, 吴金迪, 白宸宇. 基于可解释集成学习的信贷违约预测[J]. 计算机系统应用, 2021, 30(12): 194-201.</li>
+<li>刘翱, 邓旭东, 童泽平等. P2P网络借贷研究进展[J]. 系统工程学报, 2020, 35(03): 402-415.</li>
+<li>刘帅祺. 商业银行互联网贷款信用风险评估及客户特征发现[D]. 北京科技大学, 2023.</li>
+<li>吴利娟, 孟泽远. 基于BP神经网络的银行机构绿色信贷风险评价研究[J]. 时代经贸, 2023, 20(11): 72-76.</li>
+<li>Artem Bequé, Stefan Lessmann. Extreme learning machines for credit scoring: An empirical evaluation[J]. Expert Systems With Applications, 2017, 86: 24-27.</li>
+<li>Wijaya C., Nugroho B. Y., &amp; Arkanuddin M. F. The Important Role of Financial Architecture Regulation Toward Fintech P2P Lending Ecosystem[J]. Indonesian Journal of Business and Entrepreneurship, 2024, 10(1), 13.</li>
+</ol>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</li>
+        <li><strong>作者:</strong> MinjieY</li>
+        <li><strong>创建于
+                :</strong> 2024-04-28 00:00:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2026-08-06 12:37:36
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/MinjieY/post/2fdb6b50.html
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">#机器学习</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/">#数据挖掘</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ANN/">#ANN</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#神经网络</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E8%B4%B7%E6%AC%BE%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0/">#贷款风险评估</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Lending-Club/">#Lending Club</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/f175caa6.html" title="基于LRFMC模型的航空公司客户K-means聚类分析" rel="bookmark">
+  <img src="/images/LRFMC/page1.png" alt="基于LRFMC模型的航空公司客户K-means聚类分析" class="!max-w-none">
+  <span class="title">基于LRFMC模型的航空公司客户K-means聚类分析</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a><a class="recommended-article-item" href="/post/9802408c.html" title="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" class="!max-w-none">
+  <span class="title">农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/f175caa6.html" title="基于LRFMC模型的航空公司客户K-means聚类分析" rel="bookmark">
+  <img src="/images/LRFMC/page1.png" alt="基于LRFMC模型的航空公司客户K-means聚类分析" class="!max-w-none">
+  <span class="title">基于LRFMC模型的航空公司客户K-means聚类分析</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/wallhaven-wqery6-light.webp" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a></div>
+   </div>
+  </div>
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/post/enterprise-carbon.html">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Research on Corporate Carbon Data Reliability and Dual-Carbon Goals in China</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/post/5347bf79.html">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">LOL游戏玩家类型与胜利条件大数据分析</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.10/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            (function() {
+                const startPath = location.pathname;
+                const startTime = Date.now();
+                const retryDelay = 200;
+                const retryLimit = 5000;
+
+                const runTwikoo = () => {
+                    if (location.pathname !== startPath) {
+                        return;
+                    }
+
+                    const container = document.getElementById('twikoo-comment');
+                    if (!container || typeof twikoo === 'undefined') {
+                        if (Date.now() - startTime < retryLimit) {
+                            setTimeout(runTwikoo, retryDelay);
+                        }
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    twikoo.init({
+                        el: '#twikoo-comment',
+                        envId: 'https://hexoblogcomment.vercel.app',
+                        path: location.pathname,
+                    });
+                };
+
+                runTwikoo();
+            })();
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E4%B8%8E%E7%8E%B0%E7%8A%B6"><span class="nav-text">一、研究背景与现状</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF"><span class="nav-text">1.1 研究背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%A0%94%E7%A9%B6%E7%8E%B0%E7%8A%B6"><span class="nav-text">1.2 研究现状</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%9B%B8%E5%85%B3%E7%90%86%E8%AE%BA%E4%B8%8E%E6%96%B9%E6%B3%95"><span class="nav-text">二、相关理论与方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E5%9C%A8%E8%B4%B7%E6%AC%BE%E5%86%B3%E7%AD%96%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-text">2.1 数据挖掘在贷款决策中的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-ANN%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-text">2.2 ANN人工神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Softmax%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-text">2.3 Softmax激活函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-text">2.4 交叉熵损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97"><span class="nav-text">2.5 随机森林</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86%E4%B8%8E%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-text">三、数据收集与预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90"><span class="nav-text">3.1 数据来源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-text">3.2 数据预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%BB%9F%E8%AE%A1"><span class="nav-text">3.3 描述性统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%A4%9A%E9%87%8D%E5%85%B1%E7%BA%BF%E6%80%A7%E6%A3%80%E9%AA%8C%EF%BC%88VIF%EF%BC%89"><span class="nav-text">3.4 多重共线性检验（VIF）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E4%B8%8E%E4%B8%8D%E5%9D%87%E8%A1%A1%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="nav-text">3.5 交叉验证与不均衡数据处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8F%98%E9%87%8F%E9%80%89%E5%8F%96%E4%B8%8E%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-text">四、变量选取与特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%8F%98%E9%87%8F%E9%80%89%E5%8F%96"><span class="nav-text">4.1 变量选取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%89%B9%E5%BE%81%E8%A1%8D%E7%94%9F%E2%80%94%E2%80%94PCA%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4"><span class="nav-text">4.2 特征衍生——PCA数据降维</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%89%B9%E5%BE%81%E6%8A%BD%E8%B1%A1"><span class="nav-text">4.3 特征抽象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%89%B9%E5%BE%81%E7%BC%A9%E6%94%BE%E2%80%94%E2%80%94%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-text">4.4 特征缩放——归一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E4%B8%8E%E8%AF%84%E4%BC%B0"><span class="nav-text">五、模型建立与评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E9%A2%84%E6%B5%8B%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA"><span class="nav-text">5.1 预测模型构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0"><span class="nav-text">5.2 模型性能评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E6%A8%A1%E5%9E%8B%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90"><span class="nav-text">5.3 模型对比分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8A%BF"><span class="nav-text">5.4 模型优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90%E4%B8%8E%E4%B8%9A%E5%8A%A1%E5%BB%BA%E8%AE%AE"><span class="nav-text">六、特征结果分析与业务建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E5%85%B3%E9%94%AE%E7%89%B9%E5%BE%81%E8%AF%86%E5%88%AB"><span class="nav-text">6.1 关键特征识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E5%AE%A2%E6%88%B7%E7%94%BB%E5%83%8F%E4%B8%8E%E5%BB%BA%E8%AE%AE"><span class="nav-text">6.2 客户画像与建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E7%A0%94%E7%A9%B6%E7%BB%93%E8%AE%BA%E4%B8%8E%E5%B1%95%E6%9C%9B"><span class="nav-text">七、研究结论与展望</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E7%A0%94%E7%A9%B6%E7%BB%93%E8%AE%BA"><span class="nav-text">7.1 研究结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E7%A0%94%E7%A9%B6%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-text">7.2 研究局限性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91"><span class="nav-text">7.3 未来方向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">主要参考文献</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">MinjieY</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 22 篇文章
+                    </span>
+                    
+                        <span>
+                            共 41.4k 字
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                "></a></div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<!-- Language Switcher (always visible above the gear) -->
+	
+		
+		<div class="lang-switcher-wrapper">
+			<a class="right-bottom-tools lang-switcher flex justify-center items-center" href="/zh-CN/post/2fdb6b50.html" title="Switch to zh-CN">
+				<span class="lang-label">中</span>
+			</a>
+		</div>
+	
+
+	<ul class="hidden-tools-list">
+		
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="图片查看器">
+	<button class="image-viewer-close" type="button" aria-label="关闭">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="上一页">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="关闭">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="下一页">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>

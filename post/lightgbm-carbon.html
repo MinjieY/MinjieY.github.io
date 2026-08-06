@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en,zh-CN">
+<html lang="en,zh-CN,default">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,21 +87,21 @@
         
         <meta name="description" content="Hexo Theme Redefine.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究">
+<meta property="og:title" content="Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach">
 <meta property="og:url" content="https://minjiey.github.io/post/lightgbm-carbon.html">
 <meta property="og:site_name" content="Aria Ing&#39;s Blog">
 <meta property="og:description" content="Hexo Theme Redefine.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2026-07-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-05T08:17:58.288Z">
+<meta property="article:modified_time" content="2026-08-06T03:31:42.829Z">
 <meta property="article:author" content="Aria Ying">
-<meta property="article:tag" content="碳排放">
-<meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="LightGBM">
 <meta property="article:tag" content="XAI">
-<meta property="article:tag" content="可解释AI">
-<meta property="article:tag" content="企业碳治理">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Carbon Emissions">
+<meta property="article:tag" content="Explainable AI">
+<meta property="article:tag" content="Corporate Carbon Governance">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
     
@@ -115,7 +115,7 @@
     
     <title>
         
-            企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究 | Aria Ing&#39;s Blog
+            Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach | Aria Ing&#39;s Blog
         
     </title>
 
@@ -151,8 +151,8 @@
     
 
     <script id="hexo-configurations">
-    window.config = {"hostname":"minjiey.github.io","root":"/","language":["en","zh-CN"],"path":"search.xml"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"https://blog.csdn.net/weixin_50932611?type=blog","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Guestbook":"/guestbook/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":["en","zh-CN","default"],"path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"https://blog.csdn.net/weixin_50932611?type=blog","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
     window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
     window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
     window.data = {"masonry":false};
@@ -287,12 +287,6 @@
                                             </li>
                                         
                                             <li>
-                                                <a href="/guestbook/">
-                                                    GUESTBOOK
-                                                </a>
-                                            </li>
-                                        
-                                            <li>
                                                 <a target="_blank" rel="noopener" href="https://minjie.com">
                                                     BLOG
                                                 </a>
@@ -406,11 +400,6 @@
                                 
                                     <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
                                         <a class=" text-third-text-color text-xl"
-                                           href="/guestbook/">GUESTBOOK</a>
-                                    </div>
-                                
-                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
-                                        <a class=" text-third-text-color text-xl"
                                            target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
                                     </div>
                                 
@@ -448,15 +437,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">67</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">22</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -480,10 +469,10 @@
 			
 			
 			
-			<img src="/images/LightGBM-Carbon.png" alt="企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+			<img src="/images/LightGBM-Carbon.png" alt="Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
 			
 			<div class="w-full flex items-center absolute bottom-0 justify-start">
-				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究</h1>
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach</h1>
 			</div>
 			
 		</div>
@@ -496,11 +485,11 @@
 			<div class="info flex flex-col justify-between">
 				<div class="author flex items-center">
 					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
-					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8C%E4%BC%81%E4%B8%9A%E7%89%B9%E5%BE%81%E5%AF%B9%E4%B8%AD%E5%9B%BD%E7%A2%B3%E6%8E%92%E6%94%BE%E7%9A%84%E9%9D%9E%E7%BA%BF%E6%80%A7%E4%B8%8E%E5%8D%8F%E5%90%8C%E5%BD%B1%E5%93%8D%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%20LightGBM-ALE%20%E7%9A%84%E7%A0%94%E7%A9%B6%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2Flightgbm-carbon.html" title="给作者发邮件">
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8CNonlinear%20and%20Synergistic%20Impacts%20of%20Firm%20Characteristics%20on%20Carbon%20Emissions%20in%20China%20%E2%80%94%20A%20LightGBM-ALE%20Approach%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2Flightgbm-carbon.html" title="给作者发邮件">
 						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
 					</a>
 					
-					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
 					
 				</div>
 				<div class="meta-info">
@@ -514,8 +503,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2026-08-05 16:17:58</span>
-            <span class="mobile">2026-08-05 16:17:58</span>
+            <span class="desktop">2026-08-06 11:31:42</span>
+            <span class="mobile">2026-08-06 11:31:42</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -529,7 +518,7 @@
                     
                         
                         <li>
-                            <a href="/categories/%E5%AD%A6%E6%9C%AF%E7%A0%94%E7%A9%B6/">学术研究</a>&nbsp;
+                            <a href="/categories/Academic-Research/">Academic Research</a>&nbsp;
                         </li>
                     
                     
@@ -543,15 +532,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/%E7%A2%B3%E6%8E%92%E6%94%BE/">碳排放</a>&nbsp;
-                    </li>
-                
-                    <li>
-                        | <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>&nbsp;
-                    </li>
-                
-                    <li>
-                        | <a href="/tags/LightGBM/">LightGBM</a>&nbsp;
+                        <a href="/tags/LightGBM/">LightGBM</a>&nbsp;
                     </li>
                 
                     <li>
@@ -559,11 +540,19 @@
                     </li>
                 
                     <li>
-                        | <a href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8AAI/">可解释AI</a>&nbsp;
+                        | <a href="/tags/Machine-Learning/">Machine Learning</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/%E4%BC%81%E4%B8%9A%E7%A2%B3%E6%B2%BB%E7%90%86/">企业碳治理</a>&nbsp;
+                        | <a href="/tags/Carbon-Emissions/">Carbon Emissions</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Explainable-AI/">Explainable AI</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Corporate-Carbon-Governance/">Corporate Carbon Governance</a>&nbsp;
                     </li>
                 
             </ul>
@@ -573,7 +562,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>320 Words</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>198 Words</span>
         </span>
     
     
@@ -597,17 +586,17 @@
 
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<h2 id="研究概述"><a href="#研究概述" class="headerlink" title="研究概述"></a>研究概述</h2><p>在全球加速迈向碳中和的背景下，企业作为能源消耗和温室气体排放的直接主体，是减排目标能否实现的关键环节。然而，现有研究多集中于国家、省域、城市等宏观层面，对企业这一微观排放主体的碳排放驱动机制关注不足。</p>
-<p>本研究基于大规模中国企业级碳排放数据，引入 <strong>LightGBM 梯度提升模型</strong>与<strong>可解释人工智能（XAI）技术</strong>，系统探讨企业社会经济特征对碳排放的<strong>非线性响应规律</strong>及其<strong>行业与城市异质性</strong>。区别于传统线性模型，本研究能够捕捉阈值效应、边际效应变化和阶段性转换等复杂模式，为制定差异化、精准化的企业碳减排政策提供科学依据。</p>
-<h2 id="研究方法"><a href="#研究方法" class="headerlink" title="研究方法"></a>研究方法</h2><ul>
-<li><strong>核心模型</strong>：LightGBM（Light Gradient Boosting Machine）</li>
-<li><strong>解释方法</strong>：SHAP（Shapley Additive Explanations）+ ALE（Accumulated Local Effects）</li>
-<li><strong>分析维度</strong>：全国尺度 → 行业异质性 → 城市异质性，逐层深入</li>
+			<h2 id="Research-Overview"><a href="#Research-Overview" class="headerlink" title="Research Overview"></a>Research Overview</h2><p>Against the backdrop of the global acceleration towards carbon neutrality, enterprises — as the direct entities of energy consumption and greenhouse gas emissions — are a critical link in whether emission reduction targets can be achieved. However, existing research has mostly concentrated on macro-level perspectives such as national, provincial, and urban scales, with insufficient attention paid to the carbon emission driving mechanisms at the micro-level of enterprises.</p>
+<p>This study, based on large-scale Chinese enterprise carbon emission data, introduces a <strong>LightGBM gradient boosting model</strong> coupled with <strong>Explainable AI (XAI) techniques</strong> to systematically investigate the <strong>nonlinear response patterns</strong> of corporate socioeconomic characteristics on carbon emissions and their <strong>industry and city heterogeneity</strong>. Unlike traditional linear models, this study captures complex patterns such as threshold effects, marginal effect changes, and stage transitions, providing a scientific basis for formulating differentiated and targeted corporate carbon reduction policies.</p>
+<h2 id="Research-Methods"><a href="#Research-Methods" class="headerlink" title="Research Methods"></a>Research Methods</h2><ul>
+<li><strong>Core Model</strong>: LightGBM (Light Gradient Boosting Machine)</li>
+<li><strong>Interpretation Methods</strong>: SHAP (Shapley Additive Explanations) + ALE (Accumulated Local Effects)</li>
+<li><strong>Analysis Dimensions</strong>: National scale → Industry heterogeneity → City heterogeneity, progressively deepening</li>
 </ul>
-<h2 id="作者"><a href="#作者" class="headerlink" title="作者"></a>作者</h2><p>Minjie Ying (重庆大学)</p>
+<h2 id="Author"><a href="#Author" class="headerlink" title="Author"></a>Author</h2><p>Minjie Ying (Chongqing University)</p>
 <hr>
 <blockquote>
-<p><strong>注</strong>：本文暂未正式发表，具体数据规模、实验结果及政策建议将在论文公开发布后补充介绍。</p>
+<p><strong>Note</strong>: This paper has not yet been formally published. Detailed data scale, experimental results, and policy recommendations will be supplemented upon publication.</p>
 </blockquote>
 
 		</div>
@@ -616,14 +605,14 @@
 		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
 			<div class="article-copyright-info-container">
     <ul>
-        <li><strong>Title:</strong> 企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究</li>
+        <li><strong>Title:</strong> Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach</li>
         <li><strong>Author:</strong> MinjieY</li>
         <li><strong>Created at
                 :</strong> 2026-07-04 00:00:00</li>
         
             <li>
                 <strong>Updated at
-                    :</strong> 2026-08-05 16:17:58
+                    :</strong> 2026-08-06 11:31:42
             </li>
         
         <li>
@@ -649,14 +638,6 @@
 		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/%E7%A2%B3%E6%8E%92%E6%94%BE/">#碳排放</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
-				<a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">#机器学习</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
 				<a href="/tags/LightGBM/">#LightGBM</a>&nbsp;
 			</li>
 			
@@ -665,11 +646,19 @@
 			</li>
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8AAI/">#可解释AI</a>&nbsp;
+				<a href="/tags/Machine-Learning/">#Machine Learning</a>&nbsp;
 			</li>
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/%E4%BC%81%E4%B8%9A%E7%A2%B3%E6%B2%BB%E7%90%86/">#企业碳治理</a>&nbsp;
+				<a href="/tags/Carbon-Emissions/">#Carbon Emissions</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Explainable-AI/">#Explainable AI</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Corporate-Carbon-Governance/">#Corporate Carbon Governance</a>&nbsp;
 			</li>
 			
 		</ul>
@@ -684,12 +673,12 @@
     <div class="recommended-article-group"><a class="recommended-article-item" href="/post/enterprise-carbon.html" title="中国企业碳数据可靠性与双碳目标研究简介" rel="bookmark">
   <img src="/images/enterpriseCarbon.png" alt="中国企业碳数据可靠性与双碳目标研究简介" class="!max-w-none">
   <span class="title">中国企业碳数据可靠性与双碳目标研究简介</span>
-</a><a class="recommended-article-item" href="/post/4960c6d9.html" title="Data initialization" rel="bookmark">
-  <img src="/images/wallhaven-wqery6-light.webp" alt="Data initialization" class="!max-w-none">
-  <span class="title">Data initialization</span>
-</a><a class="recommended-article-item" href="/post/8f8f4947.html" title="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" rel="bookmark">
-  <img src="/images/supply0.webp" alt="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" class="!max-w-none">
-  <span class="title">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</span>
+</a><a class="recommended-article-item" href="/post/8115aa0e.html" title="Airline Customer K-means Clustering Analysis Based on LRFMC Model" rel="bookmark">
+  <img src="/images/LRFMC/page1.png" alt="Airline Customer K-means Clustering Analysis Based on LRFMC Model" class="!max-w-none">
+  <span class="title">Airline Customer K-means Clustering Analysis Based on LRFMC Model</span>
+</a><a class="recommended-article-item" href="/post/deab04e1.html" title="前言·新的开始" rel="bookmark">
+  <img src="/images/hello-1.jpg" alt="前言·新的开始" class="!max-w-none">
+  <span class="title">前言·新的开始</span>
 </a></div>
    </div>
    <div class="recommended-mobile">
@@ -699,9 +688,9 @@
    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/enterprise-carbon.html" title="中国企业碳数据可靠性与双碳目标研究简介" rel="bookmark">
   <img src="/images/enterpriseCarbon.png" alt="中国企业碳数据可靠性与双碳目标研究简介" class="!max-w-none">
   <span class="title">中国企业碳数据可靠性与双碳目标研究简介</span>
-</a><a class="recommended-article-item" href="/post/4960c6d9.html" title="Data initialization" rel="bookmark">
-  <img src="/images/wallhaven-wqery6-light.webp" alt="Data initialization" class="!max-w-none">
-  <span class="title">Data initialization</span>
+</a><a class="recommended-article-item" href="/post/8115aa0e.html" title="Airline Customer K-means Clustering Analysis Based on LRFMC Model" rel="bookmark">
+  <img src="/images/LRFMC/page1.png" alt="Airline Customer K-means Clustering Analysis Based on LRFMC Model" class="!max-w-none">
+  <span class="title">Airline Customer K-means Clustering Analysis Based on LRFMC Model</span>
 </a></div>
    </div>
   </div>
@@ -710,12 +699,12 @@
 		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
 			
 			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/post/8f8f4947.html">
+				<a class="prev" rel="prev" href="/post/lightgbm-carbon.html">
 					<span class="left arrow-icon flex justify-center items-center">
 						<i class="fa-solid fa-chevron-left"></i>
 					</span>
 					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item truncate max-w-48">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</span>
+						<span class="post-nav-title-item truncate max-w-48">企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究</span>
 						<span class="post-nav-item">Prev posts</span>
 					</span>
 				</a>
@@ -802,8 +791,8 @@
 		<div class="post-toc-wrap">
 	<div class="post-toc">
 		<div class="toc-title">On this page</div>
-		<div class="page-title">企业特征对中国碳排放的非线性与协同影响——基于 LightGBM-ALE 的研究</div>
-		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E6%A6%82%E8%BF%B0"><span class="nav-text">研究概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E6%96%B9%E6%B3%95"><span class="nav-text">研究方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E8%80%85"><span class="nav-text">作者</span></a></li></ol>
+		<div class="page-title">Nonlinear and Synergistic Impacts of Firm Characteristics on Carbon Emissions in China — A LightGBM-ALE Approach</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Research-Overview"><span class="nav-text">Research Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Research-Methods"><span class="nav-text">Research Methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Author"><span class="nav-text">Author</span></a></li></ol>
 
 	</div>
 </div>
@@ -831,11 +820,11 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        7 posts in total
+                        22 posts in total
                     </span>
                     
                         <span>
-                            5.3k words in total
+                            41.4k words in total
                         </span>
                     
                 </p>
