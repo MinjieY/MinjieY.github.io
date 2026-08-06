@@ -94,7 +94,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2026-08-06T05:50:00.000Z">
-<meta property="article:modified_time" content="2026-08-06T06:48:07.039Z">
+<meta property="article:modified_time" content="2026-08-06T07:56:13.136Z">
 <meta property="article:author" content="Aria Ying">
 <meta property="article:tag" content="学位论文">
 <meta property="article:tag" content="重庆大学">
@@ -492,8 +492,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2026-08-06 14:48:07</span>
-            <span class="mobile">2026-08-06 14:48:07</span>
+            <span class="desktop">2026-08-06 15:56:13</span>
+            <span class="mobile">2026-08-06 15:56:13</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -543,7 +543,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>502 字</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>541 字</span>
         </span>
     
     
@@ -602,8 +602,16 @@
 </ul>
 </li>
 </ul>
-<h2 id="下载入口"><a href="#下载入口" class="headerlink" title="下载入口"></a>下载入口</h2><ul>
-<li><a class="link"   target="_blank" rel="noopener" href="https://pan.baidu.com/s/14hwmpeLireqXKad1Gqtqkw" >百度网盘分享链接<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（提取码：i372）</li>
+<h2 id="下载入口"><a href="#下载入口" class="headerlink" title="下载入口"></a>下载入口</h2><p>以下为可直接下载的文件入口：</p>
+<ul>
+<li><p><a href="../downloads/cqu-thesis-format/%E5%85%B3%E4%BA%8E%E5%8D%B0%E5%8F%91%E3%80%8A%E9%87%8D%E5%BA%86%E5%A4%A7%E5%AD%A6%E5%8D%9A%E5%A3%AB%E3%80%81%E7%A1%95%E5%A3%AB%E5%AD%A6%E4%BD%8D%E8%AE%BA%E6%96%87%E6%92%B0%E5%86%99%E6%A0%BC%E5%BC%8F%E6%A0%87%E5%87%86%E5%8F%8A%E8%A6%81%E6%B1%82%EF%BC%882019%E5%B9%B4%E4%BF%AE%E8%AE%A2%EF%BC%89%E3%80%8B%E7%9A%84%E9%80%9A%E7%9F%A5.doc">📄 下载通知文件</a></p>
+</li>
+<li><p><a href="../downloads/cqu-thesis-format/%E9%99%84%E4%BB%B6%EF%BC%9A%E9%87%8D%E5%BA%86%E5%A4%A7%E5%AD%A6%E5%8D%9A%E5%A3%AB%E3%80%81%E7%A1%95%E5%A3%AB%E5%AD%A6%E4%BD%8D%E8%AE%BA%E6%96%87%E6%92%B0%E5%86%99%E6%A0%BC%E5%BC%8F%E6%A0%87%E5%87%86%E5%8F%8A%E8%A6%81%E6%B1%82%EF%BC%882019%E5%B9%B4%E4%BF%AE%E8%AE%A2%EF%BC%89.docx">📄 下载附件文档</a></p>
+</li>
+<li><p><a href="../downloads/cqu-thesis-format/">📁 查看完整资料目录</a><br>网盘获取链接：</p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://pan.baidu.com/s/14hwmpeLireqXKad1Gqtqkw" >百度网盘分享链接<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（提取码：i372）</p>
+</li>
 </ul>
 
 		</div>
@@ -619,7 +627,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2026-08-06 14:48:07
+                    :</strong> 2026-08-06 15:56:13
             </li>
         
         <li>
@@ -891,6 +899,11 @@
 		</li>
 		
 
+		<!-- share -->
+		<li class="post-share-btn-item" id="post-share-btn" title="分享文章" aria-label="分享文章">
+			<i class="fa-solid fa-share-nodes"></i>
+		</li>
+
 		<!-- go comment -->
 		
 		<li class="go-comment">
@@ -899,6 +912,143 @@
 		
 	</ul>
 </div>
+
+<div id="post-share-modal" class="post-share-modal hidden" role="dialog" aria-modal="true" aria-label="分享文章">
+	<div class="post-share-modal-content">
+		<button class="post-share-modal-close" id="post-share-modal-close" aria-label="关闭">×</button>
+		<h3>分享这篇文章</h3>
+		<img id="post-share-qrcode" alt="文章分享二维码" />
+		<p class="post-share-url" id="post-share-url"></p>
+		<button class="post-share-copy-btn" id="post-share-copy-btn">复制链接</button>
+	</div>
+</div>
+
+<script>
+(function () {
+	const trigger = document.getElementById('post-share-btn');
+	const modal = document.getElementById('post-share-modal');
+	const closeBtn = document.getElementById('post-share-modal-close');
+	const copyBtn = document.getElementById('post-share-copy-btn');
+	const qrImg = document.getElementById('post-share-qrcode');
+	const urlBox = document.getElementById('post-share-url');
+	if (!trigger || !modal) return;
+
+	const shareUrl = window.location.href;
+	const shareTitle = document.title || '博客文章';
+	const shareText = document.querySelector('meta[name="description"]')?.content || '查看这篇文章';
+
+	const openModal = () => {
+		if (qrImg) {
+			qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(shareUrl);
+		}
+		if (urlBox) {
+			urlBox.textContent = shareUrl;
+		}
+		modal.classList.remove('hidden');
+	};
+
+	const closeModal = () => modal.classList.add('hidden');
+
+	trigger.addEventListener('click', async () => {
+		if (navigator.share) {
+			try {
+				await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+				return;
+			} catch (e) {}
+		}
+		openModal();
+	});
+
+	closeBtn?.addEventListener('click', closeModal);
+	modal?.addEventListener('click', function (e) {
+		if (e.target === modal) closeModal();
+	});
+	copyBtn?.addEventListener('click', async function () {
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+			copyBtn.textContent = '已复制';
+			setTimeout(() => {
+				copyBtn.textContent = '复制链接';
+			}, 1500);
+		} catch (e) {
+			window.prompt('复制链接', shareUrl);
+		}
+	});
+})();
+</script>
+
+<style>
+.post-share-btn-item {
+	cursor: pointer;
+}
+
+.post-share-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 1rem;
+}
+
+.post-share-modal.hidden {
+	display: none;
+}
+
+.post-share-modal-content {
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 1.2rem;
+	width: min(92vw, 320px);
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.post-share-modal-content h3 {
+	margin: 0 0 0.6rem;
+	font-size: 1rem;
+	color: var(--second-text-color);
+}
+
+.post-share-modal-content img {
+	width: 180px;
+	height: 180px;
+	margin: 0.5rem auto 0.8rem;
+	border-radius: 12px;
+	background: #fff;
+	padding: 0.35rem;
+}
+
+.post-share-url {
+	font-size: 0.8rem;
+	word-break: break-all;
+	color: var(--third-text-color);
+	margin-bottom: 0.8rem;
+}
+
+.post-share-copy-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.55rem 0.9rem;
+	background: var(--primary-color);
+	color: #fff;
+	cursor: pointer;
+}
+
+.post-share-modal-close {
+	position: absolute;
+	right: 0.8rem;
+	top: 0.8rem;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: var(--second-text-color);
+}
+</style>
 	</div>
 	
 

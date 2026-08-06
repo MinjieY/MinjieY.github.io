@@ -889,6 +889,11 @@
 		</li>
 		
 
+		<!-- share -->
+		<li class="post-share-btn-item" id="post-share-btn" title="分享文章" aria-label="分享文章">
+			<i class="fa-solid fa-share-nodes"></i>
+		</li>
+
 		<!-- go comment -->
 		
 		<li class="go-comment">
@@ -897,6 +902,143 @@
 		
 	</ul>
 </div>
+
+<div id="post-share-modal" class="post-share-modal hidden" role="dialog" aria-modal="true" aria-label="分享文章">
+	<div class="post-share-modal-content">
+		<button class="post-share-modal-close" id="post-share-modal-close" aria-label="关闭">×</button>
+		<h3>分享这篇文章</h3>
+		<img id="post-share-qrcode" alt="文章分享二维码" />
+		<p class="post-share-url" id="post-share-url"></p>
+		<button class="post-share-copy-btn" id="post-share-copy-btn">复制链接</button>
+	</div>
+</div>
+
+<script>
+(function () {
+	const trigger = document.getElementById('post-share-btn');
+	const modal = document.getElementById('post-share-modal');
+	const closeBtn = document.getElementById('post-share-modal-close');
+	const copyBtn = document.getElementById('post-share-copy-btn');
+	const qrImg = document.getElementById('post-share-qrcode');
+	const urlBox = document.getElementById('post-share-url');
+	if (!trigger || !modal) return;
+
+	const shareUrl = window.location.href;
+	const shareTitle = document.title || '博客文章';
+	const shareText = document.querySelector('meta[name="description"]')?.content || '查看这篇文章';
+
+	const openModal = () => {
+		if (qrImg) {
+			qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(shareUrl);
+		}
+		if (urlBox) {
+			urlBox.textContent = shareUrl;
+		}
+		modal.classList.remove('hidden');
+	};
+
+	const closeModal = () => modal.classList.add('hidden');
+
+	trigger.addEventListener('click', async () => {
+		if (navigator.share) {
+			try {
+				await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+				return;
+			} catch (e) {}
+		}
+		openModal();
+	});
+
+	closeBtn?.addEventListener('click', closeModal);
+	modal?.addEventListener('click', function (e) {
+		if (e.target === modal) closeModal();
+	});
+	copyBtn?.addEventListener('click', async function () {
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+			copyBtn.textContent = '已复制';
+			setTimeout(() => {
+				copyBtn.textContent = '复制链接';
+			}, 1500);
+		} catch (e) {
+			window.prompt('复制链接', shareUrl);
+		}
+	});
+})();
+</script>
+
+<style>
+.post-share-btn-item {
+	cursor: pointer;
+}
+
+.post-share-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 1rem;
+}
+
+.post-share-modal.hidden {
+	display: none;
+}
+
+.post-share-modal-content {
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 1.2rem;
+	width: min(92vw, 320px);
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.post-share-modal-content h3 {
+	margin: 0 0 0.6rem;
+	font-size: 1rem;
+	color: var(--second-text-color);
+}
+
+.post-share-modal-content img {
+	width: 180px;
+	height: 180px;
+	margin: 0.5rem auto 0.8rem;
+	border-radius: 12px;
+	background: #fff;
+	padding: 0.35rem;
+}
+
+.post-share-url {
+	font-size: 0.8rem;
+	word-break: break-all;
+	color: var(--third-text-color);
+	margin-bottom: 0.8rem;
+}
+
+.post-share-copy-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.55rem 0.9rem;
+	background: var(--primary-color);
+	color: #fff;
+	cursor: pointer;
+}
+
+.post-share-modal-close {
+	position: absolute;
+	right: 0.8rem;
+	top: 0.8rem;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: var(--second-text-color);
+}
+</style>
 	</div>
 	
 
