@@ -4492,6 +4492,15 @@ html.is-animating .transition-fade-down {
   border-radius: 14px 14px 0px 0px;
   margin: -12px -12px 0 -12px !important;
 }
+.post-page-container .article-content-container .recommended-article .recommended-article-group .recommended-article-item img.recommended-img-dark {
+  display: none;
+}
+.dark .post-page-container .article-content-container .recommended-article .recommended-article-group .recommended-article-item img.recommended-img-light {
+  display: none;
+}
+.dark .post-page-container .article-content-container .recommended-article .recommended-article-group .recommended-article-item img.recommended-img-dark {
+  display: flex;
+}
 .post-page-container .article-content-container .recommended-article .recommended-article-group .recommended-article-item span {
   margin-top: 0.5rem;
   display: block;
