@@ -1109,7 +1109,34 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
         </div>
         
             
-                <script data-swup-reload-script src="https://vercount.one/js"></script>
+                <script data-swup-reload-script>
+                    (function () {
+                        // Skip counter on local/dev environments to avoid inflating production stats.
+                        var host = window.location.hostname || '';
+                        var isLocal = !host
+                            || host === 'localhost'
+                            || host === '127.0.0.1'
+                            || host === '0.0.0.0'
+                            || host === '[::1]'
+                            || host.endsWith('.local')
+                            || host.endsWith('.localhost')
+                            || /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(host)
+                            || /^dev\./i.test(host);
+                        if (isLocal) {
+                            var uv = document.getElementById('busuanzi_value_site_uv');
+                            var pv = document.getElementById('busuanzi_value_site_pv');
+                            var pvpv = document.getElementById('busuanzi_value_page_pv');
+                            if (uv) uv.textContent = '—';
+                            if (pv) pv.textContent = '—';
+                            if (pvpv) pvpv.textContent = '—';
+                            return;
+                        }
+                        var s = document.createElement('script');
+                        s.src = 'https://vercount.one/js';
+                        s.async = true;
+                        document.head.appendChild(s);
+                    })();
+                </script>
             
             <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
                 

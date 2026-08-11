@@ -4689,6 +4689,12 @@ html.is-animating .transition-fade-down {
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--second-text-color);
+  text-decoration: none;
+  display: block;
+  transition: color 0.2s ease;
+}
+.home-sidebar-container .sidebar-content .author .name:hover {
+  color: var(--primary-color, #a31f34);
 }
 .home-sidebar-container .sidebar-content .author .label {
   text-align: center;
