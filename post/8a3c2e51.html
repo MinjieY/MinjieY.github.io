@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="MinjieY">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://minjiey.github.io/post/8a3c2e51.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析">
+<meta property="og:url" content="https://minjiey.github.io/post/8a3c2e51.html">
+<meta property="og:site_name" content="Aria Ing&#39;s Blog">
+<meta property="og:description" content="Hexo Theme Redefine.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-08-10T08:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-11T08:55:39.635Z">
+<meta property="article:author" content="Aria Ying">
+<meta property="article:tag" content="逻辑回归">
+<meta property="article:tag" content="SPSS">
+<meta property="article:tag" content="非参数检验">
+<meta property="article:tag" content="Mann-Whitney U">
+<meta property="article:tag" content="Kruskal-Wallis H">
+<meta property="article:tag" content="Wilcoxon符号秩检验">
+<meta property="article:tag" content="Spearman相关">
+<meta property="article:tag" content="供应商数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/111.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/111.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/111.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析 | Aria Ing&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":{"light":"/images/bk-whilte.jpg","dark":"/images/bk-black.jpg"},"skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/bk-whilte.jpg","dark":"/images/bk-black.jpg"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Updates":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Updates":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.i18n = {"search":"站内搜索您需要的内容...","toc":"目录","prev":"上一页","next":"下一页","prev_posts":"上一篇","next_posts":"下一篇","page":"第 %d 页","recent_posts":"最新文章","share":"分享","powered_by":"由 %s 驱动","theme":"主题","rss_feed":"RSS Feed","category":"分类","categories":"分类","tag":"标签","tags":"标签","post":"文章","posts":"文章","tagcloud":"标签云","comment":"评论","comments":"评论","top":"置顶","sticky":"置顶","go-back-home":"回到首页","masonry_loading":"照片加载中...","image_viewer":"图片查看器","close":"关闭","exif":{"title":"EXIF","cards":{"camera":"相机","lens":"镜头","exposure":"曝光","other":"其他"},"fields":{"make":"品牌","model":"机型","date_taken":"拍摄时间","lens_model":"镜头","focal_length":"焦距","focus_mode":"对焦模式","shutter":"快门","aperture":"光圈","iso":"感光度","exposure_program":"曝光程序","exposure_compensation":"曝光补偿","metering_mode":"测光模式","flash":"闪光灯","white_balance":"白平衡","latitude":"纬度","longitude":"经度","altitude":"海拔"},"status":{"loading":"加载中...","no_exif":"无 EXIF 信息","library_missing":"EXIF 库未加载","image_source_missing":"图片地址不可用","unavailable":"EXIF 不可用（可能被 CORS 阻止或缺少元数据）","flag_unavailable":"EXIF 不可用"}},"home":"首页","archive":"动态","archives":"动态","about":"关于","links":"链接","link":"链接","friends":"友情链接","friend":"友情链接","timeline":"时间轴","shuoshuo":"说说","bookmarks":"书签","site_uv":"访问人数","site_pv":"总访问量","read_more":"阅读全文","wordcount":"字","min2read":"分钟","changelog":"更新日志","status":"状态","runtime":"博客已运行","days":"天","hours":"小时","minutes":"分钟","seconds":"秒","optimized_by":"并由 Evan 进行优化","rights":"版权所有","site_posts":"共撰写了 %s 篇文章","site_wordcount":"共 %s 字","copyright":{"title":"标题","author":"作者","link":"链接","create_time":"创建于","update_time":"更新于","license_title":"版权声明","license_content":"本文章采用 %s 进行许可。","all_rights_reserved":"版权所有 &#169 %s，禁止转载。","public_domain":"本文为公有领域作品，可自由转载、引用。"},"ago":{"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"},"create_time":"创建","update_time":"更新","expired":"这篇文章最后更新于 %s 天前，内容可能已经过时。"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/fontawesome/light.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Aria Ing&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    分类
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    UPDATES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about/">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://minjie.com">
+                                                    BLOG
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                分类
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                UPDATES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about/">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">48</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">11</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="https://next.informat.cn/web0/file/fieldkey/lz943002ds9p0/article_category/coverList/scng0sj677qt5eitemd46.jpg" alt="谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/xiuzhi_figure.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8C%E8%B0%81%E5%9C%A8%E6%8B%96%E5%9E%AE%E4%BE%9B%E5%BA%94%E5%95%86BOM%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AE%8C%E6%95%B4%E5%BA%A6%EF%BC%9F%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E29%E5%AE%B6%E4%BE%9B%E5%BA%94%E5%95%86%E7%9A%84%E9%9D%9E%E5%8F%82%E6%95%B0%E6%A3%80%E9%AA%8C%E4%B8%8E%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2F8a3c2e51.html" title="给作者发邮件">
+						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
+					</a>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-08-10 16:00</span>
+        <span class="mobile">2026-08-10 16:00</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-08-11 16:55:39</span>
+            <span class="mobile">2026-08-11 16:55:39</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">数据科学</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/">逻辑回归</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SPSS/">SPSS</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E9%9D%9E%E5%8F%82%E6%95%B0%E6%A3%80%E9%AA%8C/">非参数检验</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Mann-Whitney-U/">Mann-Whitney U</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Kruskal-Wallis-H/">Kruskal-Wallis H</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Wilcoxon%E7%AC%A6%E5%8F%B7%E7%A7%A9%E6%A3%80%E9%AA%8C/">Wilcoxon符号秩检验</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Spearman%E7%9B%B8%E5%85%B3/">Spearman相关</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BE%9B%E5%BA%94%E5%95%86%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">供应商数据分析</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>3.4k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>14 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="一、研究背景"><a href="#一、研究背景" class="headerlink" title="一、研究背景"></a>一、研究背景</h2><p>针对 29 家上线供应商的 BOM（物料清单）数据，分析其数据完整度的影响因素。由于样本量较小且分布非正态，采用非参数检验方法为主，辅以多元线性回归与 Logistic 回归进行效应量化，探索影响数据完整性的关键因素。</p>
+<hr>
+<h2 id="二、正态性检验"><a href="#二、正态性检验" class="headerlink" title="二、正态性检验"></a>二、正态性检验</h2><p>采用 Kolmogorov-Smirnov 与 Shapiro-Wilk 两种方法检验各变量的正态性。</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>K-S 统计</th>
+<th>K-S 自由度</th>
+<th>K-S 显著性</th>
+<th>S-W 统计</th>
+<th>S-W 自由度</th>
+<th>S-W 显著性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完整度</td>
+<td>0.241</td>
+<td>29</td>
+<td>0.000</td>
+<td>0.771</td>
+<td>29</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>采集涉及几人参与</td>
+<td>0.259</td>
+<td>29</td>
+<td>0.000</td>
+<td>0.850</td>
+<td>29</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>供货SKU数量</td>
+<td>0.226</td>
+<td>29</td>
+<td>0.001</td>
+<td>0.707</td>
+<td>29</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>0.381</td>
+<td>29</td>
+<td>0.000</td>
+<td>0.358</td>
+<td>29</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>产品复杂度（平均单SKU展开BOM条目）</td>
+<td>0.374</td>
+<td>29</td>
+<td>0.000</td>
+<td>0.593</td>
+<td>29</td>
+<td>0.000</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 里利氏显著性修正</p>
+</blockquote>
+<p><strong>结论</strong>：各变量均不服从正态分布（p&lt;0.05），采用非参数方法合理。</p>
+<hr>
+<h2 id="三、Mann-Whitney-U-检验（合格-vs-缺失）"><a href="#三、Mann-Whitney-U-检验（合格-vs-缺失）" class="headerlink" title="三、Mann-Whitney U 检验（合格 vs 缺失）"></a>三、Mann-Whitney U 检验（合格 vs 缺失）</h2><h3 id="3-1-秩统计"><a href="#3-1-秩统计" class="headerlink" title="3.1 秩统计"></a>3.1 秩统计</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>pass</th>
+<th>个案数</th>
+<th>秩平均值</th>
+<th>秩的总和</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>采集涉及几人参与</td>
+<td>0.00</td>
+<td>19</td>
+<td>19.42</td>
+<td>369.00</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>10</td>
+<td>6.60</td>
+<td>66.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>供货SKU数量</td>
+<td>0.00</td>
+<td>19</td>
+<td>15.24</td>
+<td>289.50</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>10</td>
+<td>14.55</td>
+<td>145.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>产品复杂度（平均单SKU展开BOM条目）</td>
+<td>0.00</td>
+<td>19</td>
+<td>13.68</td>
+<td>260.00</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>10</td>
+<td>17.50</td>
+<td>175.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>0.00</td>
+<td>19</td>
+<td>14.74</td>
+<td>280.00</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>10</td>
+<td>15.50</td>
+<td>155.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>产品复杂度秩差异大，预期不显著。</p>
+</blockquote>
+<h3 id="3-2-检验统计"><a href="#3-2-检验统计" class="headerlink" title="3.2 检验统计"></a>3.2 检验统计</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>采集涉及几人参与</th>
+<th>供货SKU数量</th>
+<th>产品复杂度</th>
+<th>SKU*BOM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>曼-惠特尼 U</td>
+<td>11.000</td>
+<td>90.500</td>
+<td>70.000</td>
+<td>90.000</td>
+</tr>
+<tr>
+<td>威尔科克森 W</td>
+<td>66.000</td>
+<td>145.500</td>
+<td>260.000</td>
+<td>280.000</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>-4.064</td>
+<td>-0.206</td>
+<td>-1.186</td>
+<td>-0.229</td>
+</tr>
+<tr>
+<td>渐近显著性（双尾）</td>
+<td>0.000</td>
+<td>0.836</td>
+<td>0.236</td>
+<td>0.819</td>
+</tr>
+<tr>
+<td>精确显著性[2*(单尾显著性)]</td>
+<td>0.000</td>
+<td>0.839</td>
+<td>0.266</td>
+<td>0.839</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 分组变量：pass<br>b. 未针对绑定值进行修正。</p>
+</blockquote>
+<p><strong>解读</strong>：合格组人数显著更少，只有「采集人数」在合格/缺失组间有极显著差异（p&lt;0.001，r=0.76，大效应），合格组人数明显更少。SKU 规模、产品复杂度、SKU*BOM 规模均无显著差异。</p>
+<hr>
+<h2 id="四、Mann-Whitney-U-检验（采集人数低-vs-高）"><a href="#四、Mann-Whitney-U-检验（采集人数低-vs-高）" class="headerlink" title="四、Mann-Whitney U 检验（采集人数低 vs 高）"></a>四、Mann-Whitney U 检验（采集人数低 vs 高）</h2><h3 id="4-1-秩统计"><a href="#4-1-秩统计" class="headerlink" title="4.1 秩统计"></a>4.1 秩统计</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>采集人数分组</th>
+<th>个案数</th>
+<th>秩平均值</th>
+<th>秩的总和</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>供货SKU数量</td>
+<td>0.00</td>
+<td>14</td>
+<td>12.32</td>
+<td>172.50</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>15</td>
+<td>17.50</td>
+<td>262.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>产品复杂度（平均单SKU展开BOM条目）</td>
+<td>0.00</td>
+<td>14</td>
+<td>14.61</td>
+<td>204.50</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>15</td>
+<td>15.37</td>
+<td>230.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>0.00</td>
+<td>14</td>
+<td>12.57</td>
+<td>176.00</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>15</td>
+<td>17.27</td>
+<td>259.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>完整度</td>
+<td>0.00</td>
+<td>14</td>
+<td>20.46</td>
+<td>286.50</td>
+</tr>
+<tr>
+<td></td>
+<td>1.00</td>
+<td>15</td>
+<td>9.90</td>
+<td>148.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="4-2-检验统计"><a href="#4-2-检验统计" class="headerlink" title="4.2 检验统计"></a>4.2 检验统计</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>供货SKU数量</th>
+<th>产品复杂度</th>
+<th>SKU*BOM</th>
+<th>完整度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>曼-惠特尼 U</td>
+<td>67.500</td>
+<td>99.500</td>
+<td>71.000</td>
+<td>28.500</td>
+</tr>
+<tr>
+<td>威尔科克森 W</td>
+<td>172.500</td>
+<td>204.500</td>
+<td>176.000</td>
+<td>148.500</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>-1.637</td>
+<td>-0.248</td>
+<td>-1.484</td>
+<td>-3.429</td>
+</tr>
+<tr>
+<td>渐近显著性（双尾）</td>
+<td>0.102</td>
+<td>0.804</td>
+<td>0.138</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>精确显著性[2*(单尾显著性)]</td>
+<td>0.102</td>
+<td>0.813</td>
+<td>0.146</td>
+<td>0.000</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 分组变量：采集人数分组<br>b. 未针对绑定值进行修正。</p>
+</blockquote>
+<p><strong>解读</strong>：低人数组（1-2 人）完整度秩平均 20.46，高人数组（3-4 人）仅 9.90，差距巨大，p=0.001，大效应量 r=0.64。<strong>参与采集人数越多，完整度反而越低</strong>。</p>
+<hr>
+<h2 id="五、Wilcoxon-符号秩检验（配对）"><a href="#五、Wilcoxon-符号秩检验（配对）" class="headerlink" title="五、Wilcoxon 符号秩检验（配对）"></a>五、Wilcoxon 符号秩检验（配对）</h2><p>验证「实际完整列数 vs 期望 16 列」是否存在系统性缺失。</p>
+<p>分组：</p>
+<ul>
+<li>低人数组（1-2 人）</li>
+<li>高人数组（3-4 人）</li>
+</ul>
+<h3 id="5-1-秩统计"><a href="#5-1-秩统计" class="headerlink" title="5.1 秩统计"></a>5.1 秩统计</h3><table>
+<thead>
+<tr>
+<th>期望列数 - 实际列数</th>
+<th>个案数</th>
+<th>秩平均值</th>
+<th>秩的总和</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>负秩</td>
+<td>0</td>
+<td>.00</td>
+<td>.00</td>
+</tr>
+<tr>
+<td>正秩</td>
+<td>19</td>
+<td>10.00</td>
+<td>190.00</td>
+</tr>
+<tr>
+<td>绑定值</td>
+<td>0</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>总计</td>
+<td>19</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>a. 期望列数 &lt; 实际列数</li>
+<li>b. 期望列数 &gt; 实际列数</li>
+<li>c. 期望列数 = 实际列数</li>
+</ul>
+<p><strong>说明</strong>：</p>
+<ul>
+<li>负秩 0 个：没有供应商的实际列数 &gt; 期望（即没人超完整）</li>
+<li>正秩 19 个：19 条供应商的期望列数 &gt; 实际列数（即都缺了）</li>
+<li>绑定 0 个：没有「实际 = 期望」的（10 条合格的没进分析，因为差 = 0 自动剔除）</li>
+<li>正秩平均值 10.00，总和 190.00</li>
+</ul>
+<h3 id="5-2-检验统计"><a href="#5-2-检验统计" class="headerlink" title="5.2 检验统计"></a>5.2 检验统计</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>期望列数 - 实际列数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Z</td>
+<td>-3.841</td>
+</tr>
+<tr>
+<td>渐近显著性（双尾）</td>
+<td>0.000</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 威尔科克森符号秩检验<br>b. 基于负秩。</p>
+</blockquote>
+<p><strong>解读</strong>：实际完整列数显著低于期望 16 列（p&lt;0.001，大效应 r=0.88），19 条供应商全部存在缺失，方向完全一致，<strong>存在系统性信息缺失，不是随机现象</strong>。</p>
+<hr>
+<h2 id="六、Kruskal-Wallis-H-检验（按采集人数分组）"><a href="#六、Kruskal-Wallis-H-检验（按采集人数分组）" class="headerlink" title="六、Kruskal-Wallis H 检验（按采集人数分组）"></a>六、Kruskal-Wallis H 检验（按采集人数分组）</h2><p>按采集人数分组（1 / 2 / 3 / 4 人）。</p>
+<h3 id="6-1-秩统计"><a href="#6-1-秩统计" class="headerlink" title="6.1 秩统计"></a>6.1 秩统计</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>采集人数</th>
+<th>个案数</th>
+<th>秩平均值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完整度</td>
+<td>1</td>
+<td>8</td>
+<td>22.25</td>
+</tr>
+<tr>
+<td></td>
+<td>2</td>
+<td>6</td>
+<td>18.08</td>
+</tr>
+<tr>
+<td></td>
+<td>3</td>
+<td>12</td>
+<td>10.25</td>
+</tr>
+<tr>
+<td></td>
+<td>4</td>
+<td>3</td>
+<td>8.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>产品复杂度（平均单SKU展开BOM条目）</td>
+<td>1</td>
+<td>8</td>
+<td>16.56</td>
+</tr>
+<tr>
+<td></td>
+<td>2</td>
+<td>6</td>
+<td>12.00</td>
+</tr>
+<tr>
+<td></td>
+<td>3</td>
+<td>12</td>
+<td>14.33</td>
+</tr>
+<tr>
+<td></td>
+<td>4</td>
+<td>3</td>
+<td>19.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>1</td>
+<td>8</td>
+<td>15.50</td>
+</tr>
+<tr>
+<td></td>
+<td>2</td>
+<td>6</td>
+<td>8.67</td>
+</tr>
+<tr>
+<td></td>
+<td>3</td>
+<td>12</td>
+<td>16.83</td>
+</tr>
+<tr>
+<td></td>
+<td>4</td>
+<td>3</td>
+<td>19.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>供货SKU数量</td>
+<td>1</td>
+<td>8</td>
+<td>14.63</td>
+</tr>
+<tr>
+<td></td>
+<td>2</td>
+<td>6</td>
+<td>9.25</td>
+</tr>
+<tr>
+<td></td>
+<td>3</td>
+<td>12</td>
+<td>17.63</td>
+</tr>
+<tr>
+<td></td>
+<td>4</td>
+<td>3</td>
+<td>17.00</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>从秩平均值看趋势，完整度按采集人数的秩平均：</p>
+<table>
+<thead>
+<tr>
+<th>采集人数</th>
+<th>完整度秩平均</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 人</td>
+<td>22.25（最高）</td>
+</tr>
+<tr>
+<td>2 人</td>
+<td>18.08</td>
+</tr>
+<tr>
+<td>3 人</td>
+<td>10.25</td>
+</tr>
+<tr>
+<td>4 人</td>
+<td>8.50（最低）</td>
+</tr>
+</tbody></table>
+<p><strong>单调递减，即人数越多完整度越低。</strong></p>
+<h3 id="6-2-检验统计"><a href="#6-2-检验统计" class="headerlink" title="6.2 检验统计"></a>6.2 检验统计</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>完整度</th>
+<th>产品复杂度</th>
+<th>SKU*BOM</th>
+<th>供货SKU数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>克鲁斯卡尔-沃利斯 H(K)</td>
+<td>12.728</td>
+<td>2.058</td>
+<td>4.566</td>
+<td>4.059</td>
+</tr>
+<tr>
+<td>自由度</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>渐近显著性</td>
+<td>0.005</td>
+<td>0.560</td>
+<td>0.207</td>
+<td>0.255</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 克鲁斯卡尔-沃利斯检验<br>b. 分组变量：采集涉及几人参与</p>
+</blockquote>
+<p><strong>解读</strong>：4 个采集人数组在完整度上有显著差异（H=12.73，p=0.005），且呈明显递减趋势：1 人组最高，4 人组最低。其他业务变量（SKU、复杂度、SKU*BOM）4 组间无差异。</p>
+<hr>
+<h2 id="七、Kruskal-Wallis-检验（按完整度分层分组）"><a href="#七、Kruskal-Wallis-检验（按完整度分层分组）" class="headerlink" title="七、Kruskal-Wallis 检验（按完整度分层分组）"></a>七、Kruskal-Wallis 检验（按完整度分层分组）</h2><p>值标签：1 = 优（0 缺失），2 = 良（1-3 缺失），3 = 中（4-6 缺失），4 = 差（&gt;6 缺失）</p>
+<h3 id="7-1-秩统计"><a href="#7-1-秩统计" class="headerlink" title="7.1 秩统计"></a>7.1 秩统计</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>完整度分层</th>
+<th>个案数</th>
+<th>秩平均值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品复杂度（平均单SKU展开BOM条目）</td>
+<td>1.00</td>
+<td>10</td>
+<td>17.50</td>
+</tr>
+<tr>
+<td></td>
+<td>2.00</td>
+<td>9</td>
+<td>11.67</td>
+</tr>
+<tr>
+<td></td>
+<td>3.00</td>
+<td>7</td>
+<td>14.29</td>
+</tr>
+<tr>
+<td></td>
+<td>4.00</td>
+<td>3</td>
+<td>18.33</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>1.00</td>
+<td>10</td>
+<td>15.50</td>
+</tr>
+<tr>
+<td></td>
+<td>2.00</td>
+<td>9</td>
+<td>12.67</td>
+</tr>
+<tr>
+<td></td>
+<td>3.00</td>
+<td>7</td>
+<td>15.43</td>
+</tr>
+<tr>
+<td></td>
+<td>4.00</td>
+<td>3</td>
+<td>19.33</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>供货SKU数量</td>
+<td>1.00</td>
+<td>10</td>
+<td>14.55</td>
+</tr>
+<tr>
+<td></td>
+<td>2.00</td>
+<td>9</td>
+<td>13.22</td>
+</tr>
+<tr>
+<td></td>
+<td>3.00</td>
+<td>7</td>
+<td>16.86</td>
+</tr>
+<tr>
+<td></td>
+<td>4.00</td>
+<td>3</td>
+<td>17.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+<tr>
+<td>采集涉及几人参与</td>
+<td>1.00</td>
+<td>10</td>
+<td>6.60</td>
+</tr>
+<tr>
+<td></td>
+<td>2.00</td>
+<td>9</td>
+<td>18.56</td>
+</tr>
+<tr>
+<td></td>
+<td>3.00</td>
+<td>7</td>
+<td>20.07</td>
+</tr>
+<tr>
+<td></td>
+<td>4.00</td>
+<td>3</td>
+<td>20.50</td>
+</tr>
+<tr>
+<td></td>
+<td>总计</td>
+<td>29</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>采集人数按完整度分层的秩平均：</p>
+<table>
+<thead>
+<tr>
+<th>完整度分层</th>
+<th>采集人数秩平均</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>优（0 缺失）</td>
+<td>6.60（最低）</td>
+</tr>
+<tr>
+<td>良（1-3 缺失）</td>
+<td>18.56</td>
+</tr>
+<tr>
+<td>中（4-6 缺失）</td>
+<td>20.07</td>
+</tr>
+<tr>
+<td>差（&gt;6 缺失）</td>
+<td>20.50（最高）</td>
+</tr>
+</tbody></table>
+<p><strong>完整度越差，参与采集人数越多。</strong></p>
+<h3 id="7-2-检验统计"><a href="#7-2-检验统计" class="headerlink" title="7.2 检验统计"></a>7.2 检验统计</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>产品复杂度</th>
+<th>SKU*BOM</th>
+<th>供货SKU数量</th>
+<th>采集涉及几人参与</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>克鲁斯卡尔-沃利斯 H(K)</td>
+<td>2.939</td>
+<td>1.505</td>
+<td>1.012</td>
+<td>16.721</td>
+</tr>
+<tr>
+<td>自由度</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>渐近显著性</td>
+<td>0.401</td>
+<td>0.681</td>
+<td>0.798</td>
+<td>0.001</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 克鲁斯卡尔-沃利斯检验<br>b. 分组变量：完整度分层</p>
+</blockquote>
+<hr>
+<h2 id="八、结论汇总"><a href="#八、结论汇总" class="headerlink" title="八、结论汇总"></a>八、结论汇总</h2><table>
+<thead>
+<tr>
+<th>检验方法</th>
+<th>对比</th>
+<th>p 值</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MWW</td>
+<td>合格 vs 缺失</td>
+<td>&lt;0.001</td>
+<td>合格组人数更少</td>
+</tr>
+<tr>
+<td>MWW</td>
+<td>低人数 vs 高人数</td>
+<td>0.001</td>
+<td>低人数组完整度更高</td>
+</tr>
+<tr>
+<td>KW</td>
+<td>按人数 4 组</td>
+<td>0.005</td>
+<td>4 组完整度递减</td>
+</tr>
+<tr>
+<td>KW</td>
+<td>按完整度 4 层</td>
+<td>0.001</td>
+<td>分层人数递增</td>
+</tr>
+</tbody></table>
+<p><strong>采集人数是影响数据完整度的唯一显著因素，且方向一致、影响关系明确。</strong></p>
+<hr>
+<h2 id="九、Spearman-相关分析"><a href="#九、Spearman-相关分析" class="headerlink" title="九、Spearman 相关分析"></a>九、Spearman 相关分析</h2><h3 id="9-1-相关系数矩阵"><a href="#9-1-相关系数矩阵" class="headerlink" title="9.1 相关系数矩阵"></a>9.1 相关系数矩阵</h3><table>
+<thead>
+<tr>
+<th>斯皮尔曼 Rho</th>
+<th>完整度</th>
+<th>采集涉及几人参与</th>
+<th>供货SKU数量</th>
+<th>产品复杂度</th>
+<th>SKU*BOM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>完整度</strong> 相关系数</td>
+<td>1.000</td>
+<td>-0.662**</td>
+<td>-0.004</td>
+<td>0.278</td>
+<td>0.076</td>
+</tr>
+<tr>
+<td>Sig.（双尾）</td>
+<td>.</td>
+<td>0.000</td>
+<td>0.982</td>
+<td>0.145</td>
+<td>0.697</td>
+</tr>
+<tr>
+<td>N</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+</tr>
+<tr>
+<td><strong>采集涉及几人参与</strong> 相关系数</td>
+<td>-0.662**</td>
+<td>1.000</td>
+<td>0.210</td>
+<td>0.034</td>
+<td>0.191</td>
+</tr>
+<tr>
+<td>Sig.（双尾）</td>
+<td>0.000</td>
+<td>.</td>
+<td>0.275</td>
+<td>0.861</td>
+<td>0.321</td>
+</tr>
+<tr>
+<td>N</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+</tr>
+<tr>
+<td><strong>供货SKU数量</strong> 相关系数</td>
+<td>-0.004</td>
+<td>0.210</td>
+<td>1.000</td>
+<td>0.265</td>
+<td>0.911**</td>
+</tr>
+<tr>
+<td>Sig.（双尾）</td>
+<td>0.982</td>
+<td>0.275</td>
+<td>.</td>
+<td>0.165</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>N</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+</tr>
+<tr>
+<td><strong>产品复杂度</strong> 相关系数</td>
+<td>0.278</td>
+<td>0.034</td>
+<td>0.265</td>
+<td>1.000</td>
+<td>0.603**</td>
+</tr>
+<tr>
+<td>Sig.（双尾）</td>
+<td>0.145</td>
+<td>0.861</td>
+<td>0.165</td>
+<td>.</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>N</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+</tr>
+<tr>
+<td><strong>SKU*BOM</strong> 相关系数</td>
+<td>0.076</td>
+<td>0.191</td>
+<td>0.911**</td>
+<td>0.603**</td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>Sig.（双尾）</td>
+<td>0.697</td>
+<td>0.321</td>
+<td>0.000</td>
+<td>0.001</td>
+<td>.</td>
+</tr>
+<tr>
+<td>N</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+<td>29</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>**. 在 0.01 级别（双尾），相关性显著。</p>
+</blockquote>
+<p><strong>解读</strong>：采集人数与完整度显著相关（ρ=-0.662，p&lt;0.001），<strong>人数越多完整度越低，中等强度负相关</strong>。</p>
+<hr>
+<h2 id="十、多元线性回归"><a href="#十、多元线性回归" class="headerlink" title="十、多元线性回归"></a>十、多元线性回归</h2><ul>
+<li><strong>因变量</strong>：完整度</li>
+<li><strong>自变量</strong>：参与采集人数、供货SKU数量、产品复杂度、SKU*BOM</li>
+</ul>
+<h3 id="10-1-系数表"><a href="#10-1-系数表" class="headerlink" title="10.1 系数表"></a>10.1 系数表</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>未标准化 B</th>
+<th>未标准化标准错误</th>
+<th>标准化 Beta</th>
+<th>t</th>
+<th>显著性</th>
+<th>共线性容差</th>
+<th>VIF</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(常量)</td>
+<td>1.080</td>
+<td>0.142</td>
+<td></td>
+<td>7.614</td>
+<td>0.000</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>采集涉及几人参与</td>
+<td>-0.269</td>
+<td>0.053</td>
+<td>-0.733</td>
+<td>-5.120</td>
+<td>0.000</td>
+<td>0.950</td>
+<td>1.053</td>
+</tr>
+<tr>
+<td>供货SKU数量</td>
+<td>0.001</td>
+<td>0.001</td>
+<td>0.175</td>
+<td>0.746</td>
+<td>0.463</td>
+<td>0.354</td>
+<td>2.821</td>
+</tr>
+<tr>
+<td>SKU*BOM</td>
+<td>-5.263E-6</td>
+<td>0.000</td>
+<td>-0.281</td>
+<td>-0.955</td>
+<td>0.349</td>
+<td>0.224</td>
+<td>4.456</td>
+</tr>
+<tr>
+<td>产品复杂度</td>
+<td>0.001</td>
+<td>0.001</td>
+<td>0.226</td>
+<td>1.113</td>
+<td>0.277</td>
+<td>0.474</td>
+<td>2.108</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 因变量：完整度</p>
+</blockquote>
+<p><strong>解读</strong>：多元线性回归分析显示模型整体显著（F=6.84，p=0.001），R²=0.533，4 个自变量可解释完整度 <strong>53.3%</strong> 的变异。</p>
+<ul>
+<li>采集人数是唯一显著的负向预测因子（B=-0.269，β=-0.733，t=-5.12，p&lt;0.001），<strong>每增加 1 人参与，完整度下降约 0.27</strong>。</li>
+<li>供货SKU数量（p=0.463）、产品复杂度（p=0.277）、SKU*BOM（p=0.349）均不显著。</li>
+<li>VIF 值均 &lt;5，无严重多重共线性。</li>
+</ul>
+<hr>
+<h2 id="十一、Logistic-回归"><a href="#十一、Logistic-回归" class="headerlink" title="十一、Logistic 回归"></a>十一、Logistic 回归</h2><ul>
+<li><strong>因变量</strong>：pass</li>
+<li><strong>协变量</strong>：采集人数</li>
+</ul>
+<h3 id="11-1-方程中的变量"><a href="#11-1-方程中的变量" class="headerlink" title="11.1 方程中的变量"></a>11.1 方程中的变量</h3><table>
+<thead>
+<tr>
+<th>步骤 1</th>
+<th>B</th>
+<th>标准误差</th>
+<th>瓦尔德</th>
+<th>自由度</th>
+<th>显著性</th>
+<th>Exp(B)</th>
+<th>EXP(B) 95%CI 下限</th>
+<th>EXP(B) 95%CI 上限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>采集涉及几人参与</td>
+<td>-2.966</td>
+<td>1.037</td>
+<td>8.174</td>
+<td>1</td>
+<td>0.004</td>
+<td>0.052</td>
+<td>0.007</td>
+<td>0.393</td>
+</tr>
+<tr>
+<td>常量</td>
+<td>5.429</td>
+<td>2.084</td>
+<td>6.789</td>
+<td>1</td>
+<td>0.009</td>
+<td>227.922</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>a. 在步骤 1 输入的变量：采集涉及几人参与。</p>
+</blockquote>
+<p><strong>模型评价</strong>：</p>
+<ul>
+<li>χ²=21.69，p&lt;0.001</li>
+<li>Nagelkerke R²=0.727</li>
+<li>预测准确率 86.2%</li>
+</ul>
+<hr>
+<h2 id="十二、综合结论解读"><a href="#十二、综合结论解读" class="headerlink" title="十二、综合结论解读"></a>十二、综合结论解读</h2><p>基于 29 家上线供应商数据的结果表明：</p>
+<h3 id="（1）数据非正态"><a href="#（1）数据非正态" class="headerlink" title="（1）数据非正态"></a>（1）数据非正态</h3><p>所有变量均不服从正态分布，采用非参数检验方法合理。</p>
+<h3 id="（2）系统性缺失"><a href="#（2）系统性缺失" class="headerlink" title="（2）系统性缺失"></a>（2）系统性缺失</h3><p>Wilcoxon 符号秩检验确认实际完整列数显著低于期望 16 列（Z=-3.84，p&lt;0.001），19 家供应商全部存在信息缺失，<strong>存在系统性问题</strong>。</p>
+<h3 id="（3）采集人数是唯一显著影响因素"><a href="#（3）采集人数是唯一显著影响因素" class="headerlink" title="（3）采集人数是唯一显著影响因素"></a>（3）采集人数是唯一显著影响因素</h3><p>五类非参数检验（MWW、KW、Wilcoxon、Spearman）和两类回归（线性、Logistic）结果高度一致：</p>
+<ul>
+<li>MWW 显示合格组与缺失组在采集人数上差异极显著（U=11，p&lt;0.001）；</li>
+<li>KW 显示按采集人数分 4 组，完整度呈单调递减（H=12.73，p=0.005）；</li>
+<li>Spearman 相关显示较强负相关（ρ=-0.662，p&lt;0.001）。</li>
+</ul>
+<h3 id="（4）回归量化效应"><a href="#（4）回归量化效应" class="headerlink" title="（4）回归量化效应"></a>（4）回归量化效应</h3><ul>
+<li><strong>多元线性回归</strong>（R²=0.533）显示，控制 SKU 规模、产品复杂度、SKU*BOM 后，采集人数仍显著负向预测完整度（B=-0.269，β=-0.733，p&lt;0.001），每增加 1 人参与，完整度下降约 0.27。</li>
+<li><strong>Logistic 回归</strong>（Nagelkerke R²=0.727，预测准确率 86.2%）显示，采集人数每增加 1 人，数据合格几率降至 5.2%（OR=0.052，95%CI: 0.007~0.393，p=0.004）。</li>
+</ul>
+<h3 id="（5）非显著因素"><a href="#（5）非显著因素" class="headerlink" title="（5）非显著因素"></a>（5）非显著因素</h3><p>供货SKU数量、产品复杂度、SKU*BOM 业务总复杂度、BOM 系统品种在各检验中均无显著影响（p&gt;0.1）。</p>
+<hr>
+<h2 id="十三、管理建议"><a href="#十三、管理建议" class="headerlink" title="十三、管理建议"></a>十三、管理建议</h2><p>供应商BOM数据采集的「人海战术」反而显著降低数据完整性，呈现明显的剂量-反应关系（1 人采集合格率 92.5% → 4 人采集合格率 1.7%）。但这一现象的根源​<strong>不在于采集人员的工作态度或个人意愿</strong>​，而在于企业内部的流程分工、职责划分等组织性因素。</p>
+<h3 id="关键认识"><a href="#关键认识" class="headerlink" title="关键认识"></a>关键认识</h3><p>多人协作做表与一人拉通整表，​<strong>不是个人能力问题，而是组织协作问题</strong>​。协作本身是企业流程决定的，不可随意更改。因此，辨识出”多人协作质量较差”后，应进一步深挖协作过程中产生的问题，而非简单粗暴地建议”精简人员”或”专人负责制”。</p>
+<h3 id="改进建议："><a href="#改进建议：" class="headerlink" title="改进建议："></a>改进建议：</h3><ol>
+<li>​<strong>统一标准</strong>​：协作各方使用统一的采集标准与字段定义，消除口径分歧；</li>
+<li>​<strong>统一培训</strong>​：所有协作人员接受同一套培训，确保理解一致；</li>
+<li>​<strong>集中时间与地点</strong>​：在有限的时间内、集中的地点，协作方共同完成数据采集工作；</li>
+<li>​<strong>同步对齐</strong>​：通过集中作业实时对齐进度与问题，减少信息差与遗漏。<br>通过”统一标准 + 统一培训 + 集中作业”的方式，在保留多人协作组织模式的前提下，最大程度靠近一人完工的数据质量，从根本上提升 BOM 数据完整性。</li>
+</ol>
+<hr>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析</li>
+        <li class="copyright-author-line">
+            <strong>作者:</strong>
+            <span class="copyright-author-name">MinjieY</span>
+            <button class="copyright-reward-button" type="button" aria-label="打赏作者" title="打赏作者">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </button>
+            <div class="copyright-reward-tooltip" role="tooltip" aria-hidden="true">
+                <div class="copyright-reward-card">
+                    <span class="reward-label">微信收款</span>
+                    <img src="/images/wechat.jpg" alt="微信收款二维码" />
+                </div>
+                <div class="copyright-reward-card">
+                    <span class="reward-label">支付宝收款</span>
+                    <img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+                </div>
+            </div>
+        </li>
+        <li><strong>创建于
+                :</strong> 2026-08-10 16:00:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2026-08-11 16:55:39
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/MinjieY/post/8a3c2e51.html
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+<style>
+.copyright-author-line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    /* Override parent li { overflow: hidden; white-space: nowrap }
+       so the absolute reward tooltip (top: 100%) isn't clipped. */
+    overflow: visible !important;
+    white-space: normal;
+}
+
+.copyright-reward-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 999px;
+    transition: background 0.2s ease;
+}
+
+.copyright-reward-button:hover,
+.copyright-reward-button:focus-visible {
+    background: rgba(163, 31, 52, 0.12);
+}
+
+.copyright-reward-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1100;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.85rem;
+    padding: 1rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.copyright-author-line:hover .copyright-reward-tooltip,
+.copyright-author-line:focus-within .copyright-reward-tooltip,
+.copyright-reward-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.copyright-reward-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    background: var(--background-color);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+}
+
+.reward-label {
+    font-size: 0.88rem;
+    color: var(--third-text-color);
+    font-weight: 600;
+}
+
+.copyright-reward-card img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.copyright-reward-card img:hover {
+    transform: scale(1.03);
+}
+
+</style>
+
+<script data-swup-reload-script>
+(function () {
+    const rewardBtn = document.querySelector('.copyright-reward-button');
+    const tooltip = document.querySelector('.copyright-reward-tooltip');
+
+    if (!rewardBtn || !tooltip) return;
+
+    const showTooltip = () => tooltip.classList.add('show');
+    const hideTooltip = () => tooltip.classList.remove('show');
+
+    rewardBtn.addEventListener('mouseenter', showTooltip);
+    rewardBtn.addEventListener('mouseleave', hideTooltip);
+    rewardBtn.addEventListener('focus', showTooltip);
+    rewardBtn.addEventListener('blur', hideTooltip);
+
+    tooltip.addEventListener('mouseenter', showTooltip);
+    tooltip.addEventListener('mouseleave', hideTooltip);
+
+    // Click reward button -> open both QR codes in a new tab page
+    rewardBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        hideTooltip();
+
+        const rewardPageHtml = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>打赏作者</title>
+<style>
+body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.wrapper{max-width:980px;width:100%;padding:1rem;box-sizing:border-box;text-align:center;}
+.title{font-size:1.4rem;margin-bottom:1rem;color:#fff;}
+.card{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.card-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:1rem;}
+.card-item strong{display:block;margin-bottom:0.75rem;font-size:1rem;color:#f0f0f0;}
+.card-item img{width:100%;max-width:100%;height:auto;border-radius:16px;background:#fff;}
+@media (max-width:720px){.card{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="title">打赏作者</div>
+<div class="card">
+<div class="card-item">
+<strong>微信收款</strong>
+<img src="${window.location.origin}/images/wechat.jpg" alt="微信收款二维码" />
+</div>
+<div class="card-item">
+<strong>支付宝收款</strong>
+<img src="${window.location.origin}/images/alipay.jpg" alt="支付宝收款二维码" />
+</div>
+</div>
+</div>
+</body>
+</html>`;
+
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.write(rewardPageHtml);
+            newWindow.document.close();
+        } else {
+            alert('请允许弹出窗口以查看打赏二维码。');
+        }
+    });
+})();
+</script>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/">#逻辑回归</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SPSS/">#SPSS</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E9%9D%9E%E5%8F%82%E6%95%B0%E6%A3%80%E9%AA%8C/">#非参数检验</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Mann-Whitney-U/">#Mann-Whitney U</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Kruskal-Wallis-H/">#Kruskal-Wallis H</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Wilcoxon%E7%AC%A6%E5%8F%B7%E7%A7%A9%E6%A3%80%E9%AA%8C/">#Wilcoxon符号秩检验</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Spearman%E7%9B%B8%E5%85%B3/">#Spearman相关</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E4%BE%9B%E5%BA%94%E5%95%86%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">#供应商数据分析</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-dark">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none recommended-img-dark">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a><a class="recommended-article-item" href="/post/9802408c.html" title="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究" class="!max-w-none recommended-img-dark">
+  <span class="title">农村居民食品消费水平与区域经济发展的研究——基于多元统计分析的实例研究</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-dark">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/5347bf79.html" title="LOL游戏玩家类型与胜利条件大数据分析" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="LOL游戏玩家类型与胜利条件大数据分析" class="!max-w-none recommended-img-dark">
+  <span class="title">LOL游戏玩家类型与胜利条件大数据分析</span>
+</a></div>
+   </div>
+  </div>
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/post/5de2ef96.html">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">重庆大学博士/硕士学位论文格式标准与参考资料汇总</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.10/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            (function() {
+                const startPath = location.pathname;
+                const startTime = Date.now();
+                const retryDelay = 200;
+                const retryLimit = 5000;
+
+                const runTwikoo = () => {
+                    if (location.pathname !== startPath) {
+                        return;
+                    }
+
+                    const container = document.getElementById('twikoo-comment');
+                    if (!container || typeof twikoo === 'undefined') {
+                        if (Date.now() - startTime < retryLimit) {
+                            setTimeout(runTwikoo, retryDelay);
+                        }
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    twikoo.init({
+                        el: '#twikoo-comment',
+                        envId: 'https://hexoblogcomment.vercel.app',
+                        path: location.pathname,
+                    });
+                };
+
+                runTwikoo();
+            })();
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">谁在拖垮供应商BOM数据的完整度？——基于29家供应商的非参数检验与回归分析</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF"><span class="nav-text">一、研究背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%AD%A3%E6%80%81%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-text">二、正态性检验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81Mann-Whitney-U-%E6%A3%80%E9%AA%8C%EF%BC%88%E5%90%88%E6%A0%BC-vs-%E7%BC%BA%E5%A4%B1%EF%BC%89"><span class="nav-text">三、Mann-Whitney U 检验（合格 vs 缺失）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%A7%A9%E7%BB%9F%E8%AE%A1"><span class="nav-text">3.1 秩统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%A3%80%E9%AA%8C%E7%BB%9F%E8%AE%A1"><span class="nav-text">3.2 检验统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Mann-Whitney-U-%E6%A3%80%E9%AA%8C%EF%BC%88%E9%87%87%E9%9B%86%E4%BA%BA%E6%95%B0%E4%BD%8E-vs-%E9%AB%98%EF%BC%89"><span class="nav-text">四、Mann-Whitney U 检验（采集人数低 vs 高）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E7%A7%A9%E7%BB%9F%E8%AE%A1"><span class="nav-text">4.1 秩统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%A3%80%E9%AA%8C%E7%BB%9F%E8%AE%A1"><span class="nav-text">4.2 检验统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Wilcoxon-%E7%AC%A6%E5%8F%B7%E7%A7%A9%E6%A3%80%E9%AA%8C%EF%BC%88%E9%85%8D%E5%AF%B9%EF%BC%89"><span class="nav-text">五、Wilcoxon 符号秩检验（配对）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E7%A7%A9%E7%BB%9F%E8%AE%A1"><span class="nav-text">5.1 秩统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%A3%80%E9%AA%8C%E7%BB%9F%E8%AE%A1"><span class="nav-text">5.2 检验统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81Kruskal-Wallis-H-%E6%A3%80%E9%AA%8C%EF%BC%88%E6%8C%89%E9%87%87%E9%9B%86%E4%BA%BA%E6%95%B0%E5%88%86%E7%BB%84%EF%BC%89"><span class="nav-text">六、Kruskal-Wallis H 检验（按采集人数分组）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E7%A7%A9%E7%BB%9F%E8%AE%A1"><span class="nav-text">6.1 秩统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E6%A3%80%E9%AA%8C%E7%BB%9F%E8%AE%A1"><span class="nav-text">6.2 检验统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81Kruskal-Wallis-%E6%A3%80%E9%AA%8C%EF%BC%88%E6%8C%89%E5%AE%8C%E6%95%B4%E5%BA%A6%E5%88%86%E5%B1%82%E5%88%86%E7%BB%84%EF%BC%89"><span class="nav-text">七、Kruskal-Wallis 检验（按完整度分层分组）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E7%A7%A9%E7%BB%9F%E8%AE%A1"><span class="nav-text">7.1 秩统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E6%A3%80%E9%AA%8C%E7%BB%9F%E8%AE%A1"><span class="nav-text">7.2 检验统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E7%BB%93%E8%AE%BA%E6%B1%87%E6%80%BB"><span class="nav-text">八、结论汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81Spearman-%E7%9B%B8%E5%85%B3%E5%88%86%E6%9E%90"><span class="nav-text">九、Spearman 相关分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0%E7%9F%A9%E9%98%B5"><span class="nav-text">9.1 相关系数矩阵</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E5%A4%9A%E5%85%83%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92"><span class="nav-text">十、多元线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-%E7%B3%BB%E6%95%B0%E8%A1%A8"><span class="nav-text">10.1 系数表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81Logistic-%E5%9B%9E%E5%BD%92"><span class="nav-text">十一、Logistic 回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#11-1-%E6%96%B9%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-text">11.1 方程中的变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E7%BB%BC%E5%90%88%E7%BB%93%E8%AE%BA%E8%A7%A3%E8%AF%BB"><span class="nav-text">十二、综合结论解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E6%95%B0%E6%8D%AE%E9%9D%9E%E6%AD%A3%E6%80%81"><span class="nav-text">（1）数据非正态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E7%B3%BB%E7%BB%9F%E6%80%A7%E7%BC%BA%E5%A4%B1"><span class="nav-text">（2）系统性缺失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E9%87%87%E9%9B%86%E4%BA%BA%E6%95%B0%E6%98%AF%E5%94%AF%E4%B8%80%E6%98%BE%E8%91%97%E5%BD%B1%E5%93%8D%E5%9B%A0%E7%B4%A0"><span class="nav-text">（3）采集人数是唯一显著影响因素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%884%EF%BC%89%E5%9B%9E%E5%BD%92%E9%87%8F%E5%8C%96%E6%95%88%E5%BA%94"><span class="nav-text">（4）回归量化效应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%885%EF%BC%89%E9%9D%9E%E6%98%BE%E8%91%97%E5%9B%A0%E7%B4%A0"><span class="nav-text">（5）非显著因素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E7%AE%A1%E7%90%86%E5%BB%BA%E8%AE%AE"><span class="nav-text">十三、管理建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%AE%A4%E8%AF%86"><span class="nav-text">关键认识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E5%BB%BA%E8%AE%AE%EF%BC%9A"><span class="nav-text">改进建议：</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">MinjieY</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 11 篇文章
+                    </span>
+                    
+                        <span>
+                            共 21.4k 字
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            
+                <script data-swup-reload-script>
+                    (function () {
+                        // Skip counter on local/dev environments to avoid inflating production stats.
+                        var host = window.location.hostname || '';
+                        var isLocal = !host
+                            || host === 'localhost'
+                            || host === '127.0.0.1'
+                            || host === '0.0.0.0'
+                            || host === '[::1]'
+                            || host.endsWith('.local')
+                            || host.endsWith('.localhost')
+                            || /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(host)
+                            || /^dev\./i.test(host);
+                        if (isLocal) {
+                            var uv = document.getElementById('busuanzi_value_site_uv');
+                            var pv = document.getElementById('busuanzi_value_site_pv');
+                            var pvpv = document.getElementById('busuanzi_value_page_pv');
+                            if (uv) uv.textContent = '—';
+                            if (pv) pv.textContent = '—';
+                            if (pvpv) pvpv.textContent = '—';
+                            return;
+                        }
+                        var s = document.createElement('script');
+                        s.src = 'https://vercount.one/js';
+                        s.async = true;
+                        document.head.appendChild(s);
+                    })();
+                </script>
+            
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+                
+                    <div class="lg:!block mt-1">
+                        <span class="text-sm"><i class="fa-regular fa-clock"></i></span>
+                        <span class="odometer text-sm" id="runtime_days"></span><span class="text-sm"> 天</span>
+                        <span class="odometer text-sm" id="runtime_hours"></span><span class="text-sm"> 小时</span>
+                        <span class="odometer text-sm" id="runtime_minutes"></span><span class="text-sm"> 分钟</span>
+                        <span class="odometer text-sm" id="runtime_seconds"></span><span class="text-sm"> 秒</span>
+                    </div>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                "></a></div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- share -->
+		<li class="post-share-btn-item" id="post-share-btn" title="分享文章" aria-label="分享文章">
+			<i class="fa-solid fa-share-nodes"></i>
+		</li>
+
+		<!-- reward -->
+		<li class="post-reward-btn-item" title="打赏作者" aria-label="打赏作者" tabindex="0">
+			<i class="fa-solid fa-hand-holding-dollar"></i>
+			<div class="post-reward-popup" role="dialog" aria-label="打赏二维码">
+				<div class="post-reward-popup-card">
+					<span class="popup-title">微信收款</span>
+					<img src="/images/wechat.jpg" alt="微信收款二维码" />
+				</div>
+				<div class="post-reward-popup-card">
+					<span class="popup-title">支付宝收款</span>
+					<img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+				</div>
+			</div>
+		</li>
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+
+<div id="post-share-modal" class="post-share-modal hidden" role="dialog" aria-modal="true" aria-label="分享文章">
+	<div class="post-share-modal-content">
+		<button class="post-share-modal-close" id="post-share-modal-close" aria-label="关闭">×</button>
+		<h3>分享这篇文章</h3>
+		<img id="post-share-qrcode" alt="文章分享二维码" />
+		<p class="post-share-url" id="post-share-url"></p>
+		<button class="post-share-copy-btn" id="post-share-copy-btn">复制链接</button>
+	</div>
+</div>
+
+<script>
+(function () {
+	const trigger = document.getElementById('post-share-btn');
+	const modal = document.getElementById('post-share-modal');
+	const closeBtn = document.getElementById('post-share-modal-close');
+	const copyBtn = document.getElementById('post-share-copy-btn');
+	const qrImg = document.getElementById('post-share-qrcode');
+	const urlBox = document.getElementById('post-share-url');
+	if (!trigger || !modal) return;
+
+	const shareUrl = window.location.href;
+	const shareTitle = document.title || '博客文章';
+	const shareText = document.querySelector('meta[name="description"]')?.content || '查看这篇文章';
+
+	const openModal = () => {
+		if (qrImg) {
+			qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(shareUrl);
+		}
+		if (urlBox) {
+			urlBox.textContent = shareUrl;
+		}
+		modal.classList.remove('hidden');
+	};
+
+	const closeModal = () => modal.classList.add('hidden');
+
+	trigger.addEventListener('click', async () => {
+		if (navigator.share) {
+			try {
+				await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+				return;
+			} catch (e) {}
+		}
+		openModal();
+	});
+
+	closeBtn?.addEventListener('click', closeModal);
+	modal?.addEventListener('click', function (e) {
+		if (e.target === modal) closeModal();
+	});
+	copyBtn?.addEventListener('click', async function () {
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+			copyBtn.textContent = '已复制';
+			setTimeout(() => {
+				copyBtn.textContent = '复制链接';
+			}, 1500);
+		} catch (e) {
+			window.prompt('复制链接', shareUrl);
+		}
+	});
+
+	const rewardBtn = document.querySelector('.post-reward-btn-item');
+	if (rewardBtn) {
+		rewardBtn.addEventListener('click', function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			const rewardPageHtml = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>打赏作者</title>
+<style>
+body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.wrapper{max-width:980px;width:100%;padding:1rem;box-sizing:border-box;text-align:center;}
+.title{font-size:1.4rem;margin-bottom:1rem;color:#fff;}
+.card{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.card-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:1rem;}
+.card-item strong{display:block;margin-bottom:0.75rem;font-size:1rem;color:#f0f0f0;}
+.card-item img{width:100%;max-width:100%;height:auto;border-radius:16px;background:#fff;}
+@media (max-width:720px){.card{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="title">打赏作者</div>
+<div class="card">
+<div class="card-item">
+<strong>微信收款</strong>
+<img src="/images/wechat.jpg" alt="微信收款二维码" />
+</div>
+<div class="card-item">
+<strong>支付宝收款</strong>
+<img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+</div>
+</div>
+</div>
+</body>
+</html>`;
+
+			const newWindow = window.open('', '_blank');
+			if (newWindow) {
+				newWindow.document.write(rewardPageHtml);
+				newWindow.document.close();
+			} else {
+				alert('请允许弹出窗口以查看打赏二维码。');
+			}
+		});
+	}
+})();
+</script>
+
+<style>
+.post-share-btn-item {
+	cursor: pointer;
+}
+
+.post-share-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 1rem;
+}
+
+.post-share-modal.hidden {
+	display: none;
+}
+
+.post-share-modal-content {
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 1.2rem;
+	width: min(92vw, 320px);
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.post-share-modal-content h3 {
+	margin: 0 0 0.6rem;
+	font-size: 1rem;
+	color: var(--second-text-color);
+}
+
+.post-share-modal-content img {
+	width: 180px;
+	height: 180px;
+	margin: 0.5rem auto 0.8rem;
+	border-radius: 12px;
+	background: #fff;
+	padding: 0.35rem;
+}
+
+.post-share-url {
+	font-size: 0.8rem;
+	word-break: break-all;
+	color: var(--third-text-color);
+	margin-bottom: 0.8rem;
+}
+
+.post-share-copy-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.55rem 0.9rem;
+	background: var(--primary-color);
+	color: #fff;
+	cursor: pointer;
+}
+
+.post-share-modal-close {
+	position: absolute;
+	right: 0.8rem;
+	top: 0.8rem;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: var(--second-text-color);
+}
+
+.post-reward-btn-item {
+	position: relative;
+	cursor: pointer;
+}
+
+.post-reward-btn-item i {
+	font-size: 1.05rem;
+}
+
+.post-reward-popup {
+	position: absolute;
+	top: -15rem;
+	right: 50%;
+	transform: translateX(20%);
+	min-width: 260px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(110px, 1fr));
+	gap: 0.8rem;
+	padding: 1rem;
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 18px;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+	z-index: 1000;
+	opacity: 0;
+	pointer-events: none;
+	transform: translate(20%, 8px);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-reward-btn-item:hover .post-reward-popup,
+.post-reward-btn-item:focus-within .post-reward-popup {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translate(20%, 0);
+}
+
+.post-reward-popup-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	background: var(--background-color);
+	border-radius: 14px;
+	border: 1px solid var(--border-color);
+}
+
+.post-reward-popup-card .popup-title {
+	font-size: 0.85rem;
+	color: var(--third-text-color);
+	font-weight: 600;
+}
+
+.post-reward-popup-card img {
+	width: 110px;
+	height: 110px;
+	object-fit: cover;
+	border-radius: 14px;
+}
+</style>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<!-- Language Switcher (always visible above the gear) -->
+	
+
+	<ul class="hidden-tools-list">
+		
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="图片查看器">
+	<button class="image-viewer-close" type="button" aria-label="关闭">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="上一页">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="关闭">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="下一页">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
+
+	
+</body>
+
+</html>
