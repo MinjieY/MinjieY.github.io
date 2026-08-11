@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="MinjieY">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://minjiey.github.io/post/d0e11202.html"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="早期前端练手项目：纯 HTML&#x2F;CSS 个人主页">
+<meta property="og:url" content="https://minjiey.github.io/post/d0e11202.html">
+<meta property="og:site_name" content="Aria Ing&#39;s Blog">
+<meta property="og:description" content="Hexo Theme Redefine.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://minjiey.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2022-04-12T12:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-11T16:09:07.095Z">
+<meta property="article:author" content="Aria Ying">
+<meta property="article:tag" content="HTML">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="个人主页">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://minjiey.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/111.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/111.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/111.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            早期前端练手项目：纯 HTML/CSS 个人主页 | Aria Ing&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"minjiey.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"2.9rem","h2":"2.1rem","h3":"1.6rem","h4":"1.3rem","h5":"1.1rem","h6":"1.0rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":true,"list":["Data Explorer","Researcher","Creator"]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":true,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":{"light":"/images/bk-whilte.jpg","dark":"/images/bk-black.jpg"},"skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/bk-whilte.jpg","dark":"/images/bk-black.jpg"},"title":"Minjie Ying","subtitle":{"text":["A personal blog documenting my journey through data science","research","and life — sharing insights","experiments","and discoveries along the way."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"4.5rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/MinjieY"},{"icon":"fa-regular fa-envelope","url":"mailto:minjie.ying@outlook.com"}],"qrs":[{"icon":"fa-brands fa-qq","qr":null,"url":"tencent://message/?uin=1271663725"},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Updates":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Blog":"https://minjie.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":null,"show_on_mobile":true,"links":{"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Updates":{"path":"/archives","icon":"fa-regular fa-archive"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":5}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2024/2/7 11:45:14","statistics":true,"customize":null,"icp":{"enable":true,"number":null,"url":null}},"footerStart":"2024/2/7 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.i18n = {"search":"站内搜索您需要的内容...","toc":"目录","prev":"上一页","next":"下一页","prev_posts":"上一篇","next_posts":"下一篇","page":"第 %d 页","recent_posts":"最新文章","share":"分享","powered_by":"由 %s 驱动","theme":"主题","rss_feed":"RSS Feed","category":"分类","categories":"分类","tag":"标签","tags":"标签","post":"文章","posts":"文章","tagcloud":"标签云","comment":"评论","comments":"评论","top":"置顶","sticky":"置顶","go-back-home":"回到首页","masonry_loading":"照片加载中...","image_viewer":"图片查看器","close":"关闭","exif":{"title":"EXIF","cards":{"camera":"相机","lens":"镜头","exposure":"曝光","other":"其他"},"fields":{"make":"品牌","model":"机型","date_taken":"拍摄时间","lens_model":"镜头","focal_length":"焦距","focus_mode":"对焦模式","shutter":"快门","aperture":"光圈","iso":"感光度","exposure_program":"曝光程序","exposure_compensation":"曝光补偿","metering_mode":"测光模式","flash":"闪光灯","white_balance":"白平衡","latitude":"纬度","longitude":"经度","altitude":"海拔"},"status":{"loading":"加载中...","no_exif":"无 EXIF 信息","library_missing":"EXIF 库未加载","image_source_missing":"图片地址不可用","unavailable":"EXIF 不可用（可能被 CORS 阻止或缺少元数据）","flag_unavailable":"EXIF 不可用"}},"home":"首页","archive":"动态","archives":"动态","about":"关于","links":"链接","link":"链接","friends":"友情链接","friend":"友情链接","timeline":"时间轴","shuoshuo":"说说","bookmarks":"书签","site_uv":"访问人数","site_pv":"总访问量","read_more":"阅读全文","wordcount":"字","min2read":"分钟","changelog":"更新日志","status":"状态","runtime":"博客已运行","days":"天","hours":"小时","minutes":"分钟","seconds":"秒","optimized_by":"并由 Evan 进行优化","rights":"版权所有","site_posts":"共撰写了 %s 篇文章","site_wordcount":"共 %s 字","copyright":{"title":"标题","author":"作者","link":"链接","create_time":"创建于","update_time":"更新于","license_title":"版权声明","license_content":"本文章采用 %s 进行许可。","all_rights_reserved":"版权所有 &#169 %s，禁止转载。","public_domain":"本文为公有领域作品，可自由转载、引用。"},"ago":{"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"},"create_time":"创建","update_time":"更新","expired":"这篇文章最后更新于 %s 天前，内容可能已经过时。"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/fontawesome/light.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Aria Ing&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    分类
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    UPDATES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about/">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://minjie.com">
+                                                    BLOG
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                分类
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                UPDATES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about/">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://minjie.com">BLOG</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">56</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">8</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="https://private-user-images.githubusercontent.com/96962656/307507919-2ab4a1cb-8331-465b-9804-6d0036d5e04d.png" alt="早期前端练手项目：纯 HTML/CSS 个人主页" class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">早期前端练手项目：纯 HTML/CSS 个人主页</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/xiuzhi_figure.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">MinjieY</span>
+					<a class="author-mail-link" href="mailto:minjie.ying@outlook.com?subject=%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E3%80%8C%E6%97%A9%E6%9C%9F%E5%89%8D%E7%AB%AF%E7%BB%83%E6%89%8B%E9%A1%B9%E7%9B%AE%EF%BC%9A%E7%BA%AF%20HTML%2FCSS%20%E4%B8%AA%E4%BA%BA%E4%B8%BB%E9%A1%B5%E3%80%8D%E7%9A%84%E7%95%99%E8%A8%80&body=%0A%0A---%0A%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps%3A%2F%2Fminjiey.github.io%2Fpost%2Fd0e11202.html" title="给作者发邮件">
+						<i class="fa-regular fa-envelope text-sm ml-1.5 opacity-60 hover:opacity-100 transition-opacity" style="color: var(--default-text-color);"></i>
+					</a>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2022-04-12 20:00</span>
+        <span class="mobile">2022-04-12 20:00</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-08-12 00:09:07</span>
+            <span class="mobile">2026-08-12 00:09:07</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E7%BD%91%E9%A1%B5%E5%BC%80%E5%8F%91/">网页开发</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTML/">HTML</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/CSS/">CSS</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%B8%AA%E4%BA%BA%E4%B8%BB%E9%A1%B5/">个人主页</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>309 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>1 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h2><p>这是一个完全基于 HTML 和 CSS 的个人网页作业，主要用于课程展示。它没有引入 JavaScript 或其他前端框架，重点是练习网页结构组织、样式布局、表单设计、列表排版、链接跳转以及元素定位等基础知识。</p>
+<p><img lazyload="" src="/images/loading.svg" data-src="https://private-user-images.githubusercontent.com/96962656/307507919-2ab4a1cb-8331-465b-9804-6d0036d5e04d.png" alt="项目首页截图"></p>
+<p><img lazyload="" src="/images/loading.svg" data-src="https://private-user-images.githubusercontent.com/96962656/307508159-beb86b52-0ec9-4eca-902c-2575da3d93af.png" alt="页面内容展示"></p>
+<h2 id="项目内容"><a href="#项目内容" class="headerlink" title="项目内容"></a>项目内容</h2><p>这个作品包含了几个比较常见的网页板块：</p>
+<ul>
+<li>网站首页</li>
+<li>教育背景</li>
+<li>实践记录</li>
+<li>日常生活</li>
+<li>兴趣爱好</li>
+<li>我的日志</li>
+<li>好友留言</li>
+</ul>
+<p>虽然页面并没有做太多视觉上的优化，但它已经把当时学习到的纯 HTML/CSS 基础知识串联起来了。</p>
+<h2 id="作品链接"><a href="#作品链接" class="headerlink" title="作品链接"></a>作品链接</h2><ul>
+<li>预览地址：<a href="https://minjiey.github.io/webfinal_exam/html/main.html">minjie.ying’s homepage for web_course final in 2022 grade 2</a></li>
+<li>GitHub 仓库：<a class="link" target="_blank" rel="noopener" href="https://github.com/MinjieY/webfinal_exam">webfinal_exam<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li>博客主页：<a href="https://minjiey.github.io/">https://minjiey.github.io/</a></li>
+</ul>
+<h2 id="这份作品的意义"><a href="#这份作品的意义" class="headerlink" title="这份作品的意义"></a>这份作品的意义</h2><p>这份作品虽然比较粗糙，页面结构和视觉设计并没有太多雕琢，但它是我早期前端学习过程中的一个很有纪念意义的作品。它记录了当时对纯 HTML/CSS 页面布局、样式排版和基础结构的初步理解，也为后续更完整的个人网站和博客搭建打下了基础。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 早期前端练手项目：纯 HTML/CSS 个人主页</li>
+        <li class="copyright-author-line">
+            <strong>作者:</strong>
+            <span class="copyright-author-name">MinjieY</span>
+            <button class="copyright-reward-button" type="button" aria-label="打赏作者" title="打赏作者">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </button>
+            <div class="copyright-reward-tooltip" role="tooltip" aria-hidden="true">
+                <div class="copyright-reward-card">
+                    <span class="reward-label">微信收款</span>
+                    <img src="/images/wechat.jpg" alt="微信收款二维码" />
+                </div>
+                <div class="copyright-reward-card">
+                    <span class="reward-label">支付宝收款</span>
+                    <img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+                </div>
+            </div>
+        </li>
+        <li><strong>创建于
+                :</strong> 2022-04-12 20:00:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2026-08-12 00:09:07
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/MinjieY/post/d0e11202.html
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+<style>
+.copyright-author-line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    /* Override parent li { overflow: hidden; white-space: nowrap }
+       so the absolute reward tooltip (top: 100%) isn't clipped. */
+    overflow: visible !important;
+    white-space: normal;
+}
+
+.copyright-reward-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 999px;
+    transition: background 0.2s ease;
+}
+
+.copyright-reward-button:hover,
+.copyright-reward-button:focus-visible {
+    background: rgba(163, 31, 52, 0.12);
+}
+
+.copyright-reward-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1100;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.85rem;
+    padding: 1rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.copyright-author-line:hover .copyright-reward-tooltip,
+.copyright-author-line:focus-within .copyright-reward-tooltip,
+.copyright-reward-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.copyright-reward-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    background: var(--background-color);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+}
+
+.reward-label {
+    font-size: 0.88rem;
+    color: var(--third-text-color);
+    font-weight: 600;
+}
+
+.copyright-reward-card img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.copyright-reward-card img:hover {
+    transform: scale(1.03);
+}
+
+</style>
+
+<script data-swup-reload-script>
+(function () {
+    const rewardBtn = document.querySelector('.copyright-reward-button');
+    const tooltip = document.querySelector('.copyright-reward-tooltip');
+
+    if (!rewardBtn || !tooltip) return;
+
+    const showTooltip = () => tooltip.classList.add('show');
+    const hideTooltip = () => tooltip.classList.remove('show');
+
+    rewardBtn.addEventListener('mouseenter', showTooltip);
+    rewardBtn.addEventListener('mouseleave', hideTooltip);
+    rewardBtn.addEventListener('focus', showTooltip);
+    rewardBtn.addEventListener('blur', hideTooltip);
+
+    tooltip.addEventListener('mouseenter', showTooltip);
+    tooltip.addEventListener('mouseleave', hideTooltip);
+
+    // Click reward button -> open both QR codes in a new tab page
+    rewardBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        hideTooltip();
+
+        const rewardPageHtml = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>打赏作者</title>
+<style>
+body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.wrapper{max-width:980px;width:100%;padding:1rem;box-sizing:border-box;text-align:center;}
+.title{font-size:1.4rem;margin-bottom:1rem;color:#fff;}
+.card{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.card-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:1rem;}
+.card-item strong{display:block;margin-bottom:0.75rem;font-size:1rem;color:#f0f0f0;}
+.card-item img{width:100%;max-width:100%;height:auto;border-radius:16px;background:#fff;}
+@media (max-width:720px){.card{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="title">打赏作者</div>
+<div class="card">
+<div class="card-item">
+<strong>微信收款</strong>
+<img src="${window.location.origin}/images/wechat.jpg" alt="微信收款二维码" />
+</div>
+<div class="card-item">
+<strong>支付宝收款</strong>
+<img src="${window.location.origin}/images/alipay.jpg" alt="支付宝收款二维码" />
+</div>
+</div>
+</div>
+</body>
+</html>`;
+
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.write(rewardPageHtml);
+            newWindow.document.close();
+        } else {
+            alert('请允许弹出窗口以查看打赏二维码。');
+        }
+    });
+})();
+</script>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTML/">#HTML</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/CSS/">#CSS</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%89%8D%E7%AB%AF/">#前端</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E4%B8%AA%E4%BA%BA%E4%B8%BB%E9%A1%B5/">#个人主页</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+  <div class="recommended-article px-2 sm:px-6 md:px-8">
+   <div class="recommended-desktop">
+    <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+    </div>
+    <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-dark">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/8f8f4947.html" title="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" rel="bookmark">
+  <img src="/images/supply0.webp" alt="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" class="!max-w-none">
+  <span class="title">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</span>
+</a><a class="recommended-article-item" href="/post/enterprise-carbon.html" title="中国企业碳数据可靠性与双碳目标研究简介" rel="bookmark">
+  <img src="/images/enterpriseCarbon.png" alt="中国企业碳数据可靠性与双碳目标研究简介" class="!max-w-none">
+  <span class="title">中国企业碳数据可靠性与双碳目标研究简介</span>
+</a></div>
+   </div>
+   <div class="recommended-mobile">
+   <div class="recommended-article-header text-xl md:text-3xl font-bold mt-10">
+     <i aria-hidden="true"></i><span>推荐阅读</span>
+   </div>
+   <div class="recommended-article-group"><a class="recommended-article-item" href="/post/2fdb6b50%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%BC%9A%E8%AE%A9md%E6%89%93%E5%BC%80%E5%8F%98%E6%85%A2%E5%90%97.html" title="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" rel="bookmark">
+  <img src="/images/bk-whilte.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-light"><img src="/images/bk-black.jpg" alt="基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例" class="!max-w-none recommended-img-dark">
+  <span class="title">基于ANN人工神经网络的贷款决策风险评估——以Lending Club数据为例</span>
+</a><a class="recommended-article-item" href="/post/8f8f4947.html" title="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" rel="bookmark">
+  <img src="/images/supply0.webp" alt="多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用" class="!max-w-none">
+  <span class="title">多模块文件自动上传工具 — 基于 Selenium + PyAutoGUI 的 RPA 桌面应用</span>
+</a></div>
+   </div>
+  </div>
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/post/5347bf79.html">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">LOL游戏玩家类型与胜利条件大数据分析</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.10/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            (function() {
+                const startPath = location.pathname;
+                const startTime = Date.now();
+                const retryDelay = 200;
+                const retryLimit = 5000;
+
+                const runTwikoo = () => {
+                    if (location.pathname !== startPath) {
+                        return;
+                    }
+
+                    const container = document.getElementById('twikoo-comment');
+                    if (!container || typeof twikoo === 'undefined') {
+                        if (Date.now() - startTime < retryLimit) {
+                            setTimeout(runTwikoo, retryDelay);
+                        }
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    twikoo.init({
+                        el: '#twikoo-comment',
+                        envId: 'https://hexoblogcomment.vercel.app',
+                        path: location.pathname,
+                    });
+                };
+
+                runTwikoo();
+            })();
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">早期前端练手项目：纯 HTML/CSS 个人主页</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-text">项目简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%86%85%E5%AE%B9"><span class="nav-text">项目内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E5%93%81%E9%93%BE%E6%8E%A5"><span class="nav-text">作品链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E4%BB%BD%E4%BD%9C%E5%93%81%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-text">这份作品的意义</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">MinjieY</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 13 篇文章
+                    </span>
+                    
+                        <span>
+                            共 24.7k 字
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            
+                <script data-swup-reload-script>
+                    (function () {
+                        // Skip counter on local/dev environments to avoid inflating production stats.
+                        var host = window.location.hostname || '';
+                        var isLocal = !host
+                            || host === 'localhost'
+                            || host === '127.0.0.1'
+                            || host === '0.0.0.0'
+                            || host === '[::1]'
+                            || host.endsWith('.local')
+                            || host.endsWith('.localhost')
+                            || /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(host)
+                            || /^dev\./i.test(host);
+                        if (isLocal) {
+                            var uv = document.getElementById('busuanzi_value_site_uv');
+                            var pv = document.getElementById('busuanzi_value_site_pv');
+                            var pvpv = document.getElementById('busuanzi_value_page_pv');
+                            if (uv) uv.textContent = '—';
+                            if (pv) pv.textContent = '—';
+                            if (pvpv) pvpv.textContent = '—';
+                            return;
+                        }
+                        var s = document.createElement('script');
+                        s.src = 'https://vercount.one/js';
+                        s.async = true;
+                        document.head.appendChild(s);
+                    })();
+                </script>
+            
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+                
+                    <div class="lg:!block mt-1">
+                        <span class="text-sm"><i class="fa-regular fa-clock"></i></span>
+                        <span class="odometer text-sm" id="runtime_days"></span><span class="text-sm"> 天</span>
+                        <span class="odometer text-sm" id="runtime_hours"></span><span class="text-sm"> 小时</span>
+                        <span class="odometer text-sm" id="runtime_minutes"></span><span class="text-sm"> 分钟</span>
+                        <span class="odometer text-sm" id="runtime_seconds"></span><span class="text-sm"> 秒</span>
+                    </div>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                https://beian.miit.gov.cn
+                
+                "></a></div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- share -->
+		<li class="post-share-btn-item" id="post-share-btn" title="分享文章" aria-label="分享文章">
+			<i class="fa-solid fa-share-nodes"></i>
+		</li>
+
+		<!-- reward -->
+		<li class="post-reward-btn-item" title="打赏作者" aria-label="打赏作者" tabindex="0">
+			<i class="fa-solid fa-hand-holding-dollar"></i>
+			<div class="post-reward-popup" role="dialog" aria-label="打赏二维码">
+				<div class="post-reward-popup-card">
+					<span class="popup-title">微信收款</span>
+					<img src="/images/wechat.jpg" alt="微信收款二维码" />
+				</div>
+				<div class="post-reward-popup-card">
+					<span class="popup-title">支付宝收款</span>
+					<img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+				</div>
+			</div>
+		</li>
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+
+<div id="post-share-modal" class="post-share-modal hidden" role="dialog" aria-modal="true" aria-label="分享文章">
+	<div class="post-share-modal-content">
+		<button class="post-share-modal-close" id="post-share-modal-close" aria-label="关闭">×</button>
+		<h3>分享这篇文章</h3>
+		<img id="post-share-qrcode" alt="文章分享二维码" />
+		<p class="post-share-url" id="post-share-url"></p>
+		<button class="post-share-copy-btn" id="post-share-copy-btn">复制链接</button>
+	</div>
+</div>
+
+<script>
+(function () {
+	const trigger = document.getElementById('post-share-btn');
+	const modal = document.getElementById('post-share-modal');
+	const closeBtn = document.getElementById('post-share-modal-close');
+	const copyBtn = document.getElementById('post-share-copy-btn');
+	const qrImg = document.getElementById('post-share-qrcode');
+	const urlBox = document.getElementById('post-share-url');
+	if (!trigger || !modal) return;
+
+	const shareUrl = window.location.href;
+	const shareTitle = document.title || '博客文章';
+	const shareText = document.querySelector('meta[name="description"]')?.content || '查看这篇文章';
+
+	const openModal = () => {
+		if (qrImg) {
+			qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(shareUrl);
+		}
+		if (urlBox) {
+			urlBox.textContent = shareUrl;
+		}
+		modal.classList.remove('hidden');
+	};
+
+	const closeModal = () => modal.classList.add('hidden');
+
+	trigger.addEventListener('click', async () => {
+		if (navigator.share) {
+			try {
+				await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+				return;
+			} catch (e) {}
+		}
+		openModal();
+	});
+
+	closeBtn?.addEventListener('click', closeModal);
+	modal?.addEventListener('click', function (e) {
+		if (e.target === modal) closeModal();
+	});
+	copyBtn?.addEventListener('click', async function () {
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+			copyBtn.textContent = '已复制';
+			setTimeout(() => {
+				copyBtn.textContent = '复制链接';
+			}, 1500);
+		} catch (e) {
+			window.prompt('复制链接', shareUrl);
+		}
+	});
+
+	const rewardBtn = document.querySelector('.post-reward-btn-item');
+	if (rewardBtn) {
+		rewardBtn.addEventListener('click', function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			const rewardPageHtml = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>打赏作者</title>
+<style>
+body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.wrapper{max-width:980px;width:100%;padding:1rem;box-sizing:border-box;text-align:center;}
+.title{font-size:1.4rem;margin-bottom:1rem;color:#fff;}
+.card{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.card-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:1rem;}
+.card-item strong{display:block;margin-bottom:0.75rem;font-size:1rem;color:#f0f0f0;}
+.card-item img{width:100%;max-width:100%;height:auto;border-radius:16px;background:#fff;}
+@media (max-width:720px){.card{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="title">打赏作者</div>
+<div class="card">
+<div class="card-item">
+<strong>微信收款</strong>
+<img src="/images/wechat.jpg" alt="微信收款二维码" />
+</div>
+<div class="card-item">
+<strong>支付宝收款</strong>
+<img src="/images/alipay.jpg" alt="支付宝收款二维码" />
+</div>
+</div>
+</div>
+</body>
+</html>`;
+
+			const newWindow = window.open('', '_blank');
+			if (newWindow) {
+				newWindow.document.write(rewardPageHtml);
+				newWindow.document.close();
+			} else {
+				alert('请允许弹出窗口以查看打赏二维码。');
+			}
+		});
+	}
+})();
+</script>
+
+<style>
+.post-share-btn-item {
+	cursor: pointer;
+}
+
+.post-share-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 1rem;
+}
+
+.post-share-modal.hidden {
+	display: none;
+}
+
+.post-share-modal-content {
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 1.2rem;
+	width: min(92vw, 320px);
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.post-share-modal-content h3 {
+	margin: 0 0 0.6rem;
+	font-size: 1rem;
+	color: var(--second-text-color);
+}
+
+.post-share-modal-content img {
+	width: 180px;
+	height: 180px;
+	margin: 0.5rem auto 0.8rem;
+	border-radius: 12px;
+	background: #fff;
+	padding: 0.35rem;
+}
+
+.post-share-url {
+	font-size: 0.8rem;
+	word-break: break-all;
+	color: var(--third-text-color);
+	margin-bottom: 0.8rem;
+}
+
+.post-share-copy-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.55rem 0.9rem;
+	background: var(--primary-color);
+	color: #fff;
+	cursor: pointer;
+}
+
+.post-share-modal-close {
+	position: absolute;
+	right: 0.8rem;
+	top: 0.8rem;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: var(--second-text-color);
+}
+
+.post-reward-btn-item {
+	position: relative;
+	cursor: pointer;
+}
+
+.post-reward-btn-item i {
+	font-size: 1.05rem;
+}
+
+.post-reward-popup {
+	position: absolute;
+	top: -15rem;
+	right: 50%;
+	transform: translateX(20%);
+	min-width: 260px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(110px, 1fr));
+	gap: 0.8rem;
+	padding: 1rem;
+	background: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 18px;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+	z-index: 1000;
+	opacity: 0;
+	pointer-events: none;
+	transform: translate(20%, 8px);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-reward-btn-item:hover .post-reward-popup,
+.post-reward-btn-item:focus-within .post-reward-popup {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translate(20%, 0);
+}
+
+.post-reward-popup-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	background: var(--background-color);
+	border-radius: 14px;
+	border: 1px solid var(--border-color);
+}
+
+.post-reward-popup-card .popup-title {
+	font-size: 0.85rem;
+	color: var(--third-text-color);
+	font-weight: 600;
+}
+
+.post-reward-popup-card img {
+	width: 110px;
+	height: 110px;
+	object-fit: cover;
+	border-radius: 14px;
+}
+</style>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<!-- Language Switcher (always visible above the gear) -->
+	
+
+	<ul class="hidden-tools-list">
+		
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="图片查看器">
+	<button class="image-viewer-close" type="button" aria-label="关闭">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="上一页">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="关闭">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="下一页">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
+
+	
+</body>
+
+</html>
