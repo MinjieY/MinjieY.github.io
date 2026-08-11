@@ -171,7 +171,119 @@
     
     
     
-<meta name="generator" content="Hexo 7.2.0"></head>
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -424,7 +536,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">42</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">41</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -547,7 +659,7 @@
                     </span>
                     
                         <span>
-                            共 18.4k 字
+                            共 18k 字
                         </span>
                     
                 </p>
@@ -772,6 +884,212 @@
 <script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
 
 
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
 
 	
 </body>

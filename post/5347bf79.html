@@ -180,7 +180,119 @@
     
     
     
-<meta name="generator" content="Hexo 7.2.0"></head>
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -433,7 +545,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">42</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">41</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -628,7 +740,7 @@
 </tr>
 </tbody></table>
 <h3 id="2-3-数据获取"><a href="#2-3-数据获取" class="headerlink" title="2.3 数据获取"></a>2.3 数据获取</h3><p>通过调用Rriotwatcher包获取五个地区最新联赛比赛的前100名玩家数据：</p>
-<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> riotwatcher <span class="keyword">import</span> LolWatcher</span><br><span class="line">lol_watcher = LolWatcher(<span class="string">&#x27;app-api-here&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> riotwatcher <span class="keyword">import</span> LolWatcher</span><br><span class="line">lol_watcher = LolWatcher(<span class="string">'app-api-here'</span>)</span><br></pre></td></tr></table></figure></div>
 
 <p>爬取后对数据进行初步处理，将bool类型转化为整型数据，删除不必要的列，最终得到9,226条记录的matches.csv文件。</p>
 <hr>
@@ -642,7 +754,7 @@
 </thead>
 <tbody><tr>
 <td>win</td>
-<td>是否胜利（1&#x2F;0）</td>
+<td>是否胜利（1/0）</td>
 </tr>
 <tr>
 <td>firstBlood</td>
@@ -693,12 +805,7 @@
 <td>地区</td>
 </tr>
 </tbody></table>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image4.png"
-                      alt="数据描述统计"
-                ></p>
+<p><img lazyload="" src="/images/loading.svg" data-src="/images/lol/image4.png" alt="数据描述统计"></p>
 <p>数据集的描述性统计如下：</p>
 <table>
 <thead>
@@ -950,23 +1057,18 @@
 </tbody></table>
 <p>最大相关系数为0.77（baronKills与dragonKills之间），均&lt;0.8，可认为没有较强共线性，五个属性各自独立描述了玩家不同的游戏行为。</p>
 <hr>
-<h2 id="四、数据预处理"><a href="#四、数据预处理" class="headerlink" title="四、数据预处理"></a>四、数据预处理</h2><h3 id="4-1-数据去重与空值处理"><a href="#4-1-数据去重与空值处理" class="headerlink" title="4.1 数据去重与空值处理"></a>4.1 数据去重与空值处理</h3><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 去重</span></span><br><span class="line">dfread = dfread.dropDuplicates()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除空值大于2个的行</span></span><br><span class="line">dfread = dfread.dropna(how=<span class="string">&#x27;all&#x27;</span>, thresh=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对低标准差属性进行均值填充</span></span><br><span class="line">mean_frame = dfread.select(F.avg(dfread[<span class="string">&#x27;inhibitorKills&#x27;</span>]))</span><br><span class="line">inhibitorKills_mean = mean_frame.columns[<span class="number">0</span>]</span><br><span class="line">data_fillna = dfread.fillna(inhibitorKills_mean, <span class="string">&#x27;inhibitorKills&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+<h2 id="四、数据预处理"><a href="#四、数据预处理" class="headerlink" title="四、数据预处理"></a>四、数据预处理</h2><h3 id="4-1-数据去重与空值处理"><a href="#4-1-数据去重与空值处理" class="headerlink" title="4.1 数据去重与空值处理"></a>4.1 数据去重与空值处理</h3><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 去重</span></span><br><span class="line">dfread = dfread.dropDuplicates()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除空值大于2个的行</span></span><br><span class="line">dfread = dfread.dropna(how=<span class="string">'all'</span>, thresh=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对低标准差属性进行均值填充</span></span><br><span class="line">mean_frame = dfread.select(F.avg(dfread[<span class="string">'inhibitorKills'</span>]))</span><br><span class="line">inhibitorKills_mean = mean_frame.columns[<span class="number">0</span>]</span><br><span class="line">data_fillna = dfread.fillna(inhibitorKills_mean, <span class="string">'inhibitorKills'</span>)</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="4-2-特征提取与规范化"><a href="#4-2-特征提取与规范化" class="headerlink" title="4.2 特征提取与规范化"></a>4.2 特征提取与规范化</h3><p>选取后5列数值型连续性数据（towerKills、inhibitorKills、baronKills、dragonKills、riftHeraldKills）用于聚类分析。使用VectorAssembler进行特征向量化：</p>
-<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> VectorAssembler</span><br><span class="line">vecAss = VectorAssembler(</span><br><span class="line">    inputCols=dfseries.drop(<span class="string">&#x27;region&#x27;</span>).columns[<span class="number">1</span>:], </span><br><span class="line">    outputCol=<span class="string">&#x27;features&#x27;</span></span><br><span class="line">)</span><br><span class="line">df_features = vecAss.transform(dfseries).select(<span class="string">&#x27;index&#x27;</span>, <span class="string">&#x27;features&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> VectorAssembler</span><br><span class="line">vecAss = VectorAssembler(</span><br><span class="line">    inputCols=dfseries.drop(<span class="string">'region'</span>).columns[<span class="number">1</span>:], </span><br><span class="line">    outputCol=<span class="string">'features'</span></span><br><span class="line">)</span><br><span class="line">df_features = vecAss.transform(dfseries).select(<span class="string">'index'</span>, <span class="string">'features'</span>)</span><br></pre></td></tr></table></figure></div>
 
 <p>然后进行标准化处理，使特征均值为0、方差为1。</p>
 <hr>
 <h2 id="五、模型建立"><a href="#五、模型建立" class="headerlink" title="五、模型建立"></a>五、模型建立</h2><h3 id="5-1-K-Means聚类——玩家类型分类"><a href="#5-1-K-Means聚类——玩家类型分类" class="headerlink" title="5.1 K-Means聚类——玩家类型分类"></a>5.1 K-Means聚类——玩家类型分类</h3><p>使用轮廓系数确定最佳聚类数k：</p>
-<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="number">10</span>):</span><br><span class="line">    KMeans_algo = KMeans(featuresCol=<span class="string">&#x27;standardized&#x27;</span>, k=i)</span><br><span class="line">    KMeans_fit = KMeans_algo.fit(data_scale_output)</span><br><span class="line">    output = KMeans_fit.transform(data_scale_output)</span><br><span class="line">    score = evaluator.evaluate(output)</span><br><span class="line">    silhouette_score.append(score)</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="number">10</span>):</span><br><span class="line">    KMeans_algo = KMeans(featuresCol=<span class="string">'standardized'</span>, k=i)</span><br><span class="line">    KMeans_fit = KMeans_algo.fit(data_scale_output)</span><br><span class="line">    output = KMeans_fit.transform(data_scale_output)</span><br><span class="line">    score = evaluator.evaluate(output)</span><br><span class="line">    silhouette_score.append(score)</span><br></pre></td></tr></table></figure></div>
 
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image17.png"
-                      alt="轮廓系数图"
-                ></p>
-<p>k&#x3D;6时轮廓分数为局部最大值，各k值的轮廓系数如下：</p>
+<p><img lazyload="" src="/images/loading.svg" data-src="/images/lol/image17.png" alt="轮廓系数图"></p>
+<p>k=6时轮廓分数为局部最大值，各k值的轮廓系数如下：</p>
 <table>
 <thead>
 <tr>
@@ -993,7 +1095,7 @@
 <td>0.375</td>
 </tr>
 </tbody></table>
-<p>k&#x3D;6时轮廓系数达到局部最大值0.405，选择聚为<strong>6类</strong>：</p>
+<p>k=6时轮廓系数达到局部最大值0.405，选择聚为<strong>6类</strong>：</p>
 <div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kmeans = KMeans(k=<span class="number">6</span>, seed=<span class="number">1</span>)</span><br><span class="line">model = kmeans.fit(df_features)</span><br><span class="line">centers = model.clusterCenters()</span><br></pre></td></tr></table></figure></div>
 
 <p><strong>6个聚类中心坐标</strong>（标准化后的特征值）：</p>
@@ -1058,12 +1160,7 @@
 </tr>
 </tbody></table>
 <p>六个聚类的样本数分别为1,997、1,190、1,081、1,332、1,501、2,125，分布均匀，聚类效果良好。</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image20.png"
-                      alt="聚类结果可视化"
-                ></p>
+<p><img lazyload="" src="/images/loading.svg" data-src="/images/lol/image20.png" alt="聚类结果可视化"></p>
 <h3 id="5-2-玩家类型画像"><a href="#5-2-玩家类型画像" class="headerlink" title="5.2 玩家类型画像"></a>5.2 玩家类型画像</h3><p>根据聚类折线图分析各簇特征：</p>
 <table>
 <thead>
@@ -1112,12 +1209,7 @@
 </tr>
 </tbody></table>
 <h3 id="5-3-逻辑回归——获胜条件分析"><a href="#5-3-逻辑回归——获胜条件分析" class="headerlink" title="5.3 逻辑回归——获胜条件分析"></a>5.3 逻辑回归——获胜条件分析</h3><p>对13个特征进行主成分分析（PCA），6个主成分可解释80%的方差。查看因子得分热力图可知：无论是否摧毁第一个兵营、推掉多少塔、摧毁多少兵营，都与获胜有最高的相关性。</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image25.png"
-                      alt="因子得分热力图"
-                ></p>
+<p><img lazyload="" src="/images/loading.svg" data-src="/images/lol/image25.png" alt="因子得分热力图"></p>
 <p>将特征缩小为6个进行逻辑回归建模：</p>
 <div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.3</span>)</span><br><span class="line">log = LogisticRegression()</span><br><span class="line">log.fit(X_train, y_train)</span><br><span class="line">y_pred = log.predict(X_test)</span><br></pre></td></tr></table></figure></div>
 <hr>
@@ -1244,18 +1336,13 @@
 </tr>
 </tbody></table>
 <p>五个地区的回归系数非常接近，标准差均&lt;0.015，说明获胜条件具有跨地区的普适性。其中<strong>KR（韩国）赛区</strong>在firstTower和firstBaron上的系数略高，反映了该赛区对地图资源的重视程度。</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/lol/image24.png"
-                      alt="分地区回归结果"
-                ></p>
+<p><img lazyload="" src="/images/loading.svg" data-src="/images/lol/image24.png" alt="分地区回归结果"></p>
 <hr>
 <h2 id="七、实验总结"><a href="#七、实验总结" class="headerlink" title="七、实验总结"></a>七、实验总结</h2><h3 id="7-1-数据挖掘流程总结"><a href="#7-1-数据挖掘流程总结" class="headerlink" title="7.1 数据挖掘流程总结"></a>7.1 数据挖掘流程总结</h3><p>完整的数据挖掘流程可概括为四个阶段：</p>
 <ol>
 <li><strong>数据读取</strong>：读取数据、统计各项指标、明确数据规模与任务</li>
 <li><strong>特征理解分析</strong>：单特征分析、多变量统计分析、统计绘图</li>
-<li><strong>数据清洗与预处理</strong>：缺失值填充、特征标准化&#x2F;归一化、筛选有价值特征、相关性分析</li>
+<li><strong>数据清洗与预处理</strong>：缺失值填充、特征标准化/归一化、筛选有价值特征、相关性分析</li>
 <li><strong>建立模型</strong>：特征与标签准备、数据集切分、建模算法对比</li>
 </ol>
 <h3 id="7-2-算法评价"><a href="#7-2-算法评价" class="headerlink" title="7.2 算法评价"></a>7.2 算法评价</h3><p><strong>K-Means聚类</strong>算法简单易懂，在近万条数据的数据集上具有收敛速度快、聚类效率高的优点。但也存在局限性：结果受初始值影响，噪声和离群点会干扰中心划分的距离计算。</p>
@@ -1680,7 +1767,7 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
                     </span>
                     
                         <span>
-                            共 18.4k 字
+                            共 18k 字
                         </span>
                     
                 </p>
@@ -2194,6 +2281,212 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
 <script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
 
 
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
 
 	
 </body>

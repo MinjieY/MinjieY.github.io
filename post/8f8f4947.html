@@ -179,7 +179,119 @@
     
     
     
-<meta name="generator" content="Hexo 7.2.0"></head>
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -432,7 +544,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">42</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">41</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -557,7 +669,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.6k 字</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.5k 字</span>
         </span>
     
     
@@ -581,15 +693,15 @@
 
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>汽车供应链层级多、信息孤岛严重，上游供应商的库存、订单数据难以实时互通，人工处理效率低、风险预判滞后。<a class="link"   target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/OhaVsclo1oI_FyPrhsYBYQ" >汽车供应链企业集群库存数据集成与 AI 智能治理研究<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>提出了一套 <strong>API 对接 + AI 大数据分析</strong> 的智能库存管理方案。</p>
+			<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>汽车供应链层级多、信息孤岛严重，上游供应商的库存、订单数据难以实时互通，人工处理效率低、风险预判滞后。<a class="link" target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/OhaVsclo1oI_FyPrhsYBYQ">汽车供应链企业集群库存数据集成与 AI 智能治理研究<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>提出了一套 <strong>API 对接 + AI 大数据分析</strong> 的智能库存管理方案。</p>
 <p>本项目是该研究中的一个落地小工具：<code>SupplyAutoUpload</code> 承担了其中 <strong>Excel 数据批量上传到 SupplyOne 供应链管理平台</strong> 的 RPA 自动化环节——在上下游系统尚未完成 API 直连对接的阶段，通过桌面自动化打通数据入口，覆盖供应商500余家。</p>
 <blockquote>
-<p>业务背景文章：<a class="link"   target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/OhaVsclo1oI_FyPrhsYBYQ" >【思享汇】汽车供应链企业集群库存数据集成与 AI 智能治理研究<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>  ——上海市供应链发展促进会</p>
+<p>业务背景文章：<a class="link" target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/OhaVsclo1oI_FyPrhsYBYQ">【思享汇】汽车供应链企业集群库存数据集成与 AI 智能治理研究<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>  ——上海市供应链发展促进会</p>
 </blockquote>
-<h2 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h2><p>一个基于 <strong>Selenium + PyAutoGUI</strong> 的桌面端 RPA 自动化工具，用于在 <a class="link"   target="_blank" rel="noopener" href="https://supplyone-stg.ap1.covapp.io/#/login" >SupplyOne 供应链管理平台<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> 上批量上传供应商零件库存、下级零件库存和原材料到货计划 Excel 数据。</p>
+<h2 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h2><p>一个基于 <strong>Selenium + PyAutoGUI</strong> 的桌面端 RPA 自动化工具，用于在 <a class="link" target="_blank" rel="noopener" href="https://supplyone-stg.ap1.covapp.io/#/login">SupplyOne 供应链管理平台<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> 上批量上传供应商零件库存、下级零件库存和原材料到货计划 Excel 数据。</p>
 <blockquote>
-<p>GitHub: <a class="link"   target="_blank" rel="noopener" href="https://github.com/MinjieY/SupplyAutoUpload" >https://github.com/MinjieY/SupplyAutoUpload<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
-<p>供应链库存管理平台: <a class="link"   target="_blank" rel="noopener" href="https://supplyone-stg.ap1.covapp.io/#/login" >https://supplyone-stg.ap1.covapp.io/#/login<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>GitHub: <a class="link" target="_blank" rel="noopener" href="https://github.com/MinjieY/SupplyAutoUpload">https://github.com/MinjieY/SupplyAutoUpload<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>供应链库存管理平台: <a class="link" target="_blank" rel="noopener" href="https://supplyone-stg.ap1.covapp.io/#/login">https://supplyone-stg.ap1.covapp.io/#/login<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 </blockquote>
 <h2 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h2><ul>
 <li><p><strong>三个业务模块支持</strong></p>
@@ -610,7 +722,7 @@
 </li>
 <li><p><strong>定时任务</strong></p>
 <ul>
-<li>每个模块支持独立设置定时上传（分钟&#x2F;小时&#x2F;天&#x2F;周）</li>
+<li>每个模块支持独立设置定时上传（分钟/小时/天/周）</li>
 <li>文件修改时间去重，避免重复上传</li>
 </ul>
 </li>
@@ -670,7 +782,7 @@
 <div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                    MultiUploadApp                    │</span><br><span class="line">├──────────────┬──────────────┬───────────────────────┤</span><br><span class="line">│   UI 层      │   控制层      │      执行层            │</span><br><span class="line">│  (Tkinter)   │  (Scheduler) │  (Selenium + PyAutoGUI)│</span><br><span class="line">├──────────────┼──────────────┼───────────────────────┤</span><br><span class="line">│ 模块面板     │ 定时调度器    │  浏览器驱动管理         │</span><br><span class="line">│ 日志面板     │ 状态机控制    │  登录流程              │</span><br><span class="line">│ 验证码交互   │ 线程管理      │  导航与上传            │</span><br><span class="line">│ 配置持久化   │ 文件去重      │  结果记录与截图         │</span><br><span class="line">└──────────────┴──────────────┴───────────────────────┘</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="1-依赖自检与自动安装机制"><a href="#1-依赖自检与自动安装机制" class="headerlink" title="1. 依赖自检与自动安装机制"></a>1. 依赖自检与自动安装机制</h3><p>程序启动时首先调用 <code>check_dependencies()</code>，检测 <code>selenium</code>、<code>pyautogui</code>、<code>pyperclip</code>、<code>Pillow</code> 是否可用。若缺失，通过 <code>subprocess</code> 调用 pip 从清华镜像源自动安装，确保在无环境的机器上也能直接运行。</p>
-<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自动安装逻辑</span></span><br><span class="line">subprocess.check_call([</span><br><span class="line">    PYTHON_313, <span class="string">&quot;-m&quot;</span>, <span class="string">&quot;pip&quot;</span>, <span class="string">&quot;install&quot;</span>,</span><br><span class="line">    <span class="string">&quot;selenium&quot;</span>, <span class="string">&quot;webdriver-manager&quot;</span>, <span class="string">&quot;pyautogui&quot;</span>, <span class="string">&quot;pyperclip&quot;</span>, <span class="string">&quot;Pillow&quot;</span>,</span><br><span class="line">    <span class="string">&quot;-i&quot;</span>, <span class="string">&quot;https://pypi.tuna.tsinghua.edu.cn/simple&quot;</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自动安装逻辑</span></span><br><span class="line">subprocess.check_call([</span><br><span class="line">    PYTHON_313, <span class="string">"-m"</span>, <span class="string">"pip"</span>, <span class="string">"install"</span>,</span><br><span class="line">    <span class="string">"selenium"</span>, <span class="string">"webdriver-manager"</span>, <span class="string">"pyautogui"</span>, <span class="string">"pyperclip"</span>, <span class="string">"Pillow"</span>,</span><br><span class="line">    <span class="string">"-i"</span>, <span class="string">"https://pypi.tuna.tsinghua.edu.cn/simple"</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="2-日志系统设计"><a href="#2-日志系统设计" class="headerlink" title="2. 日志系统设计"></a>2. 日志系统设计</h3><p>自定义 <code>LogHandler</code> 类继承 <code>logging.Handler</code>，通过<strong>消息队列 + Tkinter <code>after</code> 定时刷新的异步模式</strong>，将 Python 标准 logging 输出桥接到 GUI 的 Text 组件中：</p>
 <ul>
@@ -680,25 +792,25 @@
 <li>每个模块拥有独立的日志 Tab，全局日志 Tab 汇总所有输出</li>
 </ul>
 <h3 id="3-多模块管理架构"><a href="#3-多模块管理架构" class="headerlink" title="3. 多模块管理架构"></a>3. 多模块管理架构</h3><p>三个业务模块通过 <code>MODULES</code> 列表统一配置，每个模块拥有独立的数据结构存储于 <code>self.module_widgets</code> 字典中：</p>
-<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">module_widgets[key] = &#123;</span><br><span class="line">    &#x27;name&#x27;: &quot;模块名称&quot;,</span><br><span class="line">    &#x27;url_var&#x27;: &quot;目标URL&quot;,</span><br><span class="line">    &#x27;path_var&#x27;: &quot;Excel文件目录&quot;,</span><br><span class="line">    &#x27;schedule_interval_var&#x27;: &quot;定时间隔&quot;,</span><br><span class="line">    &#x27;schedule_unit_var&#x27;: &quot;定时单位(min/小时/天/周)&quot;,</span><br><span class="line">    &#x27;status_label&#x27;: &quot;状态标签&quot;,</span><br><span class="line">    &#x27;progress_bar&#x27;: &quot;进度条&quot;,</span><br><span class="line">    &#x27;progress_label&#x27;: &quot;进度文字&quot;,</span><br><span class="line">    &#x27;is_running&#x27;: False/True,</span><br><span class="line">    &#x27;schedule_timer&#x27;: &quot;定时器句柄&quot;,</span><br><span class="line">    &#x27;last_upload_label&#x27;: &quot;上次上传时间标签&quot;,</span><br><span class="line">    &#x27;file_info_text&#x27;: &quot;文件信息展示区&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">module_widgets[key] = {</span><br><span class="line">    'name': "模块名称",</span><br><span class="line">    'url_var': "目标URL",</span><br><span class="line">    'path_var': "Excel文件目录",</span><br><span class="line">    'schedule_interval_var': "定时间隔",</span><br><span class="line">    'schedule_unit_var': "定时单位(min/小时/天/周)",</span><br><span class="line">    'status_label': "状态标签",</span><br><span class="line">    'progress_bar': "进度条",</span><br><span class="line">    'progress_label': "进度文字",</span><br><span class="line">    'is_running': False/True,</span><br><span class="line">    'schedule_timer': "定时器句柄",</span><br><span class="line">    'last_upload_label': "上次上传时间标签",</span><br><span class="line">    'file_info_text': "文件信息展示区"</span><br><span class="line">}</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>每个模块独立设置 URL、文件目录、定时参数</li>
-<li>模块面板支持折叠&#x2F;展开（<code>toggle_module</code>）</li>
+<li>模块面板支持折叠/展开（<code>toggle_module</code>）</li>
 <li>顶部导航栏提供快速跳转到指定模块（<code>_scroll_to_module</code>）</li>
 </ul>
 <h3 id="4-配置持久化"><a href="#4-配置持久化" class="headerlink" title="4. 配置持久化"></a>4. 配置持久化</h3><p>所有模块配置（URL、路径、定时参数）和全局设置（登录URL、用户名、密码）通过 <code>app_config.json</code> 持久化：</p>
 <ul>
-<li><code>save_config()</code> &#x2F; <code>save_module_config()</code> 在用户修改任何设置时自动保存</li>
+<li><code>save_config()</code> / <code>save_module_config()</code> 在用户修改任何设置时自动保存</li>
 <li><code>load_config()</code> 在程序启动时恢复上次配置</li>
 <li>配置结构清晰分层：<code>global</code> 保存全局设置，每个模块 key 保存模块专属设置</li>
 </ul>
 <h3 id="5-浏览器驱动管理"><a href="#5-浏览器驱动管理" class="headerlink" title="5. 浏览器驱动管理"></a>5. 浏览器驱动管理</h3><p>Edge WebDriver 管理包含三个关键步骤：</p>
 <p><strong>a) 版本检测：</strong> 通过查询 Windows 注册表获取 Edge 浏览器版本号（<code>HKLM\SOFTWARE\Microsoft\Edge\BLBeacon</code> → <code>version</code>），然后从 <code>https://msedgedriver.azureedge.net/</code> 匹配下载对应版本的驱动。</p>
 <p><strong>b) 驱动初始化：</strong> 使用 <code>selenium.webdriver.Edge</code> 创建浏览器实例，配置 <code>detach</code> 选项防止浏览器在程序结束时自动关闭，同时配置 <code>user-data-dir</code> 持久化浏览器状态。</p>
-<p><strong>c) 线程安全：</strong> 使用 <code>threading.Lock</code> 保护 <code>self.driver</code> 的读写操作（<code>get_driver_safe</code> &#x2F; <code>safe_driver_quit</code>），避免多线程并发访问浏览器对象导致崩溃。</p>
+<p><strong>c) 线程安全：</strong> 使用 <code>threading.Lock</code> 保护 <code>self.driver</code> 的读写操作（<code>get_driver_safe</code> / <code>safe_driver_quit</code>），避免多线程并发访问浏览器对象导致崩溃。</p>
 <h3 id="6-登录流程设计"><a href="#6-登录流程设计" class="headerlink" title="6. 登录流程设计"></a>6. 登录流程设计</h3><p>登录采用<strong>非阻塞异步模式</strong>，通过 <code>threading.Thread</code> 在后台执行：</p>
-<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">启动线程 → 初始化浏览器 → 导航到登录页 → 截图验证码</span><br><span class="line">    → 将验证码图片显示到 GUI Canvas → 等待用户输入</span><br><span class="line">    → 用户点击&quot;确认验证码&quot; → 继续线程执行</span><br><span class="line">    → 填写用户名密码 + 验证码 → 点击登录</span><br><span class="line">    → 检测登录是否成功 → 更新 UI 状态</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">启动线程 → 初始化浏览器 → 导航到登录页 → 截图验证码</span><br><span class="line">    → 将验证码图片显示到 GUI Canvas → 等待用户输入</span><br><span class="line">    → 用户点击"确认验证码" → 继续线程执行</span><br><span class="line">    → 填写用户名密码 + 验证码 → 点击登录</span><br><span class="line">    → 检测登录是否成功 → 更新 UI 状态</span><br></pre></td></tr></table></figure></div>
 
 <p>关键设计点：</p>
 <ul>
@@ -707,10 +819,10 @@
 <li>登录成功后所有模块的”执行”按钮才可用，避免未登录就执行上传</li>
 </ul>
 <h3 id="7-上传流程设计"><a href="#7-上传流程设计" class="headerlink" title="7. 上传流程设计"></a>7. 上传流程设计</h3><p>上传流程是核心自动化逻辑，采用<strong>分步执行 + 检查点模式</strong>：</p>
-<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 扫描文件目录 → 取最新 Excel 文件 → 检查文件修改时间是否已上传过</span><br><span class="line">2. 确保浏览器存活（get_driver_safe）</span><br><span class="line">3. 导航到目标模块页面 URL</span><br><span class="line">4. 等待页面加载，定位并点击&quot;上传&quot;按钮</span><br><span class="line">5. 等待系统文件对话框弹出 → 使用 PyAutoGUI 快捷键 Ctrl+L 定位地址栏</span><br><span class="line">   → pyperclip 粘贴文件路径 → 按 Enter 确认</span><br><span class="line">6. 等待上传完成 → 判断成功/失败</span><br><span class="line">7. 记录上传结果到 upload_logs/upload_results.log</span><br><span class="line">8. 失败时截图保存到 upload_logs/screenshots/</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 扫描文件目录 → 取最新 Excel 文件 → 检查文件修改时间是否已上传过</span><br><span class="line">2. 确保浏览器存活（get_driver_safe）</span><br><span class="line">3. 导航到目标模块页面 URL</span><br><span class="line">4. 等待页面加载，定位并点击"上传"按钮</span><br><span class="line">5. 等待系统文件对话框弹出 → 使用 PyAutoGUI 快捷键 Ctrl+L 定位地址栏</span><br><span class="line">   → pyperclip 粘贴文件路径 → 按 Enter 确认</span><br><span class="line">6. 等待上传完成 → 判断成功/失败</span><br><span class="line">7. 记录上传结果到 upload_logs/upload_results.log</span><br><span class="line">8. 失败时截图保存到 upload_logs/screenshots/</span><br></pre></td></tr></table></figure></div>
 
 <p><strong>为什么使用 PyAutoGUI 而非 Selenium 处理文件选择？</strong></p>
-<p>Selenium 无法直接操控操作系统原生的文件选择对话框（<code>&lt;input type=&quot;file&quot;&gt;</code> 除外），而 SupplyOne 平台的上传按钮触发的是系统级文件对话框。因此采用 PyAutoGUI 模拟键盘操作（Ctrl+L → 粘贴路径 → Enter）来完成文件选择。</p>
+<p>Selenium 无法直接操控操作系统原生的文件选择对话框（<code>&lt;input type="file"&gt;</code> 除外），而 SupplyOne 平台的上传按钮触发的是系统级文件对话框。因此采用 PyAutoGUI 模拟键盘操作（Ctrl+L → 粘贴路径 → Enter）来完成文件选择。</p>
 <h3 id="8-文件去重机制"><a href="#8-文件去重机制" class="headerlink" title="8. 文件去重机制"></a>8. 文件去重机制</h3><p>通过 <code>log_upload_result()</code> 和 <code>is_file_already_uploaded()</code> 实现基于文件修改时间的去重：</p>
 <ul>
 <li>每次上传成功后，将文件名、修改时间和模块名记录到 <code>upload_logs/upload_results.log</code></li>
@@ -749,7 +861,7 @@
 <p>或运行程序时会自动从清华镜像源安装缺失依赖。</p>
 <h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
 
-<h3 id="打包为-EXE"><a href="#打包为-EXE" class="headerlink" title="打包为 EXE"></a>打包为 EXE</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller --onefile --windowed --name <span class="string">&quot;多模块文件上传工具&quot;</span> multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
+<h3 id="打包为-EXE"><a href="#打包为-EXE" class="headerlink" title="打包为 EXE"></a>打包为 EXE</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller --onefile --windowed --name <span class="string">"多模块文件上传工具"</span> multi_upload_gui.py</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><ol>
 <li>启动程序后，在对应模块中设置目标 URL 和 Excel 文件所在目录</li>
@@ -1169,7 +1281,7 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
                     </span>
                     
                         <span>
-                            共 18.4k 字
+                            共 18k 字
                         </span>
                     
                 </p>
@@ -1683,6 +1795,212 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
 <script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
 
 
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
 
 	
 </body>

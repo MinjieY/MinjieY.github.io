@@ -175,7 +175,119 @@
     
     
     
-<meta name="generator" content="Hexo 7.2.0"></head>
+<meta name="generator" content="Hexo 7.2.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -428,7 +540,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">42</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">41</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -547,7 +659,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>654 字</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>594 字</span>
         </span>
     
     
@@ -572,34 +684,34 @@
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
 			<h1 id="连续数据离散化方法"><a href="#连续数据离散化方法" class="headerlink" title="连续数据离散化方法"></a>连续数据离散化方法</h1><blockquote>
-<p><strong>分位数法</strong><br>使用四分位、五分位、十分位等进行离散。<br>✅ 自动适应  &nbsp;  ⚠️ 对极端值敏感</p>
+<p><strong>分位数法</strong><br>使用四分位、五分位、十分位等进行离散。<br>✅ 自动适应     ⚠️ 对极端值敏感</p>
 </blockquote>
 <blockquote>
 <p><strong>距离区间法</strong><br>等距区间或自定义区间进行离散。<br>✅ 灵活，保持原有数据分布</p>
 </blockquote>
 <blockquote>
-<p><strong>频率区间法</strong><br>按频率分布排序后离散，数据变为均匀分布。<br>✅ 均匀化  &nbsp;  ⚠️ 会改变原有数据结构</p>
+<p><strong>频率区间法</strong><br>按频率分布排序后离散，数据变为均匀分布。<br>✅ 均匀化     ⚠️ 会改变原有数据结构</p>
 </blockquote>
 <blockquote>
-<p><strong>聚类法</strong><br>使用 K-Means 将样本进行离散处理。<br>✅ 自然分组  &nbsp;  ⚠️ 需预设 K 值</p>
+<p><strong>聚类法</strong><br>使用 K-Means 将样本进行离散处理。<br>✅ 自然分组     ⚠️ 需预设 K 值</p>
 </blockquote>
 <blockquote>
-<p><strong>卡方法</strong><br>基于卡方检验找出最佳临近区间并合并。<br>✅ 统计最优  &nbsp;  ⚠️ 计算开销大</p>
+<p><strong>卡方法</strong><br>基于卡方检验找出最佳临近区间并合并。<br>✅ 统计最优     ⚠️ 计算开销大</p>
 </blockquote>
 <blockquote>
 <p><strong>二值化</strong><br>与阈值比较，大于阈值→固定值（如 1），小于→另一值（如 0），得到只有两个值域的数据集。</p>
 </blockquote>
-<h2 id="时间序列离散"><a href="#时间序列离散" class="headerlink" title="时间序列离散"></a>时间序列离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"></span><br><span class="line"><span class="comment">#######时间序列离散#######</span></span><br><span class="line"><span class="comment"># 创造时间数据</span></span><br><span class="line">date = pd.date_range(<span class="string">&#x27;03/17/2018&#x27;</span>,<span class="string">&#x27;03/17/2023&#x27;</span>)</span><br><span class="line">df_t = pd.DataFrame(date, columns=[<span class="string">&#x27;date&#x27;</span>])</span><br><span class="line"><span class="comment"># 转化为周</span></span><br><span class="line">df_t[<span class="string">&#x27;week&#x27;</span>] = df_t[<span class="string">&#x27;date&#x27;</span>].apply(<span class="keyword">lambda</span> x:x.weekday())</span><br><span class="line">df_t.head()</span><br></pre></td></tr></table></figure></div>
+<h2 id="时间序列离散"><a href="#时间序列离散" class="headerlink" title="时间序列离散"></a>时间序列离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"></span><br><span class="line"><span class="comment">#######时间序列离散#######</span></span><br><span class="line"><span class="comment"># 创造时间数据</span></span><br><span class="line">date = pd.date_range(<span class="string">'03/17/2018'</span>,<span class="string">'03/17/2023'</span>)</span><br><span class="line">df_t = pd.DataFrame(date, columns=[<span class="string">'date'</span>])</span><br><span class="line"><span class="comment"># 转化为周</span></span><br><span class="line">df_t[<span class="string">'week'</span>] = df_t[<span class="string">'date'</span>].apply(<span class="keyword">lambda</span> x:x.weekday())</span><br><span class="line">df_t.head()</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="等距离散"><a href="#等距离散" class="headerlink" title="等距离散"></a>等距离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入数据</span></span><br><span class="line">df = pd.read_csv(<span class="string">&#x27;https://raw.githubusercontent.com/ffzs/dataset/master/Mall_Customers.csv&#x27;</span>, usecols=[<span class="string">&#x27;Age&#x27;</span>, <span class="string">&#x27;Annual Income (k$)&#x27;</span>, <span class="string">&#x27;Spending Score (1-100)&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更改列名</span></span><br><span class="line">df.columns = [<span class="string">&#x27;Age&#x27;</span>, <span class="string">&#x27;Income&#x27;</span>, <span class="string">&#x27;Spend&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#######等距离散#######</span></span><br><span class="line">df[<span class="string">&#x27;Age_discretized&#x27;</span>] = pd.cut(df.Age, <span class="number">4</span>, labels=<span class="built_in">range</span>(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">&#x27;Age_discretized&#x27;</span>).count()</span><br></pre></td></tr></table></figure></div>
+<h2 id="等距离散"><a href="#等距离散" class="headerlink" title="等距离散"></a>等距离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入数据</span></span><br><span class="line">df = pd.read_csv(<span class="string">'https://raw.githubusercontent.com/ffzs/dataset/master/Mall_Customers.csv'</span>, usecols=[<span class="string">'Age'</span>, <span class="string">'Annual Income (k$)'</span>, <span class="string">'Spending Score (1-100)'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更改列名</span></span><br><span class="line">df.columns = [<span class="string">'Age'</span>, <span class="string">'Income'</span>, <span class="string">'Spend'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#######等距离散#######</span></span><br><span class="line">df[<span class="string">'Age_discretized'</span>] = pd.cut(df.Age, <span class="number">4</span>, labels=<span class="built_in">range</span>(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">'Age_discretized'</span>).count()</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="聚类离散"><a href="#聚类离散" class="headerlink" title="聚类离散"></a>聚类离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#聚类实现离散化</span></span><br><span class="line"><span class="comment"># 数据准备</span></span><br><span class="line">data = df[<span class="string">&#x27;Income&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 改变数据形状</span></span><br><span class="line">data_re = data.reshape((data.index.size, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建k-means模型并指定聚类数量</span></span><br><span class="line">km_model = KMeans(n_clusters=<span class="number">4</span>, random_state=<span class="number">2018</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型导入数据</span></span><br><span class="line">result = km_model.fit_predict(data_re)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 离散数据并入原数据</span></span><br><span class="line">df[<span class="string">&#x27;Income_discretized&#x27;</span>] = result</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">&#x27;Income_discretized&#x27;</span>).count()</span><br></pre></td></tr></table></figure></div>
+<h2 id="聚类离散"><a href="#聚类离散" class="headerlink" title="聚类离散"></a>聚类离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#聚类实现离散化</span></span><br><span class="line"><span class="comment"># 数据准备</span></span><br><span class="line">data = df[<span class="string">'Income'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 改变数据形状</span></span><br><span class="line">data_re = data.reshape((data.index.size, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建k-means模型并指定聚类数量</span></span><br><span class="line">km_model = KMeans(n_clusters=<span class="number">4</span>, random_state=<span class="number">2018</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型导入数据</span></span><br><span class="line">result = km_model.fit_predict(data_re)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 离散数据并入原数据</span></span><br><span class="line">df[<span class="string">'Income_discretized'</span>] = result</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">'Income_discretized'</span>).count()</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="4分位数离散化"><a href="#4分位数离散化" class="headerlink" title="4分位数离散化"></a>4分位数离散化</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#####使用4分位离散数据#######</span></span><br><span class="line">df[<span class="string">&#x27;Spend_discretized&#x27;</span>] = pd.qcut(df.Spend, <span class="number">4</span>, labels=[<span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;S&#x27;</span>])</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">&#x27;Spend_discretized&#x27;</span>).count()</span><br></pre></td></tr></table></figure></div>
+<h2 id="4分位数离散化"><a href="#4分位数离散化" class="headerlink" title="4分位数离散化"></a>4分位数离散化</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#####使用4分位离散数据#######</span></span><br><span class="line">df[<span class="string">'Spend_discretized'</span>] = pd.qcut(df.Spend, <span class="number">4</span>, labels=[<span class="string">'C'</span>, <span class="string">'B'</span>, <span class="string">'A'</span>, <span class="string">'S'</span>])</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">'Spend_discretized'</span>).count()</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="等频率离散"><a href="#等频率离散" class="headerlink" title="等频率离散"></a>等频率离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">将相同数量的记录放在每个区间，保证每个区间的数量基本一致</span><br><span class="line"></span><br><span class="line"><span class="comment">#####等频率离散#######</span></span><br><span class="line"><span class="comment"># 设置离散区间数</span></span><br><span class="line">k =<span class="number">4</span></span><br><span class="line"><span class="comment"># 获取数据</span></span><br><span class="line">data = df.Age</span><br><span class="line"><span class="comment"># 设置频率范围</span></span><br><span class="line">w = [<span class="number">1.0</span>*i/k <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(k+<span class="number">1</span>)]</span><br><span class="line"><span class="comment"># 使用describe获取频率区域的分界点</span></span><br><span class="line">w = data.describe(percentiles = w)[<span class="number">4</span>:<span class="number">4</span>+k+<span class="number">1</span>]</span><br><span class="line">w[<span class="number">0</span>] = w[<span class="number">0</span>]*(<span class="number">1</span>-<span class="number">1e-10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据分界点进行数据离散处理</span></span><br><span class="line">df[<span class="string">&#x27;Age2&#x27;</span>] = pd.cut(data, w, labels = <span class="built_in">range</span>(k))</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">&#x27;Age2&#x27;</span>).count()</span><br></pre></td></tr></table></figure></div>
+<h2 id="等频率离散"><a href="#等频率离散" class="headerlink" title="等频率离散"></a>等频率离散</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">将相同数量的记录放在每个区间，保证每个区间的数量基本一致</span><br><span class="line"></span><br><span class="line"><span class="comment">#####等频率离散#######</span></span><br><span class="line"><span class="comment"># 设置离散区间数</span></span><br><span class="line">k =<span class="number">4</span></span><br><span class="line"><span class="comment"># 获取数据</span></span><br><span class="line">data = df.Age</span><br><span class="line"><span class="comment"># 设置频率范围</span></span><br><span class="line">w = [<span class="number">1.0</span>*i/k <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(k+<span class="number">1</span>)]</span><br><span class="line"><span class="comment"># 使用describe获取频率区域的分界点</span></span><br><span class="line">w = data.describe(percentiles = w)[<span class="number">4</span>:<span class="number">4</span>+k+<span class="number">1</span>]</span><br><span class="line">w[<span class="number">0</span>] = w[<span class="number">0</span>]*(<span class="number">1</span>-<span class="number">1e-10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据分界点进行数据离散处理</span></span><br><span class="line">df[<span class="string">'Age2'</span>] = pd.cut(data, w, labels = <span class="built_in">range</span>(k))</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">'Age2'</span>).count()</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="二值化"><a href="#二值化" class="headerlink" title="二值化"></a>二值化</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#####数据二值化######</span></span><br><span class="line"><span class="comment"># 建立模型 根据平均值作为阈值</span></span><br><span class="line">data = df[<span class="string">&#x27;Income&#x27;</span>]</span><br><span class="line">binarizer_scaler = preprocessing.Binarizer(threshold=data.mean())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 二值化处理</span></span><br><span class="line">result = binarizer_scaler.fit_transform(data.reshape(-<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据合并</span></span><br><span class="line">df[<span class="string">&#x27;Income2&#x27;</span>] = result</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">&#x27;Income2&#x27;</span>).count()</span><br></pre></td></tr></table></figure></div>
+<h2 id="二值化"><a href="#二值化" class="headerlink" title="二值化"></a>二值化</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#####数据二值化######</span></span><br><span class="line"><span class="comment"># 建立模型 根据平均值作为阈值</span></span><br><span class="line">data = df[<span class="string">'Income'</span>]</span><br><span class="line">binarizer_scaler = preprocessing.Binarizer(threshold=data.mean())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 二值化处理</span></span><br><span class="line">result = binarizer_scaler.fit_transform(data.reshape(-<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据合并</span></span><br><span class="line">df[<span class="string">'Income2'</span>] = result</span><br><span class="line"></span><br><span class="line">df.groupby(<span class="string">'Income2'</span>).count()</span><br></pre></td></tr></table></figure></div>
 
 
 		</div>
@@ -989,7 +1101,7 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
                     </span>
                     
                         <span>
-                            共 18.4k 字
+                            共 18k 字
                         </span>
                     
                 </p>
@@ -1503,6 +1615,212 @@ body{margin:0;padding:0;font-family:system-ui, -apple-system, BlinkMacSystemFont
 <script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
 
 
+
+<style>
+  /*
+   * Make MathJax SVG containers visually selectable (outline hint) and allow
+   * user-select to be triggered on them. The visible SVG is never text-selectable
+   * itself (it's a vector image), but we keep selection styling so the global
+   * copy interceptor can swap clipboard content for LaTeX source.
+   */
+  mjx-container.MathJax {
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    cursor: text;
+  }
+  mjx-container.MathJax ::selection {
+    background: rgba(163, 31, 52, 0.18);
+  }
+</style>
+
+<script data-swup-reload-script>
+/*
+ * Enable copying the LaTeX source of server-side-rendered MathJax formulas:
+ *   1. Drag & select over any formula + Ctrl/Cmd+C -> clipboard gets LaTeX.
+ *   2. Click a formula -> copy.
+ *   3. Right-click a formula -> copy (context menu suppressed).
+ *   4. Alt / ⌘ + click -> also copies.
+ *
+ * A small toast is shown after a successful copy.  Works across page swaps.
+ */
+(function () {
+  const SVG_SELECTOR = 'mjx-container.MathJax svg g[data-mml-node="math"]';
+  const CTRL_KEY = /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? '⌘' : 'Ctrl';
+
+  function showToast(x, y, text) {
+    const style = [
+      'position:fixed',
+      'z-index:999999',
+      'padding:6px 14px',
+      'border-radius:999px',
+      'background:var(--primary-color,#a31f34)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'box-shadow:0 8px 24px rgba(0,0,0,.18)',
+      'opacity:0',
+      'transform:translateY(4px)',
+      'transition:opacity .2s ease,transform .2s ease',
+      'pointer-events:none'
+    ].join(';');
+
+    const t = document.createElement('div');
+    t.setAttribute('role', 'status');
+    t.textContent = text;
+    t.style.cssText = style + ';left:' + Math.max(12, Math.min(window.innerWidth - 200, x - 80)) + 'px;top:' + Math.max(12, y - 48) + 'px;';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(4px)';
+      setTimeout(() => t.remove(), 220);
+    }, 1400);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Collect all formulas that overlap with the current DOM selection.
+  function gatherLatexInSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const results = [];
+    for (let i = 0; i < sel.rangeCount; i++) {
+      const range = sel.getRangeAt(i);
+      const frag = range.cloneContents();
+      const nodes = frag.querySelectorAll('g[data-mml-node="math"]');
+      nodes.forEach(function (n) {
+        const latex = n.getAttribute('data-latex');
+        if (latex) results.push(latex);
+      });
+      // Also fall back: inspect live mjx-containers intersecting the range.
+      document.querySelectorAll('mjx-container.MathJax').forEach(function (c) {
+        const root = c.querySelector(SVG_SELECTOR);
+        if (!root) return;
+        try {
+          const r = document.createRange();
+          r.selectNodeContents(c);
+          if (r.compareBoundaryPoints(Range.END_TO_START, range) <= 0
+              && r.compareBoundaryPoints(Range.START_TO_END, range) >= 0) {
+            const latex = root.getAttribute('data-latex');
+            if (latex && results.indexOf(latex) === -1) results.push(latex);
+          }
+        } catch (_) {}
+      });
+    }
+    return results.length ? results.join('\n\n') : null;
+  }
+
+  function findLatexAtTarget(target) {
+    if (!target) return null;
+    const container = target.closest && target.closest('mjx-container.MathJax');
+    if (!container) return null;
+    const root = container.querySelector(SVG_SELECTOR);
+    return root ? (root.getAttribute('data-latex') || null) : null;
+  }
+
+  function attachPerFormula() {
+    document.querySelectorAll(SVG_SELECTOR).forEach(function (root) {
+      if (root.__latexCopyAttached) return;
+      root.__latexCopyAttached = true;
+      const container = root.closest('mjx-container.MathJax');
+      const latex = root.getAttribute('data-latex') || '';
+      if (!latex || !container) return;
+
+      container.addEventListener('contextmenu', async function (e) {
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      }, true);
+
+      container.addEventListener('click', async function (e) {
+        // Plain click: copy. (Alt/Meta click kept for muscle memory.)
+        e.preventDefault();
+        const ok = await writeClipboardText(latex);
+        showToast(e.clientX, e.clientY, ok ? '已复制 LaTeX 源码' : '复制失败');
+      });
+
+      // Hint tooltip on long hover.
+      let timer = null;
+      container.addEventListener('mouseenter', function () {
+        if (timer) clearTimeout(timer);
+      });
+      container.addEventListener('mouseleave', function () {
+        if (timer) clearTimeout(timer);
+      });
+    });
+  }
+
+  // Global copy event: if the user's text selection overlaps any MathJax
+  // container, replace the clipboard text with the captured LaTeX source(s).
+  function onCopy(e) {
+    const latex = gatherLatexInSelection();
+    if (!latex) return;
+    const fallback = window.getSelection ? (window.getSelection().toString() || '') : '';
+    const payload = fallback
+      ? (fallback + '\n\n---\n' + latex)
+      : latex;
+    e.clipboardData.setData('text/plain', payload);
+    e.preventDefault();
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showToast(
+      Math.round(rect.right || window.innerWidth / 2),
+      Math.round(rect.top || window.innerHeight / 2),
+      '已复制 LaTeX 源码（' + CTRL_KEY + '+V 可粘贴）'
+    );
+  }
+
+  const ready = () => {
+    const hasAny = document.querySelector('mjx-container.MathJax');
+    if (!hasAny) return;
+
+    attachPerFormula();
+    document.addEventListener('copy', onCopy, true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+  } else {
+    ready();
+  }
+
+  // SPA swup route support.
+  if (window.addEventListener) {
+    window.addEventListener('swup:contentReplaced', function () {
+      attachPerFormula();
+    });
+  }
+})();
+</script>
 
 	
 </body>
